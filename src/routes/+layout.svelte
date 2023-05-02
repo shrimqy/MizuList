@@ -19,11 +19,12 @@
 		height: 70px;
 		display: flex;
     	justify-content: center;
-		align-items: center
+		align-items: center;
 	}
 
 	.navItems a {
     	color: #eeeeee;
+		padding: 0 2rem;
  	}
 </style>
 <slot />
