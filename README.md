@@ -4,9 +4,13 @@
 
 Litlog is a book reading tracker that uses openlibrary api to fetch book details and track them personally. This project is only for educational purposes and is still under development.
 
+## Framework
+
+Sveltekit is used to develop the app and possibly use prisma and lucia for the backend purposes.
+
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+install the dependencies with `npm install` (or `pnpm install` or `yarn`), To start a development server:
 
 ```bash
 npm run dev
@@ -17,7 +21,7 @@ npm run dev -- --open
 
 ## Building
 
-To create a production version of your app:
+To create a production version:
 
 ```bash
 npm run build
