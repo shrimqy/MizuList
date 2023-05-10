@@ -1,16 +1,12 @@
-export async function load({ fetch }) {
-    const res = await fetch('https://openlibrary.org/trending/weekly.json?limit=18');
-    const bookTitle = await res.json();
-    if (res.ok) {
-        return {
-            props: {
-                bookTitle: bookTitle.works
-            }
-        }
+export const load = ({ fetch }) => {
+    const fetchBook = async () => {
+        const res = await fetch(`https://openlibrary.org/trending/monthly.json?&limit=18`);
+        const book = await res.json();
+        return book
     }
     return {
-        status: res.status,
-        error: new Error("Error loading")
+        book: fetchBook()
     }
 }
+
 

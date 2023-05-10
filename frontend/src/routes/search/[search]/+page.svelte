@@ -1,25 +1,21 @@
 <script>
-	import { goto } from '$app/navigation'
+    import { goto } from '$app/navigation'
 	import { fly, fade } from 'svelte/transition'
-
-	export let data;
-	let book = data.book.works;
-	console.log(book);
-	let inputValue= '';
-
+    export let inputValue= '';
+    export let data;
+    $: book = data.search.docs;
+    $: console.log(book);
 	function submitSearch() {
-		goto('search/' + inputValue);
+		goto( inputValue );
 	}
-
 </script>
-<div class="container">
-	<h3>Search</h3>
+<div  class="container">
+    <h3>Search</h3>
 	<form on:submit|preventDefault={ submitSearch } class="search-container">
-		<input bind:value={inputValue} type="search" class="search-box" name="search-box">
+		<input bind:value={inputValue} type="search" class="search-box">
 		<span class="material-icons">search</span>
 	</form>
-	<h1>Trending Weekly Now</h1>
-	<div transition:fade class="book-container">
+    <div transition:fade class="book-container">
 		{#each book as book}
 			<a data-sveltekit-preload-data href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}">
 				<div class="bookCard">
@@ -40,7 +36,6 @@
 	</div>
 </div>
 
-
 <style>
 	*{
 		margin: 0px;
@@ -55,13 +50,6 @@
 	.container {
 		color: #EDF1F5;
 		padding: 7rem 18rem;
-	}
-
-	h1 {
-		padding-top: 40px;
-		font-size: 22px;
-		color: #5E5E5E;
-		font-weight: 600;
 	}
 
 	h3 {
