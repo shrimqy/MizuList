@@ -1,17 +1,16 @@
 <script>
-	import { goto } from '$app/navigation'
-	import { fly, fade } from 'svelte/transition'
-
-	export let data;
-	let book = data.book.works;
+	import { goto } from '$app/navigation' //for navigation to the search page
+	import { fade } from 'svelte/transition' //for transitions
+	export let data; //data fetch from the API
+	let book = data.book.works; //assigning the data to book
 	console.log(book);
 	let inputValue= '';
 
-	function submitSearch() {
-		goto('search/' + inputValue);
+	function submitSearch() { 
+		goto('search/' + inputValue); //search page url 
 	}
-
 </script>
+
 <div class="container">
 	<h3>Search</h3>
 	<form on:submit|preventDefault={ submitSearch } class="search-container">
@@ -20,18 +19,17 @@
 	</form>
 	<h1>Trending Weekly Now</h1>
 	<div transition:fade class="book-container">
-		{#each book as book}
-			<a data-sveltekit-preload-data href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}">
+		{#each book as book}  <!-- since the data fetched is an array  -->
+			<a data-sveltekit-preload-data href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}"> <!-- Link to the book page -->
 				<div class="bookCard">
-					
-					<div class="bookCover">{#if book.cover_edition_key}
+					<div class="bookCover">{#if book.cover_edition_key} <!-- Book cover source -->
 					<img
 						src={'http://covers.openlibrary.org/b/olid/' + book.cover_edition_key +'-M.jpg?default=false'}
 						alt={book.title}
 						onerror="this.style.display='none'"
 					/>
 					{:else}
-						<span>No cover available</span>
+						<span>No cover available</span> <!-- Show this if no cover was found from the API -->
 					{/if}
 				</div>
 				<div class="title">{book.title}</div>

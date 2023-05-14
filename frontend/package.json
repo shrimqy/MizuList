@@ -20,5 +20,9 @@
 		"svelte": "^3.59.1",
 		"vite": "^4.3.5"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@prisma/client": "^4.14.0",
+		"bcrypt": "^5.1.0"
+	}
 }
