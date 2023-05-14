@@ -1,13 +1,20 @@
 import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 import { db } from '../../lib/server/database';
-// using an enum for user roles to avoid typos
-// if you're not using TypeScript use an object
-var Roles;
-(function (Roles) {
-    Roles["ADMIN"] = "ADMIN";
-    Roles["USER"] = "USER";
-})(Roles || (Roles = {}));
+
+
+
+var Roles; //defining enum 
+(
+    function (Roles) {
+        Roles["ADMIN"] = "ADMIN";
+        Roles["USER"] = "USER";
+    }
+)
+
+(Roles || (Roles = {})); //ensuring the object is defined
+
+
 export const load = async ({ locals }) => {
     // // redirect user if logged in
     // if (locals.user) {
@@ -26,11 +33,15 @@ export const actions = {
             return fail(400, { invalid: true });
         }
         const user = await db.user.findUnique({
-            where: { username },
+            where: { username }, //fetching usernames from the db
         });
+
+        //checking if the username already exists
         if (user) {
-            return fail(400, { user: true });
+            return fail(400, { user: true }); //returning 'true' if found
         }
+
+        //creating user
         await db.user.create({
             data: {
                 username,

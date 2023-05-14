@@ -15,9 +15,8 @@
 			<button type="submit">Sign up</button>
 
 			{#if form?.user}
-				<!-- this message is ephemeral; it exists because the page was rendered in
-           response to a form submission. it will vanish if the user reloads -->
-				<p>Successfully logged in! Welcome back, {form.user.name}</p>
+				<!-- if the same username is found to be in the database already -->
+				<p class="error">Username is taken.</p>
 			{/if}
 		</form>
 		<p>Already have an account? <a href="/login">Log in</a></p>
