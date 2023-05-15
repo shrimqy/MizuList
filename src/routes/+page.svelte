@@ -3,7 +3,6 @@
 	import { fade } from 'svelte/transition' //for transitions
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
-	console.log(book);
 	let inputValue= '';
 
 	function submitSearch() { 
@@ -20,7 +19,7 @@
 	<h1>Trending Weekly Now</h1>
 	<div transition:fade class="book-container">
 		{#each book as book}  <!-- since the data fetched is an array  -->
-			<a data-sveltekit-preload-data href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}"> <!-- Link to the book page -->
+			<a data-sveltekit-preload-data="hover" href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}"> <!-- Link to the book page -->
 				<div class="bookCard">
 					<div class="bookCover">{#if book.cover_edition_key} <!-- Book cover source -->
 					<img
@@ -46,12 +45,15 @@
 		font-family: 'Overpass', sans-serif;
 	}
 
+	:root{
+		background-color: #edf1f5;
+	}
+
 	a {
 		text-decoration: none;
 	}
 
 	.container {
-		color: #EDF1F5;
 		padding: 7rem 18rem;
 	}
 

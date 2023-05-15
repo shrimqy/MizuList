@@ -1,17 +1,25 @@
 <script>
 	/** @type {import('./$types').PageData} */
-	export let data;
+	/** @type {import('./$types').ActionData} */
+	export let form;
 </script>
 
 <div class="container">
 	<div class="box">
 		<h3>Login</h3>
-		<form class="signup">
-			<input type="text" placeholder="Username" required />
-			<input type="password" placeholder="Password" required />
-			<button>Login</button>
+
+		<form method="POST" action="?/login" class="login">
+			<input id="username" name="username" type="text" placeholder="Username" required />
+			<!-- <input name="email" type="email" placeholder="Email" required> -->
+			<input id="password" name="password" type="password" placeholder="Password" required />
+			<button type="submit">Login</button>
+
+			{#if form?.user}
+				<!-- if the same username is found to be in the database already -->
+				<p class="error">Username is taken.</p>
+			{/if}
 		</form>
-		<p>Don't have an account? <a href="/signup">Register</a></p>
+		<p>Already have an account? <a href="/login">Log in</a></p>
 	</div>
 </div>
 
@@ -48,7 +56,7 @@
 		color: #5c728a;
 	}
 
-	.signup {
+	.login {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -72,14 +80,12 @@
 	}
 
 	button {
-		width: 5rem;
-		height: 2.7rem;
+		width: 100px;
 		font-size: 16px;
 		font-weight: 600;
 		background-color: #3db4f2;
 		color: white;
 		cursor: pointer;
-		border-radius: 7px;
 	}
 
 	.box p {

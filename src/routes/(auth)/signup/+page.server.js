@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
-import { db } from '../../lib/server/database';
+import { db } from '$lib/server/database';
 
 
 
@@ -26,7 +26,8 @@ export const actions = {
         const data = await request.formData();
         const username = data.get('username');
         const password = data.get('password');
-        if (typeof username !== 'string' ||
+        if (
+            typeof username !== 'string' ||
             typeof password !== 'string' ||
             !username ||
             !password) {
@@ -45,7 +46,7 @@ export const actions = {
         await db.user.create({
             data: {
                 username,
-                passwordHash: await bcrypt.hash(password, 10),
+                passwordHash: await bcrypt.hash(password, 10), //using bcrypt to hash the password
                 userAuthToken: crypto.randomUUID(),
                 role: { connect: { name: Roles.USER } },
             },
