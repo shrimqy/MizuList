@@ -1,51 +1,95 @@
 <script>
-	import { goto } from '$app/navigation' //for navigation to the search page
-	import { fade } from 'svelte/transition' //for transitions
+	import { goto } from '$app/navigation'; //for navigation to the search page
+	import { fade } from 'svelte/transition'; //for transitions
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
-	let inputValue= '';
+	let inputValue = '';
 
-	function submitSearch() { 
-		goto('search/' + inputValue); //search page url 
+	function submitSearch() {
+		goto('search/' + inputValue); //search page url
 	}
 </script>
 
 <div class="container">
 	<h3>Search</h3>
-	<form on:submit|preventDefault={ submitSearch } class="search-container">
-		<input bind:value={inputValue} type="search" class="search-box" name="search-box">
+	<form on:submit|preventDefault={submitSearch} class="search-container">
+		<input bind:value={inputValue} type="search" class="search-box" name="search-box" />
 		<span class="material-icons">search</span>
 	</form>
 	<h1>Trending Weekly Now</h1>
 	<div transition:fade class="book-container">
-		{#each book as book}  <!-- since the data fetched is an array  -->
-			<a data-sveltekit-preload-data="hover" href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}"> <!-- Link to the book page -->
+		{#each book as book}
+			<!-- since the data fetched is an array  -->
+			<a
+				data-sveltekit-preload-data="hover"
+				href="/books/{book.key.split('/')[2]}"
+				onerror="this.href='/books/{book.cover_edition_key}"
+			>
+				<!-- Link to the book page -->
 				<div class="bookCard">
-					<div class="bookCover">{#if book.cover_edition_key} <!-- Book cover source -->
-					<img
-						src={'http://covers.openlibrary.org/b/olid/' + book.cover_edition_key +'-M.jpg?default=false'}
-						alt={book.title}
-						onerror="this.style.display='none'"
-					/>
-					{:else}
-						<span>No cover available</span> <!-- Show this if no cover was found from the API -->
-					{/if}
-				</div>
-				<div class="title">{book.title}</div>
-				</a>
+					<div class="bookCover">
+						{#if book.cover_edition_key}
+							<!-- Book cover source -->
+							<img
+								src={'http://covers.openlibrary.org/b/olid/' +
+									book.cover_edition_key +
+									'-M.jpg?default=false'}
+								alt={book.title}
+								onerror="this.style.display='none'"
+							/>
+						{:else}
+							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+						{/if}
+					</div>
+					<div class="title">{book.title}</div>
+					<form class="userInput">
+						<label for="status">Status:</label>
+						<button id="addbutton" onclick="setDefaultStatus()">Add to List</button>
+						<select id="status" style="display: none;">
+							<option value="reading">Reading</option>
+							<option value="planToRead" id="defaultOption" selected>Plan to Read</option>
+							<option value="onHold">On Hold</option>
+							<option value="dropped">Dropped</option>
+							<option value="completed">Completed</option>
+						</select>
+
+						<label for="rating">Rating:</label>
+						<select id="rating">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+
+						<label for="chapters">Chapters Read:</label>
+						<input type="number" id="chapters" placeholder="Chapter: " />
+
+						<label for="pages">Pages:</label>
+						<input type="number" id="pages" placeholder="Pages: " />
+
+						<button type="submit">Submit</button>
+						<button type="reset">Reset</button>
+					</form>
+				</div></a
+			>
 		{/each}
 	</div>
 </div>
 
-
 <style>
-	*{
+	* {
 		margin: 0px;
 		padding: 0px;
 		font-family: 'Overpass', sans-serif;
 	}
 
-	:root{
+	:root {
 		background-color: #edf1f5;
 	}
 
@@ -60,14 +104,14 @@
 	h1 {
 		padding-top: 40px;
 		font-size: 22px;
-		color: #5E5E5E;
+		color: #5e5e5e;
 		font-weight: 600;
 	}
 
 	h3 {
 		font-size: 16px;
 		font-weight: 600;
-		color: #5E5E5E;
+		color: #5e5e5e;
 		padding-bottom: 10px;
 	}
 
@@ -86,7 +130,6 @@
 		font-weight: 600;
 		display: flex;
 		flex-direction: column;
-		
 	}
 
 	.bookCover {
@@ -111,8 +154,8 @@
 	}
 
 	.title {
-	padding: 10px 0;
-	overflow-wrap: break-word;
+		padding: 10px 0;
+		overflow-wrap: break-word;
 	}
 
 	/* Style the search box */
@@ -130,20 +173,20 @@
 		font-size: 15px;
 		font-weight: 600;
 		width: 250px;
-		color: #5E5E5E;
+		color: #5e5e5e;
 		height: 40px;
 		box-shadow: 0px 2px 10px rgba(37, 34, 63, 0.1);
 	}
 	.search-box:focus {
-  		outline: none;
+		outline: none;
 	}
 
 	.material-icons {
 		font-family: 'Material Icons';
 		font-weight: 600;
-		font-size: 17px;  /* Preferred icon size */
+		font-size: 17px; /* Preferred icon size */
 		color: #9e9e9e;
 		padding: 0px 10px;
 		position: absolute;
-	}	
+	}
 </style>
