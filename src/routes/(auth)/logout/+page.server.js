@@ -1,4 +1,4 @@
-//we only need the +page.server.js here since logout isn't a page in itself
+//we only need the +page.server.js here since logout isn't a page in itself which means we only use this endpoint for the api and don't need to see the page
 /** @type {import('./$types').PageServerLoad} */
 /** @type {import('./$types').Actions} */
 import { redirect } from '@sveltejs/kit';

@@ -16,10 +16,10 @@ var Roles; //defining enum
 
 
 export const load = async ({ locals }) => {
-    // // redirect user if logged in
-    // if (locals.user) {
-    //     throw redirect(302, '/');
-    // }
+    // redirect user if logged in
+    if (locals.user) {
+        throw redirect(302, '/');
+    }
 };
 export const actions = {
     signup: async ({ request }) => {

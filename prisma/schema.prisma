@@ -21,14 +21,26 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  role   Roles @relation(fields: [roleId], references: [id])
+  role   Roles  @relation(fields: [roleId], references: [id])
   roleId Int
+  Book   Book[]
 }
 
 model Roles {
   id   Int    @id @default(autoincrement())
   name String @unique
   User User[]
+}
+
+model Book {
+  id      String  @id @unique
+  title   String
+  status  String
+  userId  String
+  Pages   Int?
+  Chapter Int?
+  Fav     Boolean
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 // Use enums when you change database

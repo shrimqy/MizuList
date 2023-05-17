@@ -1,20 +1,21 @@
 <script>
+	/** @type {import('./$types').Actions} */
 	export let data;
 	let { work, bookData } = data;
-	console.log(bookData);
-	console.log(work);
+	// console.log(bookData);
+	// console.log(work);
 	let status = 'planToRead';
 
 	function resetForm() {
 		status = 'default';
 	}
+
 	function setDefaultStatus() {
 		document.getElementById('addToListButton').style.display = 'none';
 		document.getElementById('status').style.display = 'inline';
 		document.getElementById('defaultOption').selected = true;
 		status = 'planToRead';
 	}
-
 	let showMore = false;
 	const maxTagsToShow = 15; // Define the maximum number of tags to show initially
 	function toggleShowMore() {
@@ -52,13 +53,13 @@
 	<div class="bcontainer">
 		<div class="dataCover">
 			<img
-				src={'http://covers.openlibrary.org/b/id/' + work.covers[0] + '-L.jpg?default=false'}
+				src={'http://covers.openlibrary.org/b/id/' + work.covers[0] + '-M.jpg?default=false'}
 				alt={work.title}
 				class="cover"
 			/>
 			<div class="userFav">
-				<form action="">
-					<button>Add to Favorites</button>
+				<form action="?/addFav" method="POST">
+					<button formaction="?/addFav">Add to Favorites</button>
 				</form>
 			</div>
 		</div>
@@ -66,35 +67,48 @@
 		<div class="content">
 			<div class="title">{work.title}</div>
 			<div class="author">{bookData.author_name}</div>
-			<div class="desc">{work.description?.value || work.description || ''}</div>
-			<div class="userStatus">
-				<form>
-					<button id="addToListButton" on:click={setDefaultStatus}>Add to List</button>
-					<select id="status" bind:value={status} style="display: none;">
+			<div class="bookStats-header">
+				<div class="rating-header">
+					<div class="score">
+						<h2>Score</h2>
+						<h3>{(bookData.ratings_average * 2).toFixed(2)}</h3>
+					</div>
+					<div class="member">
+						<h2>Member</h2>
+						<h3>{bookData.readinglog_count}</h3>
+					</div>
+				</div>
+				<form class="userStatus">
+					<button class="fbutton" id="addToListButton" on:click={setDefaultStatus}
+						>Add to List</button
+					>
+					<select class="status" id="status" bind:value={status}>
 						<option value="reading">Reading</option>
 						<option value="planToRead" id="defaultOption">Plan to Read</option>
 						<option value="onHold">On Hold</option>
 						<option value="dropped">Dropped</option>
 						<option value="completed">Completed</option>
 					</select>
-					<select id="rating">
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
+					<select class="rating" id="rating">
+						<option value="0">Select</option>
+						<option value="1">(1) Appalling</option>
+						<option value="2">(2) Horrible</option>
+						<option value="3">(3) Very Bad</option>
+						<option value="4">(4) Bad</option>
+						<option value="5">(5) Average</option>
+						<option value="6">(6) Fine</option>
+						<option value="7">(7) Good</option>
+						<option value="8">(8) Good</option>
+						<option value="9">(9) Great</option>
+						<option value="10">(10) Masterpiece</option>
 					</select>
-					<input type="number" id="chapters" placeholder="Chapter: " />
-					<input type="number" id="pages" placeholder="Pages: " />
+					<input class="chapter" type="number" id="chapters" placeholder="Chapter " />
+					<input class="pages" type="number" id="pages" placeholder="Pages " />
 
-					<button type="submit">Submit</button>
+					<button class="sbutton" type="submit">Submit</button>
 				</form>
 			</div>
+			<div class="desc">{work.description?.value || work.description || ''}</div>
 		</div>
 	</div>
 	<div class="sidebar">
@@ -122,6 +136,7 @@
 <style>
 	* {
 		font-family: 'Overpass', sans-serif;
+		outline: none;
 	}
 
 	:root {
@@ -205,6 +220,7 @@
 	.content {
 		display: flex;
 		flex-direction: column;
+		width: 50rem;
 		margin-left: 3rem;
 		margin-top: 1rem;
 		color: #5e5e5e;
@@ -222,12 +238,111 @@
 		font-weight: 500;
 	}
 
-	.userStatus {
+	.bookStats-header {
 		display: flex;
-		padding-bottom: 2rem;
+		flex-direction: column;
+		background-color: #f5f5f5;
+		border: none;
+		border-radius: 6px;
+	}
+
+	.rating-header {
+		display: flex;
+		justify-content: start;
+	}
+
+	.score,
+	.member {
+		width: 5rem;
+		display: flex;
+		flex-direction: column;
+		margin: 0rem 1rem;
+		border-radius: 6px;
+		margin-top: 0.5rem;
+	}
+
+	.score {
+		border-radius: 0px;
+		border-right: 2px solid rgb(229, 231, 235);
+		padding-right: 5px;
+		margin-bottom: 1.5rem;
+		margin-top: 1rem;
+	}
+
+	.score h2 {
+		display: flex;
+		justify-content: center;
+		padding: 0.3rem 0rem;
+		font-size: 13px;
+		font-weight: 500;
+		background-color: #1faafa;
+		color: #fff;
+		border-radius: 6px;
+	}
+
+	.score h3 {
+		font-size: 29px;
+		display: flex;
+		justify-content: center;
+		color: #5c7289;
+		border: none;
+		margin-top: 0px;
 	}
 
 	.desc {
 		padding: 2rem 0rem;
+		font-size: 13px;
+		word-spacing: 1.5px;
+	}
+
+	.userStatus {
+		display: flex;
+		align-items: center;
+		padding-left: 1rem;
+		margin-bottom: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.userStatus > * {
+		margin-right: 0.5rem;
+	}
+
+	.userStatus > *:last-child {
+		margin-right: 0;
+	}
+
+	.status {
+		cursor: pointer;
+		display: none;
+		border: none;
+		width: 7rem;
+		border-radius: 4px;
+		background-color: white;
+		padding: 0.3rem 0.5rem;
+	}
+
+	.chapter,
+	.pages,
+	.sbutton,
+	.rating,
+	.fbutton {
+		border: none;
+		border-radius: 4px;
+		background-color: white;
+		padding: 0.3rem 0.5rem;
+	}
+
+	.pages,
+	.chapter {
+		width: 6rem;
+	}
+
+	.fbutton {
+		width: 7rem;
+		cursor: pointer;
+	}
+
+	.sbutton {
+		cursor: pointer;
 	}
 </style>

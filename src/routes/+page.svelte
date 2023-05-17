@@ -42,40 +42,6 @@
 						{/if}
 					</div>
 					<div class="title">{book.title}</div>
-					<form class="userInput">
-						<label for="status">Status:</label>
-						<button id="addbutton" onclick="setDefaultStatus()">Add to List</button>
-						<select id="status" style="display: none;">
-							<option value="reading">Reading</option>
-							<option value="planToRead" id="defaultOption" selected>Plan to Read</option>
-							<option value="onHold">On Hold</option>
-							<option value="dropped">Dropped</option>
-							<option value="completed">Completed</option>
-						</select>
-
-						<label for="rating">Rating:</label>
-						<select id="rating">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-							<option value="9">9</option>
-							<option value="10">10</option>
-						</select>
-
-						<label for="chapters">Chapters Read:</label>
-						<input type="number" id="chapters" placeholder="Chapter: " />
-
-						<label for="pages">Pages:</label>
-						<input type="number" id="pages" placeholder="Pages: " />
-
-						<button type="submit">Submit</button>
-						<button type="reset">Reset</button>
-					</form>
 				</div></a
 			>
 		{/each}

@@ -1,14 +1,13 @@
 <script>
-	import { page } from "$app/stores";
+	import { page } from '$app/stores';
 </script>
-
 
 <nav data-sveltekit-preload-data class="navBar">
 	<div class="navItems">
 		<a class="navLinks" href="/">Home</a>
 
 		{#if !$page.data.user}
-			<a class="navLinks" href="/login">Login</a>	
+			<a class="navLinks" href="/login">Login</a>
 			<form class="navbut">
 				<button><a href="/signup">Sign Up</a> </button>
 			</form>
@@ -22,9 +21,10 @@
 		{/if}
 	</div>
 </nav>
+<slot />
 
 <style>
-	*{
+	* {
 		margin: 0;
 		padding: 0;
 		color: #eeeeee;
@@ -33,10 +33,10 @@
 	}
 	.navBar {
 		margin: -8px -8px;
-		background: #2B2D42;
+		background: #2b2d42;
 		height: 70px;
 		display: flex;
-    	justify-content: center;
+		justify-content: center;
 		align-items: center;
 	}
 
@@ -45,12 +45,12 @@
 		align-items: center;
 		justify-content: center;
 	}
-	
+
 	.navLinks {
-    	color: #d3d5f3d8;
+		color: #d3d5f3d8;
 		padding: 0 2rem;
 		transition: all 0.3s ease;
- 	}
+	}
 
 	.navbut button {
 		width: 100%;
@@ -66,12 +66,13 @@
 		text-decoration: none;
 	}
 
-	.navbut button, a {
-		color: #fff
+	.navbut button,
+	a {
+		color: #fff;
 	}
 
 	.navbut button:hover {
-		box-shadow: 0 2px 10px rgba(8,150,230,.6);
+		box-shadow: 0 2px 10px rgba(8, 150, 230, 0.6);
 		color: #fff;
 		transform: scale(1.03);
 	}
@@ -80,6 +81,4 @@
 		color: #d3d5f3;
 		transform: scale(1.03);
 	}
-
 </style>
-<slot />
