@@ -135,13 +135,13 @@
 		</div>
 	</div>
 
-	<div class="sidebar">
+	<div class="detail-container">
 		<div class="data">
 			<div class="book-details">
 				<h2>First publish Date</h2>
 				<h3>{bookData.first_publish_year}</h3>
 				<h2>Publishers</h2>
-				<h3>{isbn.publishers}</h3>
+				<h3>{bookData.publisher.slice(0, 10).join(', ')}</h3>
 				<h2>No of Pages</h2>
 				<h3>{bookData.number_of_pages_median} (Average)</h3>
 				<h2>Languages</h2>
@@ -167,6 +167,19 @@
 						{/if}
 					{/if}
 				{/if}
+			</div>
+		</div>
+		<div class="edition-container">
+			<h3 style="color: #61778f">Edition Details</h3>
+			<div class="edition-details">
+				<div class="ed">
+					<h2>Format</h2>
+					<h3>{isbn.number_of_pages} pages, {isbn.physical_format}</h3>
+				</div>
+				<div class="ed">
+					<h2>Publish Date</h2>
+					<h3>{isbn.publish_date} by {isbn.publishers}</h3>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -198,8 +211,13 @@
 		display: flex;
 	}
 
+	.detail-container {
+		display: flex;
+		padding-left: 16rem;
+	}
+
 	.data {
-		margin: 1rem 16rem;
+		margin-top: 1rem;
 		width: 12rem;
 		height: 100%;
 	}
@@ -255,6 +273,45 @@
 		margin-right: 8px;
 		border-radius: 3px;
 		box-sizing: border-box;
+	}
+
+	.edition-container {
+		display: flex;
+		flex-direction: column;
+		margin-left: 3rem;
+		margin-right: 16rem;
+		width: 50rem;
+		margin-left: 3rem;
+		margin-top: 1rem;
+	}
+
+	.edition-details {
+		margin-top: 1rem;
+		padding-right: 16rem;
+		padding-left: 1rem;
+		background-color: #fafafa;
+		border-radius: 3px;
+		color: #5c728a;
+	}
+
+	.edition-details .ed {
+		display: flex;
+		align-items: center;
+		margin: 1rem 0;
+	}
+
+	.edition-details .ed h2 {
+		/* margin-bottom: 0.5rem; */
+		width: 7rem;
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	.edition-details .ed h3 {
+		/* margin-top: 0; */
+		margin-left: 1rem;
+		font-size: 14px;
+		font-weight: 500;
 	}
 
 	.dataCover {
@@ -331,7 +388,7 @@
 		display: flex;
 		justify-content: center;
 		font-size: 11px;
-		margin-top: -1.7rem;
+		margin-top: 0rem;
 	}
 
 	.score {
@@ -359,16 +416,12 @@
 		justify-content: center;
 		color: #5c7289;
 		border: none;
-		margin-top: 0px;
+		padding-top: 0.5rem;
 	}
 
 	.detail-header {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		padding: 0rem 1rem;
 		font-size: 17px;
-		display: flex;
 		font-weight: 500;
 	}
 
