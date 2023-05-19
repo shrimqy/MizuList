@@ -17,7 +17,7 @@
 		<span class="material-icons">search</span>
 	</form>
 	<h1>Trending Weekly Now</h1>
-	<div transition:fade class="book-container">
+	<div transition:fade class="book-container" data-sveltekit-preload-data>
 		{#each book as book}
 			<!-- since the data fetched is an array  -->
 			<a
@@ -35,7 +35,6 @@
 									book.cover_edition_key +
 									'-M.jpg?default=false'}
 								alt={book.title}
-								onerror="this.style.display='none'"
 							/>
 						{:else}
 							<span>No cover available</span> <!-- Show this if no cover was found from the API -->

@@ -1,9 +1,12 @@
 <script>
 	/** @type {import('./$types').Actions} */
 	export let data;
-	let { work, bookData } = data;
-	// console.log(bookData);
-	// console.log(work);
+	let { work, bookData, isbn } = data;
+	import { Bar } from 'svelte-chartjs';
+	console.log(bookData);
+	console.log(work);
+	console.log(isbn);
+
 	let status = 'planToRead';
 
 	function resetForm() {
@@ -52,11 +55,24 @@
 <div class="container">
 	<div class="bcontainer">
 		<div class="dataCover">
-			<img
-				src={'http://covers.openlibrary.org/b/id/' + work.covers[0] + '-M.jpg?default=false'}
-				alt={work.title}
-				class="cover"
-			/>
+			<div class="cover">
+				{#if work.covers && work.covers.length > 0}
+					<img
+						src={'http://covers.openlibrary.org/b/id/' + work.covers[0] + '-M.jpg?default=false'}
+						alt={'work.title'}
+					/>
+				{:else if bookData.cover_edition_key && bookData.cover_edition_key.length > 0}
+					<img
+						src={'https://covers.openlibrary.org/b/olid/' +
+							bookData.cover_edition_key +
+							'-M.jpg?default=false'}
+						alt={'work.title'}
+					/>
+				{:else}
+					<span>No cover available</span>
+				{/if}
+			</div>
+
 			<div class="userFav">
 				<form action="?/addFav" method="POST">
 					<button formaction="?/addFav">Add to Favorites</button>
@@ -66,16 +82,23 @@
 
 		<div class="content">
 			<div class="title">{work.title}</div>
-			<div class="author">{bookData.author_name}</div>
+
 			<div class="bookStats-header">
 				<div class="rating-header">
 					<div class="score">
 						<h2>Score</h2>
 						<h3>{(bookData.ratings_average * 2).toFixed(2)}</h3>
+						<span class="r-count">{bookData.ratings_count} users</span>
 					</div>
-					<div class="member">
-						<h2>Member</h2>
-						<h3>{bookData.readinglog_count}</h3>
+					<div class="detail-header">
+						<div class="member" style="padding: 1rem 0rem;">
+							Member: <span style="font-weight: 700; padding-left: 0.3rem"
+								>{bookData.readinglog_count}</span
+							>
+						</div>
+						<div class="author" style="font-size: 13px">
+							Author: <span class="a-tag">{bookData.author_name}</span>
+						</div>
 					</div>
 				</div>
 				<form class="userStatus">
@@ -111,24 +134,40 @@
 			<div class="desc">{work.description?.value || work.description || ''}</div>
 		</div>
 	</div>
-	<div class="sidebar">
-		<div class="data" />
-		<div class="tag-container">
-			<h3>Tags</h3>
-			{#each filterTags(bookData.subject.slice(0, 15)) as subject}
-				<div class="tags">{subject}</div>
-			{/each}
 
-			{#if bookData.subject.length > maxTagsToShow && !showMore}
-				<button on:click={toggleShowMore}>Show More</button>
-			{:else if showMore}
-				{#each filterTags(bookData.subject.slice(maxTagsToShow)) as subject}
-					<div class="tags">{subject}</div>
-				{/each}
-				{#if bookData.subject.length > maxTagsToShow}
-					<button on:click={toggleShowMore}>Show Less</button>
+	<div class="sidebar">
+		<div class="data">
+			<div class="book-details">
+				<h2>First publish Date</h2>
+				<h3>{bookData.first_publish_year}</h3>
+				<h2>Publishers</h2>
+				<h3>{isbn.publishers}</h3>
+				<h2>No of Pages</h2>
+				<h3>{bookData.number_of_pages_median} (Average)</h3>
+				<h2>Languages</h2>
+				<h3>{bookData.language.join(', ')}</h3>
+				<h2>Edition Count</h2>
+				<h3>{bookData.edition_count}</h3>
+			</div>
+			<div class="tag-container">
+				{#if bookData.subject && bookData.subject.length > 0}
+					<h3>Tags</h3>
+					{#each filterTags(bookData.subject.slice(0, 15)) as subject}
+						<div class="tags">{subject}</div>
+					{/each}
+
+					{#if bookData.subject.length > maxTagsToShow && !showMore}
+						<button on:click={toggleShowMore}>Show More</button>
+					{:else if showMore}
+						{#each filterTags(bookData.subject.slice(maxTagsToShow)) as subject}
+							<div class="tags">{subject}</div>
+						{/each}
+						{#if bookData.subject.length > maxTagsToShow}
+							<button on:click={toggleShowMore}>Show Less</button>
+						{/if}
+					{/if}
 				{/if}
-			{/if}
+			</div>
 		</div>
 	</div>
 </div>
@@ -159,10 +198,40 @@
 		display: flex;
 	}
 
-	.tag-container {
-		margin: 0 16rem;
+	.data {
+		margin: 1rem 16rem;
 		width: 12rem;
 		height: 100%;
+	}
+
+	.book-details {
+		display: flex;
+		flex-direction: column;
+		background-color: #fafafa;
+		width: inherit;
+		font-size: 11px;
+		padding: 6px 15px;
+		margin-bottom: 0.9rem;
+		margin-right: 8px;
+		border-radius: 3px;
+		box-sizing: border-box;
+	}
+
+	.book-details h2 {
+		margin: 0.3rem 0rem;
+		font-size: 14px;
+		color: #6e8297;
+	}
+
+	.book-details h3 {
+		margin: 0.3rem 0rem;
+		font-size: 12px;
+		font-weight: 400;
+		color: #9299a1;
+	}
+
+	.book-details h3 {
+		white-space: pre-wrap;
 	}
 
 	.tag-container h3 {
@@ -176,7 +245,7 @@
 
 	.tags {
 		display: flex;
-		background-color: #fff;
+		background-color: #fafafa;
 		width: inherit;
 		font-size: 13px;
 		font-weight: 400;
@@ -190,15 +259,24 @@
 
 	.dataCover {
 		width: 12rem;
+		display: flex;
+		justify-content: start;
+		flex-direction: column;
 	}
 
-	.cover {
-		margin-top: -35%;
+	.cover span {
+		display: flex;
+		justify-content: center;
+		margin-top: 50%;
+	}
+
+	.cover img {
+		margin-top: 1rem;
 		height: 17rem;
-		width: inherit;
+		width: 12rem;
 		border-style: none;
-		border-radius: 2px;
-		box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+		border-radius: 3px;
+		box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
 	}
 
 	.userFav button {
@@ -207,10 +285,12 @@
 		font-family: 'Poppins', sans-serif;
 		font-size: 14px;
 		border: none;
-		border-radius: 7px;
+		border-radius: 4px;
 		background-color: #1faafa;
 		cursor: pointer;
 		padding: 0.5rem 1rem;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
 		transition: background-color 0.3s ease-in-out;
 	}
 
@@ -227,15 +307,10 @@
 	}
 
 	.title {
-		font-size: 19px;
+		font-size: 25px;
 		color: #5c7289;
 		font-weight: 600;
-	}
-
-	.author {
-		margin: 0.4rem 0rem;
-		font-size: 16px;
-		font-weight: 500;
+		margin-bottom: 0.5rem;
 	}
 
 	.bookStats-header {
@@ -244,31 +319,29 @@
 		background-color: #f5f5f5;
 		border: none;
 		border-radius: 6px;
+		padding-left: 1rem;
 	}
 
 	.rating-header {
 		display: flex;
-		justify-content: start;
+		margin: 1rem 1rem;
 	}
 
-	.score,
-	.member {
-		width: 5rem;
+	.r-count {
 		display: flex;
-		flex-direction: column;
-		margin: 0rem 1rem;
-		border-radius: 6px;
-		margin-top: 0.5rem;
+		justify-content: center;
+		font-size: 11px;
+		margin-top: -1.7rem;
 	}
 
 	.score {
+		width: 5rem;
+		display: flex;
+		flex-direction: column;
 		border-radius: 0px;
 		border-right: 2px solid rgb(229, 231, 235);
-		padding-right: 5px;
-		margin-bottom: 1.5rem;
-		margin-top: 1rem;
+		padding-right: 1rem;
 	}
-
 	.score h2 {
 		display: flex;
 		justify-content: center;
@@ -289,6 +362,22 @@
 		margin-top: 0px;
 	}
 
+	.detail-header {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 0rem 1rem;
+		font-size: 17px;
+		display: flex;
+		font-weight: 500;
+	}
+
+	.a-tag {
+		font-weight: 300;
+		color: #1faafa;
+		padding-left: 0.3rem;
+	}
+
 	.desc {
 		padding: 2rem 0rem;
 		font-size: 13px;
@@ -298,7 +387,6 @@
 	.userStatus {
 		display: flex;
 		align-items: center;
-		padding-left: 1rem;
 		margin-bottom: 1rem;
 		flex-wrap: wrap;
 	}
