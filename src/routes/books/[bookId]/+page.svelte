@@ -13,6 +13,7 @@
 		status = 'default';
 	}
 
+	//to select teh default option when the add to list button is clicked upon
 	function setDefaultStatus() {
 		document.getElementById('addToListButton').style.display = 'none';
 		document.getElementById('status').style.display = 'inline';
@@ -21,9 +22,12 @@
 	}
 	let showMore = false;
 	const maxTagsToShow = 15; // Define the maximum number of tags to show initially
+
 	function toggleShowMore() {
 		showMore = !showMore;
 	}
+
+	//to filter tags to an appropriate styling
 	function filterTags(tags) {
 		const filteredTags = tags.filter((tag) => {
 			if (typeof tag !== 'string') return false;
@@ -135,8 +139,8 @@
 		</div>
 	</div>
 
-	<div class="detail-container">
-		<div class="data">
+	<div class="content-container">
+		<div class="sidebar">
 			<div class="book-details">
 				<h2>First publish Date</h2>
 				<h3>{bookData.first_publish_year}</h3>
@@ -169,16 +173,42 @@
 				{/if}
 			</div>
 		</div>
-		<div class="edition-container">
-			<h3 style="color: #61778f">Edition Details</h3>
-			<div class="edition-details">
-				<div class="ed">
-					<h2>Format</h2>
-					<h3>{isbn.number_of_pages} pages, {isbn.physical_format}</h3>
+		<div class="overview">
+			<div class="edition-container" style="margin-bottom: 1rem;">
+				<h3 style="color: #61778f">Edition Details</h3>
+				<div class="edition-details">
+					<div class="ed">
+						<h2>Format</h2>
+						<h3>{isbn.number_of_pages} pages, {isbn.physical_format}</h3>
+					</div>
+					<div class="ed">
+						<h2>Publish Date</h2>
+						<h3>{isbn.publish_date} by {isbn.publishers}</h3>
+					</div>
 				</div>
-				<div class="ed">
-					<h2>Publish Date</h2>
-					<h3>{isbn.publish_date} by {isbn.publishers}</h3>
+			</div>
+			<div class="review">
+				<h3 style="padding-bottom: 1rem;">Reviews</h3>
+				<div class="review-container">
+					<img
+						src="https://cdn.myanimelist.net/s/common/userimages/ccd5d0a5-a3f5-4026-8c7d-d863a04f689a_225w?s=a5ee9982a49a58929103f3961d051a53"
+						alt="User Avatar"
+						class="user-avatar"
+					/>
+					<div class="review-body">
+						<div class="review-header">
+							<h3 class="user-name">John Doe</h3>
+							<span class="review-date">May 18, 2023</span>
+						</div>
+
+						<div class="review-content">
+							<p class="review-text">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper nulla nec
+								fermentum tristique. Nulla ut condimentum felis, vitae dapibus ligula. Praesent ac
+								rhoncus lorem. Sed nec consequat dolor, sed viverra odio.
+							</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -211,12 +241,12 @@
 		display: flex;
 	}
 
-	.detail-container {
+	.content-container {
 		display: flex;
 		padding-left: 16rem;
 	}
 
-	.data {
+	.sidebar {
 		margin-top: 1rem;
 		width: 12rem;
 		height: 100%;
@@ -275,7 +305,8 @@
 		box-sizing: border-box;
 	}
 
-	.edition-container {
+	.overview {
+		color: #5c728a;
 		display: flex;
 		flex-direction: column;
 		margin-left: 3rem;
@@ -286,22 +317,22 @@
 	}
 
 	.edition-details {
+		padding-bottom: 1rem;
 		margin-top: 1rem;
-		padding-right: 16rem;
-		padding-left: 1rem;
+
 		background-color: #fafafa;
 		border-radius: 3px;
-		color: #5c728a;
 	}
 
 	.edition-details .ed {
 		display: flex;
-		align-items: center;
-		margin: 1rem 0;
+		/* align-items: center; */
+		padding-top: 1rem;
+		padding-left: 1rem;
+		/* padding-bottom: 1rem; */
 	}
 
 	.edition-details .ed h2 {
-		/* margin-bottom: 0.5rem; */
 		width: 7rem;
 		font-size: 14px;
 		font-weight: 600;
@@ -312,6 +343,48 @@
 		margin-left: 1rem;
 		font-size: 14px;
 		font-weight: 500;
+	}
+
+	.review-container {
+		display: flex;
+		background-color: #fafafa;
+		border-radius: 7px;
+		padding: 1rem;
+	}
+
+	.review-header {
+		margin-right: 1rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+
+	.review-body {
+		/* margin-right: 1rem; */
+		margin-bottom: 1rem;
+	}
+
+	.user-avatar {
+		width: 42px;
+		height: 52px;
+		border-radius: 5px;
+		margin-right: 2rem;
+	}
+
+	.user-name {
+		margin: 0;
+		font-size: 18px;
+		font-weight: bold;
+	}
+
+	.review-date {
+		font-size: 14px;
+		color: #999;
+	}
+
+	.review-text {
+		margin-bottom: 10px;
 	}
 
 	.dataCover {
