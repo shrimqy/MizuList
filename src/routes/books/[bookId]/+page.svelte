@@ -1,5 +1,6 @@
 <script>
 	/** @type {import('./$types').Actions} */
+
 	export let data;
 	let { work, bookData, isbn } = data;
 	import { Bar } from 'svelte-chartjs';
@@ -13,7 +14,7 @@
 		status = 'default';
 	}
 
-	//to select teh default option when the add to list button is clicked upon
+	//to select the default option when the add to list button is clicked upon
 	function setDefaultStatus() {
 		document.getElementById('addToListButton').style.display = 'none';
 		document.getElementById('status').style.display = 'inline';
@@ -52,6 +53,22 @@
 				})
 				.join(' ');
 		});
+	}
+
+	//review
+	let isExpanded = false;
+	let buttonText = 'See More';
+	const characterLimit = 300;
+
+	let reviewText =
+		'Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,';
+
+	let truncatedReviewText = reviewText.substring(0, characterLimit) + '...'; //stores the truncated version of the review text based on the character limit.
+	let isTextTruncated = reviewText.length > characterLimit; //indicates whether the review text has been truncated or not.
+	//resposbile for toggling the expansion state of the content
+	function toggleExpansion() {
+		isExpanded = !isExpanded;
+		buttonText = isExpanded ? 'Show Less' : 'Read More';
 	}
 </script>
 
@@ -202,12 +219,17 @@
 						</div>
 
 						<div class="review-content">
-							<p class="review-text">
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ullamcorper nulla nec
-								fermentum tristique. Nulla ut condimentum felis, vitae dapibus ligula. Praesent ac
-								rhoncus lorem. Sed nec consequat dolor, sed viverra odio.
-							</p>
+							<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable. -->
+							<p class="review-text">{isExpanded ? reviewText : truncatedReviewText}</p>
 						</div>
+						{#if isTextTruncated}
+							<button class="see-more-btn" on:click={toggleExpansion}>
+								{#if isExpanded}
+									<span class="material-icons">expand_less</span>{:else}
+									<span class="material-icons">expand_more</span>
+								{/if}{buttonText}
+							</button>
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -221,29 +243,32 @@
 		outline: none;
 	}
 
+	.material-icons {
+		font-family: 'Material Icons';
+	}
+
 	:root {
 		background-color: #edf1f5;
 	}
 
 	.banner {
-		margin: 0px -8px;
 		background-color: #2b2d42;
 		height: 100px;
 	}
 
 	.container {
-		margin: 0 -8px;
+		width: 100%;
 	}
 
 	.bcontainer {
-		padding: 0 16rem;
 		background-color: #fafafa;
 		display: flex;
+		justify-content: center;
 	}
 
 	.content-container {
 		display: flex;
-		padding-left: 16rem;
+		justify-content: center;
 	}
 
 	.sidebar {
@@ -300,7 +325,6 @@
 		color: #5c728a;
 		padding: 6px 15px;
 		margin-bottom: 0.9rem;
-		margin-right: 8px;
 		border-radius: 3px;
 		box-sizing: border-box;
 	}
@@ -309,8 +333,6 @@
 		color: #5c728a;
 		display: flex;
 		flex-direction: column;
-		margin-left: 3rem;
-		margin-right: 16rem;
 		width: 50rem;
 		margin-left: 3rem;
 		margin-top: 1rem;
@@ -319,17 +341,14 @@
 	.edition-details {
 		padding-bottom: 1rem;
 		margin-top: 1rem;
-
 		background-color: #fafafa;
 		border-radius: 3px;
 	}
 
 	.edition-details .ed {
 		display: flex;
-		/* align-items: center; */
 		padding-top: 1rem;
 		padding-left: 1rem;
-		/* padding-bottom: 1rem; */
 	}
 
 	.edition-details .ed h2 {
@@ -339,8 +358,7 @@
 	}
 
 	.edition-details .ed h3 {
-		/* margin-top: 0; */
-		margin-left: 1rem;
+		/* margin-left: 1rem; */
 		font-size: 14px;
 		font-weight: 500;
 	}
@@ -353,28 +371,20 @@
 	}
 
 	.review-header {
-		margin-right: 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		margin-bottom: 1rem;
 	}
 
-	.review-body {
-		/* margin-right: 1rem; */
-		margin-bottom: 1rem;
-	}
-
 	.user-avatar {
-		width: 42px;
-		height: 52px;
-		border-radius: 5px;
+		height: 54px;
+		border-radius: 50%;
 		margin-right: 2rem;
 	}
 
 	.user-name {
-		margin: 0;
-		font-size: 18px;
+		font-size: 15px;
 		font-weight: bold;
 	}
 
@@ -385,6 +395,29 @@
 
 	.review-text {
 		margin-bottom: 10px;
+		white-space: pre-wrap;
+		overflow: hidden;
+		transition: max-height 0.5s ease-in-out;
+	}
+
+	.see-more-btn {
+		display: flex;
+		align-items: center;
+		font-weight: 500;
+		color: #5c7289;
+		background-color: #fafafa;
+		border: none;
+		cursor: pointer;
+		padding: 0.2rem 0rem;
+		transition: 0.2s ease;
+	}
+
+	.see-more-btn span {
+		font-weight: 500;
+	}
+
+	.see-more-btn:hover {
+		color: #1faafa;
 	}
 
 	.dataCover {

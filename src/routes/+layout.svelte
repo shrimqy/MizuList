@@ -25,19 +25,16 @@
 
 <style>
 	* {
-		margin: 0;
-		padding: 0;
 		color: #eeeeee;
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
 	}
 	.navBar {
-		margin: -8px -8px;
+		width: 100%;
 		background: #2b2d42;
 		height: 70px;
 		display: flex;
 		justify-content: center;
-		align-items: center;
 	}
 
 	.navItems {
