@@ -1,12 +1,11 @@
 <script>
 	/** @type {import('./$types').Actions} */
-
 	export let data;
-	let { work, bookData, isbn } = data;
+	let { work, bookData, isbn, favTag } = data;
 	import { Bar } from 'svelte-chartjs';
-	console.log(bookData);
-	console.log(work);
-	console.log(isbn);
+	// console.log(bookData);
+	// console.log(work);
+	// console.log(isbn);
 
 	let status = 'planToRead';
 
@@ -95,9 +94,11 @@
 			</div>
 
 			<div class="userFav">
-				<form action="?/addFav" method="POST">
-					<button formaction="?/addFav">Add to Favorites</button>
-				</form>
+				{#if !data.favTag}
+					<form action="?/addFav" method="POST">
+						<button formaction="?/addFav">Add to Favorites</button>
+					</form>
+				{/if}
 			</div>
 		</div>
 
