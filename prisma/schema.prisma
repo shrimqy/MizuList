@@ -13,34 +13,46 @@ datasource db {
 //schema
 
 model User {
-  id            String @id @default(uuid())
-  username      String @unique
+  id            String         @id @default(uuid())
+  username      String         @unique
   passwordHash  String
-  userAuthToken String @unique
+  userAuthToken String         @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          Roles          @relation(fields: [roleId], references: [id])
+  roleId        Int
+  favorites     Fav?           @relation(fields: [favId], references: [id])
+  favId         String?
+  bookCategory  BookCategory[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  role   Roles  @relation(fields: [roleId], references: [id])
-  roleId Int
-  Book   Book[]
+model BookCategory {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 model Roles {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  User User[]
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model Fav {
+  id     String @id @default(uuid())
+  bookId String @unique
+  users  User[]
 }
 
 model Book {
-  id      String  @id @unique
-  title   String
-  status  String
-  userId  String
-  Pages   Int?
-  Chapter Int?
-  Fav     Boolean
-  user    User    @relation(fields: [userId], references: [id])
+  id          String    @id @default(uuid())
+  title       String
+  pages       Int?
+  chapters    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
 }
 
 // Use enums when you change database

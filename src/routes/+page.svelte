@@ -41,8 +41,8 @@
 						{/if}
 					</div>
 					<div class="title">{book.title}</div>
-				</div></a
-			>
+				</div>
+			</a>
 		{/each}
 	</div>
 </div>
