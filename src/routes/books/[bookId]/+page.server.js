@@ -19,9 +19,9 @@ export async function load({ locals, params }) {
 		const fav = await db.fav.findFirst({
 			where: {
 				bookId,
-				users: {
-					some: {
-						username
+				User: {
+					username: {
+						equals: username
 					}
 				}
 			}
@@ -57,13 +57,36 @@ export const actions = {
 			where: { username }
 		});
 
-		await db.fav.create({
-			data: {
-				bookId: bookId,
-				users: {
-					connect: { id: user.id }
+		const existingFav = await db.fav.findFirst({
+			where: {
+				bookId,
+				User: {
+					username: {
+						equals: username
+					}
 				}
 			}
 		});
+
+		console.log(existingFav);
+		if (existingFav) {
+			await db.fav.update({
+				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
+				data: {
+					User: {
+						connect: { id: user.id }
+					}
+				}
+			});
+		} else {
+			await db.fav.create({
+				data: {
+					bookId: bookId,
+					User: {
+						connect: { id: user.id }
+					}
+				}
+			});
+		}
 	}
 };

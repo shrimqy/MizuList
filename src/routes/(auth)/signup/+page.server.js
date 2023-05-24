@@ -39,7 +39,7 @@ export const actions = {
 				userAuthToken: crypto.randomUUID(),
 				role: { connect: { name: Roles.USER } },
 				bookCategory: {
-					connect: [{ id: 1 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
+					connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
 				}
 			}
 		});

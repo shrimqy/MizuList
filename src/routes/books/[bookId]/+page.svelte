@@ -94,7 +94,7 @@
 			</div>
 
 			<div class="userFav">
-				{#if !data.favTag}
+				{#if !favTag}
 					<form action="?/addFav" method="POST">
 						<button formaction="?/addFav">Add to Favorites</button>
 					</form>
