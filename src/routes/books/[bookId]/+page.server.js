@@ -1,5 +1,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
+let username;
+let fav;
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
@@ -15,15 +17,17 @@ export async function load({ locals, params }) {
 		const matchingBooks = bookData.docs.filter((book) => book.key === work.key); // filter callback checks if the key property of each book matches the work.key value
 		const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
 		const isbn = await isbnData.json();
-		const username = locals.user.name;
-		const fav = await db.fav.findFirst({
-			where: {
-				bookId,
-				User: {
-					some: { username }
+		if (locals && locals.user && locals.user.name) {
+			username = locals.user.name;
+			fav = await db.fav.findFirst({
+				where: {
+					bookId,
+					User: {
+						some: { username }
+					}
 				}
-			}
-		});
+			});
+		}
 
 		const isBookIdFound = fav !== null;
 		return {
