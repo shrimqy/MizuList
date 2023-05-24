@@ -1,5 +1,5 @@
 import { db } from '$lib/server/database';
-import { fail, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
@@ -20,9 +20,7 @@ export async function load({ locals, params }) {
 			where: {
 				bookId,
 				User: {
-					username: {
-						equals: username
-					}
+					some: { username }
 				}
 			}
 		});
@@ -56,19 +54,16 @@ export const actions = {
 		const user = await db.user.findUnique({
 			where: { username }
 		});
+		// console.log(username);
 
 		const existingFav = await db.fav.findFirst({
 			where: {
-				bookId,
-				User: {
-					username: {
-						equals: username
-					}
-				}
+				bookId
 			}
 		});
 
 		console.log(existingFav);
+
 		if (existingFav) {
 			await db.fav.update({
 				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
