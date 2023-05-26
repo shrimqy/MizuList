@@ -1,12 +1,13 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-let username;
-let fav;
+let username, bookId, isbn;
+let fav,
+	existingBook = null;
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
 	const fetchBook = async (id) => {
-		const bookId = await params.bookId;
+		bookId = await params.bookId;
 		const workres = await fetch(`https://openlibrary.org/works/${id}.json`);
 		const work = await workres.json();
 
@@ -16,7 +17,9 @@ export async function load({ locals, params }) {
 
 		const matchingBooks = bookData.docs.filter((book) => book.key === work.key); // filter callback checks if the key property of each book matches the work.key value
 		const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
-		const isbn = await isbnData.json();
+		isbn = await isbnData.json();
+
+		//checking if the book already exists in the user database
 		if (locals && locals.user && locals.user.name) {
 			username = locals.user.name;
 			fav = await db.fav.findFirst({
@@ -27,14 +30,28 @@ export async function load({ locals, params }) {
 					}
 				}
 			});
+
+			existingBook = await db.book.findFirst({
+				where: {
+					bookId,
+					User: {
+						some: { username }
+					}
+				},
+				include: {
+					bookCategory: true
+				}
+			});
 		}
 
 		const isBookIdFound = fav !== null;
+
 		return {
 			work,
 			matchingBooks,
 			isbn,
-			isBookIdFound
+			isBookIdFound,
+			existingBook
 		};
 	};
 
@@ -44,30 +61,31 @@ export async function load({ locals, params }) {
 		work: result.work,
 		bookData: result.matchingBooks[0],
 		isbn: result.isbn,
-		favTag: result.isBookIdFound
+		favTag: result.isBookIdFound,
+		existingBook: result.existingBook
 	};
 }
 /** @type {import('./$types').Actions} */
 export const actions = {
-	addFav: async ({ locals, request, params }) => {
-		const bookId = await params.bookId;
+	//add to favorite Action definiion
+
+	addFav: async ({ locals }) => {
+		//throw redirect to login if user isn't logged in
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}
-		const username = locals.user.name;
 		const user = await db.user.findUnique({
 			where: { username }
 		});
-		// console.log(username);
 
+		//checking if the book already exists in the DB
 		const existingFav = await db.fav.findFirst({
 			where: {
 				bookId
 			}
 		});
 
-		console.log(existingFav);
-
+		//if it does, update the record with the user else create the record with bookId and connec the user.
 		if (existingFav) {
 			await db.fav.update({
 				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
@@ -82,6 +100,79 @@ export const actions = {
 				data: {
 					bookId: bookId,
 					User: {
+						connect: { id: user.id }
+					}
+				}
+			});
+		}
+	},
+
+	//Add to List Function
+	userStatus: async ({ request, params, locals }) => {
+		//redirect if mot logged in
+		if (!(locals && locals.user && locals.user.name)) {
+			throw redirect(302, '/login');
+		}
+		//getting form data
+		const bookId = await params.bookId;
+		const data = await request.formData();
+		const rating = data.get('rating');
+		const status = data.get('status');
+		const categoryId = parseInt(status, 10); //to convert the status to Int, shit doesn't work otherwise for somereason
+		const chapters = data.get('chapters');
+		const pages = data.get('pages');
+		const rereads = data.get('rereads');
+		const startedAt = data.get('startDate');
+		const startedDateTime = new Date(startedAt).toISOString();
+		const completedAt = data.get('finishDate');
+		const completedDateTime = new Date(completedAt).toISOString();
+		console.log(completedAt);
+		const user = await db.user.findUnique({
+			where: { username }
+		});
+
+		// Creating/updating the userStatus
+		if (existingBook) {
+			await db.Book.update({
+				where: { id: existingBook.id }, // Provide the unique identifier of the existing record
+				data: {
+					bookId: bookId,
+					title: isbn.title,
+					pages: pages,
+					chapters: chapters,
+					rating: rating,
+					rereads: rereads,
+					completedAt: completedDateTime,
+					createdAt: startedDateTime,
+					bookCategory: {
+						// Disconnecting the category at index 1 from the existing book's categories
+						disconnect: [{ id: existingBook.bookCategory[1].id }],
+
+						// Connecting the new category and the "All" category to the book
+						connect: [{ id: categoryId }, { id: 1 }]
+					},
+					User: {
+						connect: { id: user.id }
+					}
+				}
+			});
+		} else {
+			await db.Book.create({
+				data: {
+					UserId: user.id,
+					bookId: bookId,
+					title: isbn.title,
+					pages: pages,
+					chapters: chapters,
+					rating: rating,
+					rereads: rereads,
+					completedAt: completedDateTime,
+					bookCategory: {
+						// Connecting the new category and the "All" category to the book
+						connect: [{ id: categoryId }, { id: 1 }]
+					},
+					User: {
+						//connect to the User record using the id
 						connect: { id: user.id }
 					}
 				}

@@ -10,7 +10,7 @@
 	}
 </script>
 
-<div class="container">
+<div data-sveltekit-preload-data class="container">
 	<h3>Search</h3>
 	<form on:submit|preventDefault={submitSearch} class="search-container">
 		<input bind:value={inputValue} type="search" class="search-box" name="search-box" />

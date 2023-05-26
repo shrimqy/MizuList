@@ -37,7 +37,7 @@ export const actions = {
 				username,
 				passwordHash: await bcrypt.hash(password, 10),
 				userAuthToken: crypto.randomUUID(),
-				role: { connect: { name: Roles.USER } },
+				role: { connect: { id: 2 } },
 				bookCategory: {
 					connect: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }, { id: 6 }]
 				}

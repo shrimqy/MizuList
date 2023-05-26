@@ -1,16 +1,42 @@
 <script>
 	/** @type {import('./$types').Actions} */
 	export let data;
-	let { work, bookData, isbn, favTag } = data;
+	let { work, bookData, isbn, favTag, existingBook } = data;
 	import { Bar } from 'svelte-chartjs';
 	// console.log(bookData);
 	// console.log(work);
+	// console.log(existingBook);
+
+	let inputValue = '';
+	let startDate = '';
+	let finishDate = '';
+
 	// console.log(isbn);
-
 	let status = 'planToRead';
-
+	let selectedCategoryId = existingBook ? existingBook.bookCategory[1].id : status;
+	let selectedRating = existingBook ? existingBook.rating : '0';
+	let pageCount = existingBook ? existingBook.pages : null;
+	let chapterCount = existingBook ? existingBook.chapters : null;
+	let rereads = existingBook ? existingBook.rereads : null;
+	const createdAt = existingBook ? existingBook.createdAt : null;
+	const completedAt = existingBook ? existingBook.completedAt : null;
+	if (createdAt !== null) {
+		startDate = createdAt.toISOString().split('T')[0];
+	}
+	if (completedAt !== null) {
+		finishDate = completedAt.toISOString().split('T')[0];
+	}
 	function resetForm() {
 		status = 'default';
+	}
+
+	let showForm = false;
+
+	function toggleForm() {
+		showForm = !showForm;
+
+		const container = document.querySelector('.container');
+		container.classList.toggle('blur');
 	}
 
 	//to select the default option when the add to list button is clicked upon
@@ -123,18 +149,27 @@
 						</div>
 					</div>
 				</div>
-				<form class="userStatus">
-					<button class="fbutton" id="addToListButton" on:click={setDefaultStatus}
-						>Add to List</button
+				<form method="POST" action="?/userStatus" class="userStatus">
+					{#if existingBook == null}
+						<button class="fbutton" id="addToListButton" on:click|preventDefault={setDefaultStatus}
+							>Add to List</button
+						>
+					{/if}
+
+					<select
+						class="status"
+						id="status"
+						name="status"
+						bind:value={selectedCategoryId}
+						style={existingBook ? 'display: inline' : 'display: none'}
 					>
-					<select class="status" id="status" bind:value={status}>
-						<option value="reading">Reading</option>
-						<option value="planToRead" id="defaultOption">Plan to Read</option>
-						<option value="onHold">On Hold</option>
-						<option value="dropped">Dropped</option>
-						<option value="completed">Completed</option>
+						<option value={2}>Reading</option>
+						<option value={3} id="defaultOption">Plan to Read</option>
+						<option value={4}>On Hold</option>
+						<option value={5}>Dropped</option>
+						<option value={6}>Completed</option>
 					</select>
-					<select class="rating" id="rating">
+					<select class="rating" name="rating" id="rating" bind:value={selectedRating}>
 						<option value="0">Select</option>
 						<option value="1">(1) Appalling</option>
 						<option value="2">(2) Horrible</option>
@@ -147,10 +182,147 @@
 						<option value="9">(9) Great</option>
 						<option value="10">(10) Masterpiece</option>
 					</select>
-					<input class="chapter" type="number" id="chapters" placeholder="Chapter " />
-					<input class="pages" type="number" id="pages" placeholder="Pages " />
+					<input
+						class="chapter"
+						type="number"
+						id="chapters"
+						name="chapters"
+						bind:value={chapterCount}
+						placeholder="Chapter "
+					/>
+					<input
+						class="pages"
+						type="number"
+						id="pages"
+						name="pages"
+						bind:value={pageCount}
+						placeholder="Pages "
+					/>
 
-					<button class="sbutton" type="submit">Submit</button>
+					<div class="dropdown">
+						<button formaction="?/userStatus" class="sbutton" type="submit"
+							>Submit <span class="material-icons">expand_more</span></button
+						>
+						<div class="dropdown-content">
+							<button class="listEditor" on:click|preventDefault={toggleForm}
+								>Open List editor</button
+							>
+						</div>
+					</div>
+
+					{#if showForm}
+						<div class="editor-popout">
+							<form method="POST" action="?/userStatus">
+								<div class="editor">
+									<div class="editor-banner">
+										<button type="button" class="cancelButton" on:click={toggleForm}>
+											<span class="material-icons">close</span></button
+										>
+
+										<div class="editor-header">
+											<div class="bookdd">
+												<div class="editor-cover">
+													{#if work.covers && work.covers.length > 0}
+														<img
+															src={'http://covers.openlibrary.org/b/id/' +
+																work.covers[0] +
+																'-M.jpg?default=false'}
+															alt={'work.title'}
+														/>
+													{:else if bookData.cover_edition_key && bookData.cover_edition_key.length > 0}
+														<img
+															src={'https://covers.openlibrary.org/b/olid/' +
+																bookData.cover_edition_key +
+																'-M.jpg?default=false'}
+															alt={'work.title'}
+														/>
+													{:else}
+														<span>No cover available</span>
+													{/if}
+												</div>
+												<div class="editor-title">{work.title}</div>
+											</div>
+
+											<div class="ebutton">
+												<button formaction="?/userStatus" type="submit">Save</button>
+											</div>
+										</div>
+									</div>
+									<div class="editor-container">
+										<div class="e-userStatus">
+											<div class="e-1">
+												<select
+													id="status"
+													name="status"
+													bind:value={selectedCategoryId}
+													style={existingBook ? 'display: inline' : 'display: none'}
+												>
+													<option value={2}>Reading</option>
+													<option value={3} id="defaultOption">Plan to Read</option>
+													<option value={4}>On Hold</option>
+													<option value={5}>Dropped</option>
+													<option value={6}>Completed</option>
+												</select>
+												<input
+													type="date"
+													bind:value={startDate}
+													name="startDate"
+													placeholder="Start Date"
+												/>
+												<input
+													type="date"
+													bind:value={finishDate}
+													name="finishDate"
+													placeholder="Finish Date"
+												/>
+											</div>
+
+											<div class="e-2">
+												<select
+													class="e-rating"
+													name="rating"
+													id="rating"
+													bind:value={selectedRating}
+												>
+													<option value="0">Select</option>
+													<option value="1">(1) Appalling</option>
+													<option value="2">(2) Horrible</option>
+													<option value="3">(3) Very Bad</option>
+													<option value="4">(4) Bad</option>
+													<option value="5">(5) Average</option>
+													<option value="6">(6) Fine</option>
+													<option value="7">(7) Good</option>
+													<option value="8">(8) Good</option>
+													<option value="9">(9) Great</option>
+													<option value="10">(10) Masterpiece</option>
+												</select>
+												<input type="number" id="rereads" bind:value={rereads} name="rereads" />
+												<textarea bind:value={inputValue} placeholder="Enter Note" />
+											</div>
+											<div class="e-3">
+												<input
+													type="number"
+													id="chapters"
+													name="chapters"
+													bind:value={chapterCount}
+													placeholder="Chapter"
+												/>
+												<input
+													type="number"
+													id="pages"
+													name="pages"
+													bind:value={pageCount}
+													placeholder="Pages"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div id="overlay" />
+					{/if}
 				</form>
 			</div>
 			<div class="desc">{work.description?.value || work.description || ''}</div>
@@ -260,7 +432,6 @@
 	.container {
 		width: 100%;
 	}
-
 	.bcontainer {
 		background-color: #fafafa;
 		display: flex;
@@ -590,7 +761,191 @@
 		cursor: pointer;
 	}
 
-	.sbutton {
+	.sbutton,
+	.listEditor {
+		display: flex;
+		align-items: center;
 		cursor: pointer;
+		background-color: #007bff;
+		color: #fff;
+		transition: background-color 0.3s ease;
+	}
+
+	.sbutton:hover,
+	.listEditor:hover {
+		background-color: #0056b3;
+	}
+
+	.sbutton span {
+		padding-left: 3px;
+		font-size: 19px;
+	}
+
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	.dropdown-content {
+		display: none;
+		position: absolute;
+		background-color: #f9f9f9;
+		min-width: 160px;
+		z-index: 1;
+	}
+
+	.dropdown-content button {
+		margin-top: 0.1rem;
+		border-radius: 4px;
+		border: none;
+		display: block;
+		padding: 0.5rem;
+		text-align: left;
+	}
+
+	.dropdown:hover .dropdown-content {
+		display: block;
+	}
+
+	.editor-popout {
+		height: 60%;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: #fafafa;
+		box-shadow: 0 2px 5px rgb(0, 0, 0, 0.1);
+		border-radius: 8px;
+		z-index: 999;
+	}
+
+	.editor-banner {
+		height: 150px;
+		background-color: rgb(43, 45, 66, 0.99);
+		border-top-left-radius: 8px;
+		border-top-right-radius: 8px;
+		/* box-shadow: 0 2px 5px rgba(255, 255, 255, 1); */
+	}
+
+	.editor-header {
+		height: inherit;
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		padding-left: 2rem;
+		padding-right: 3rem;
+		width: inherit;
+	}
+
+	.bookdd {
+		display: flex;
+		align-items: baseline;
+	}
+
+	.editor-title {
+		margin-left: 1rem;
+		font-size: 17px;
+		font-weight: 500;
+		color: #fff;
+		margin-bottom: 1rem;
+	}
+
+	.editor-cover img {
+		/* position: fixed; */
+		height: 100%;
+		width: 5rem;
+		border-style: none;
+		border-radius: 5px;
+		margin-bottom: -60%;
+	}
+
+	.ebutton button {
+		border: none;
+		border-radius: 5px;
+		padding: 0.5rem;
+		margin-bottom: 1rem;
+		cursor: pointer;
+		background-color: #007bff;
+		color: #fff;
+		transition: background-color 0.3s ease;
+	}
+
+	.ebutton button:hover {
+		background-color: #0089fa;
+	}
+
+	.cancelButton {
+		margin: 7px;
+		border: none;
+		outline: none;
+		background: transparent;
+		cursor: pointer;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		position: absolute;
+		top: 0; /* Position the button at the top */
+		right: 0; /* Position the button at the right */
+		color: #fff;
+	}
+
+	.cancelButton .material-icons {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.editor-popout form {
+		display: flex;
+	}
+	.editor-container {
+		height: inherit;
+		/* border-radius: 15px; */
+		padding: 4rem 2rem;
+		/* background-color: rgb(250, 250, 250, 0.96); */
+	}
+
+	.e-userStatus {
+		display: flex;
+		justify-content: space-between;
+		width: 40rem;
+		/* gap: 1rem; */
+	}
+
+	.e-userStatus select,
+	.e-userStatus input,
+	.e-userStatus textarea {
+		margin-bottom: 1rem;
+
+		align-items: end;
+		padding: 0.4rem;
+		color: #5c7289;
+		border: none;
+		border-radius: 4px;
+		background-color: #edf1f5;
+	}
+
+	.e-userStatus textarea {
+		width: 160%;
+	}
+
+	/* .e-2 input {
+		width: 10rem;
+		margin-right: 1rem;
+		padding: 0.4rem;
+		color: #5c7289;
+		border: none;
+		border-radius: 4px;
+		background-color: #edf1f5;
+	} */
+
+	#overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		backdrop-filter: blur(0.35px);
+		background-color: rgb(43, 45, 66, 0.3);
 	}
 </style>

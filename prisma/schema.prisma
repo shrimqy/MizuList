@@ -23,12 +23,14 @@ model User {
   roleId        Int
   favorites     Fav[]          @relation("UserFavorites")
   bookCategory  BookCategory[] @relation("UserBookCategory")
+  Book          Book[]         @relation("UserBook")
 }
 
 model BookCategory {
   id   Int    @id @default(autoincrement())
   name String @unique
   User User[] @relation("UserBookCategory")
+  Book Book[] @relation("BookCategory")
 }
 
 model Roles {
@@ -44,16 +46,24 @@ model Fav {
 }
 
 model Book {
-  id          String    @id @default(uuid())
-  title       String
-  pages       Int?
-  chapters    Int?
+  id       String  @id @default(uuid())
+  UserId   String?
+  bookId   String?
+  title    String?
+  pages    String?
+  chapters String?
+  rating   String?
+  rereads  String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   completedAt DateTime?
+
+  bookCategory BookCategory[] @relation("BookCategory")
+  User         User[]         @relation("UserBook")
 }
 
-// Use enums when you change database
+// Use enums when yosu change database
 // because SQLite doesn't support it
 // https://www.prisma.io/docs/reference/database-reference/database-features#misc
 
