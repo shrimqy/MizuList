@@ -5,11 +5,11 @@
 	import { Bar } from 'svelte-chartjs';
 	// console.log(bookData);
 	// console.log(work);
-	// console.log(existingBook);
+	console.log(existingBook);
 
 	let inputValue = '';
-	let startDate = '';
-	let finishDate = '';
+	let startDate = null;
+	let finishDate = null;
 
 	// console.log(isbn);
 	let status = 'planToRead';
@@ -251,12 +251,7 @@
 									<div class="editor-container">
 										<div class="e-userStatus">
 											<div class="e-1">
-												<select
-													id="status"
-													name="status"
-													bind:value={selectedCategoryId}
-													style={existingBook ? 'display: inline' : 'display: none'}
-												>
+												<select id="status" name="status" bind:value={selectedCategoryId}>
 													<option value={2}>Reading</option>
 													<option value={3} id="defaultOption">Plan to Read</option>
 													<option value={4}>On Hold</option>
@@ -333,15 +328,17 @@
 		<div class="sidebar">
 			<div class="book-details">
 				<h2>First publish Date</h2>
-				<h3>{bookData.first_publish_year}</h3>
+				<h3>{bookData.first_publish_year || 'N/A'}</h3>
 				<h2>Publishers</h2>
-				<h3>{bookData.publisher.slice(0, 10).join(', ')}</h3>
+				<h3>{bookData.publisher ? bookData.publisher.slice(0, 10).join(', ') : 'N/A'}</h3>
 				<h2>No of Pages</h2>
-				<h3>{bookData.number_of_pages_median} (Average)</h3>
+				<h3>
+					{bookData.number_of_pages_median ? bookData.number_of_pages_median + ' (Average)' : 'N/A'}
+				</h3>
 				<h2>Languages</h2>
-				<h3>{bookData.language.join(', ')}</h3>
+				<h3>{bookData.language ? bookData.language.join(', ') : 'N/A'}</h3>
 				<h2>Edition Count</h2>
-				<h3>{bookData.edition_count}</h3>
+				<h3>{bookData.edition_count || 'N/A'}</h3>
 			</div>
 			<div class="tag-container">
 				{#if bookData.subject && bookData.subject.length > 0}

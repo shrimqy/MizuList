@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<nav data-sveltekit-preload-data class="navBar">
+<nav class="navBar">
 	<div class="navItems">
 		<a class="navLinks" href="/">Home</a>
 
@@ -25,7 +25,7 @@
 
 <style>
 	* {
-		color: #eeeeee;
+		/* color: #eeeeee; */
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
 	}

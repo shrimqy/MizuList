@@ -1,6 +1,5 @@
 <script>
 	import { page } from '$app/stores';
-	console.log($page);
 </script>
 
 <div class="banner">
@@ -14,7 +13,7 @@
 	</div>
 </div>
 
-<nav>
+<nav class="profileNav">
 	<a href="/profile" class:selected={$page.url.pathname === '/profile'}>Overview</a>
 	<a href="/profile/list" class:selected={$page.url.pathname === '/profile/list'}>List</a>
 	<a href="/profile/history" class:selected={$page.url.pathname === '/profile/history'}>History</a>
@@ -29,10 +28,6 @@
 		font-family: 'Overpass', sans-serif;
 	}
 
-	:root {
-		background-color: #eeeeee;
-	}
-
 	.banner {
 		width: 100%;
 		background: #2b2d42;
@@ -43,7 +38,7 @@
 		height: 100%;
 		display: flex;
 		align-items: end;
-		padding: 0 20rem;
+		margin: 0 20rem;
 	}
 
 	.username {
@@ -54,20 +49,27 @@
 	}
 
 	.user-avatar {
-		width: 140px;
+		width: 12%;
+		/* border-radius: 7px; */
+
+		/* box-shadow: 0px 1px 10px rgba(255, 255, 255, 0.1); */
 		border-top-left-radius: 7px;
 		border-top-right-radius: 7px;
 	}
 
-	nav {
+	.profileNav {
+		background-color: #2b2d42;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		/* border-top: 1px solid #ccc; */
+		box-shadow: 5px 5px 5px rgba(247, 241, 241, 1);
 	}
 
 	nav a {
-		color: #5c7289;
+		color: #768ca3;
 		font-weight: 600;
+		font-size: 14px;
 		padding: 1rem 4rem;
 		transition: all 0.3s ease;
 	}

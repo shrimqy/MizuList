@@ -54,6 +54,8 @@ model Book {
   chapters String?
   rating   String?
   rereads  String?
+  notes    String?
+  covers   Int?
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
