@@ -1,6 +1,6 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-let username, bookId, isbn;
+let username, bookId, isbn, work;
 let fav,
 	existingBook = null;
 
@@ -9,7 +9,7 @@ export async function load({ locals, params }) {
 	const fetchBook = async (id) => {
 		bookId = await params.bookId;
 		const workres = await fetch(`https://openlibrary.org/works/${id}.json`);
-		const work = await workres.json();
+		work = await workres.json();
 
 		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=18`);
 
@@ -123,10 +123,16 @@ export const actions = {
 		const pages = data.get('pages');
 		const rereads = data.get('rereads');
 		const startedAt = data.get('startDate');
-		const startedDateTime = new Date(startedAt).toISOString();
+		let startedDateTime = unde;
+		if (startedAt) {
+			startedDateTime = new Date(startedAt).toISOString();
+		}
+
 		const completedAt = data.get('finishDate');
-		const completedDateTime = new Date(completedAt).toISOString();
-		console.log(completedAt);
+		const completedDateTime = undefined;
+		if (completedAt) {
+			completedDateTime = new Date(completedAt).toISOString();
+		}
 		const user = await db.user.findUnique({
 			where: { username }
 		});
@@ -137,13 +143,14 @@ export const actions = {
 				where: { id: existingBook.id }, // Provide the unique identifier of the existing record
 				data: {
 					bookId: bookId,
-					title: isbn.title,
+					title: work.title,
 					pages: pages,
 					chapters: chapters,
 					rating: rating,
 					rereads: rereads,
 					completedAt: completedDateTime,
 					createdAt: startedDateTime,
+					covers: work.covers[0],
 					bookCategory: {
 						// Disconnecting the category at index 1 from the existing book's categories
 						disconnect: [{ id: existingBook.bookCategory[1].id }],
@@ -161,12 +168,13 @@ export const actions = {
 				data: {
 					UserId: user.id,
 					bookId: bookId,
-					title: isbn.title,
+					title: work.title,
 					pages: pages,
 					chapters: chapters,
 					rating: rating,
 					rereads: rereads,
 					completedAt: completedDateTime,
+					covers: work.covers[0],
 					bookCategory: {
 						// Connecting the new category and the "All" category to the book
 						connect: [{ id: categoryId }, { id: 1 }]
