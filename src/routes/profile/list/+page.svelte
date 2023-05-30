@@ -1,7 +1,6 @@
 <script>
 	export let data;
 	let { existingBook, fav } = data;
-	// console.log(existingBook);
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
 	console.log(filteredItems);
 	let progress = '?';
@@ -35,7 +34,9 @@
 											'-M.jpg?default=false'}
 										alt={book.title}
 									/>
-									<button class="material-icons">more_horiz</button>
+									<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}"
+										><button class="material-symbols-rounded">open_in_new</button>
+									</a>
 								</div>
 							{:else}
 								<span>No cover available</span>
@@ -57,8 +58,8 @@
 									<span>Pages</span>
 								</div>
 								<div class="progressData">
-									<div>{book.pages ? book.pages : '-'}</div>
 									<div>{book.chapters ? book.chapters : '-'}</div>
+									<div>{book.pages ? book.pages : '-'}</div>
 								</div>
 							</div>
 
@@ -98,13 +99,28 @@
 		outline: none;
 	}
 
-	.material-icons {
-		font-family: 'Material Icons';
+	.material-symbols-rounded {
+		font-family: 'Material Symbols Rounded';
 	}
 
 	:root {
 		background-color: #edf1f5;
 		color: #5c728a;
+		overflow-y: scroll; /* Always show the vertical scroll bar */
+	}
+
+	/* Hide the vertical scroll bar */
+	::-webkit-scrollbar {
+		width: 0.5em;
+		background-color: #edf1f5;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #5c728a;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #1faafa;
 	}
 
 	.container {
@@ -118,7 +134,8 @@
 	}
 
 	.bookCard:hover .bookHoverCover img {
-		transform: scaleY(1);
+		opacity: 1;
+		visibility: visible;
 	}
 
 	.bookHoverCover img {
@@ -129,8 +146,9 @@
 		width: 7rem;
 		height: 10rem;
 		object-fit: cover;
-		transform: scaleY(0);
-		/* display: none; */
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 	}
 
 	.listBookData {
@@ -155,24 +173,31 @@
 	}
 
 	.imageContainer {
-		position: relative; /* Added position relative */
+		position: relative;
+		padding: 0;
+		display: flex;
 	}
 
-	.material-icons {
+	.material-symbols-rounded {
 		position: absolute;
 		top: 0;
 		left: 0;
 		border: none;
-		font-size: 56px;
-		color: white;
+		height: 64px;
+		width: 100%;
+		font-size: 23px;
+		color: rgba(255, 255, 255, 0.7);
+		cursor: pointer;
 		background-color: rgba(0, 0, 0, 0.5); /* Set the background color of the icon */
 		border-radius: 50%; /* Rounded border for the icon */
-		padding: 4px; /* Add some padding to the icon */
-		display: none; /* Hide the icon by default */
+		opacity: 0;
+		visibility: hidden; /*element is not rendered*/
+		transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 	}
 
-	.imageContainer:hover .material-icons {
-		display: block; /* Show the icon when hovering over the image container */
+	.imageContainer:hover .material-symbols-rounded {
+		opacity: 1;
+		visibility: visible;
 	}
 
 	.imageContainer img {
@@ -198,7 +223,6 @@
 		display: flex;
 		width: 37%;
 		justify-content: space-between;
-		/* margin-left: 1rem; */
 	}
 
 	.progress {

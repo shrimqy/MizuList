@@ -5,9 +5,8 @@
 	import { Bar } from 'svelte-chartjs';
 	// console.log(bookData);
 	// console.log(work);
-	console.log(existingBook);
+	// console.log(data);
 
-	let inputValue = '';
 	let startDate = null;
 	let finishDate = null;
 
@@ -18,6 +17,7 @@
 	let pageCount = existingBook ? existingBook.pages : null;
 	let chapterCount = existingBook ? existingBook.chapters : null;
 	let rereads = existingBook ? existingBook.rereads : null;
+	let notes = existingBook ? existingBook.notes : null;
 	const createdAt = existingBook ? existingBook.createdAt : null;
 	const completedAt = existingBook ? existingBook.completedAt : null;
 	if (createdAt !== null) {
@@ -114,6 +114,13 @@
 							'-M.jpg?default=false'}
 						alt={'work.title'}
 					/>
+				{:else if isbn.isbn_10 || isbn.isbn_13.length > 0}
+					<img
+						src={'https://covers.openlibrary.org/b/isbn/' +
+							isbn.isbn_13[0] +
+							'-M.jpg?default=false'}
+						alt={'work.title'}
+					/>
 				{:else}
 					<span>No cover available</span>
 				{/if}
@@ -182,22 +189,28 @@
 						<option value="9">(9) Great</option>
 						<option value="10">(10) Masterpiece</option>
 					</select>
-					<input
-						class="chapter"
-						type="number"
-						id="chapters"
-						name="chapters"
-						bind:value={chapterCount}
-						placeholder="Chapter "
-					/>
-					<input
-						class="pages"
-						type="number"
-						id="pages"
-						name="pages"
-						bind:value={pageCount}
-						placeholder="Pages "
-					/>
+					<div class="input">
+						Chapters:
+						<input
+							class="chapter"
+							type="number"
+							id="chapters"
+							name="chapters"
+							bind:value={chapterCount}
+							placeholder="Chapter "
+						/>
+					</div>
+					<div class="input">
+						Pages:
+						<input
+							class="pages"
+							type="number"
+							id="pages"
+							name="pages"
+							bind:value={pageCount}
+							placeholder="Pages "
+						/>
+					</div>
 
 					<div class="dropdown">
 						<button formaction="?/userStatus" class="sbutton" type="submit"
@@ -254,7 +267,7 @@
 												<select id="status" name="status" bind:value={selectedCategoryId}>
 													<option value={2}>Reading</option>
 													<option value={3} id="defaultOption">Plan to Read</option>
-													<option value={4}>On Hold</option>
+													<option value={4}>Paused</option>
 													<option value={5}>Dropped</option>
 													<option value={6}>Completed</option>
 												</select>
@@ -291,8 +304,14 @@
 													<option value="9">(9) Great</option>
 													<option value="10">(10) Masterpiece</option>
 												</select>
-												<input type="number" id="rereads" bind:value={rereads} name="rereads" />
-												<textarea bind:value={inputValue} placeholder="Enter Note" />
+												<input
+													type="number"
+													id="rereads"
+													bind:value={rereads}
+													name="rereads"
+													placeholder="Rereads"
+												/>
+												<textarea bind:value={notes} name="notes" placeholder="Enter Note" />
 											</div>
 											<div class="e-3">
 												<input
@@ -735,6 +754,12 @@
 		border-radius: 4px;
 		background-color: white;
 		padding: 0.3rem 0.5rem;
+	}
+
+	.input {
+		border-radius: 4px;
+		background-color: white;
+		padding: 0.1rem 0.5rem;
 	}
 
 	.chapter,

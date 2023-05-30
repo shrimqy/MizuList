@@ -11,14 +11,6 @@ export async function load(locals) {
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
 		// console.log(locals);
-		fav = await db.fav.findMany({
-			where: {
-				User: {
-					some: { username }
-				}
-			}
-		});
-
 		existingBook = await db.book.findMany({
 			where: {
 				User: {

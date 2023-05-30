@@ -2,35 +2,47 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 
-let username, bookId, isbn;
-let fav,
-	existingBook = null;
+let username, fav, lastActivity, stats;
 
 export async function load(locals) {
-	console.log(locals.locals.user.name);
+	// console.log(locals.locals.user.name);
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
-		// console.log(locals);
-		fav = await db.fav.findMany({
+		const user = await db.user.findUnique({
+			where: { username }
+		});
+		lastActivity = await db.activity.findMany({
 			where: {
-				User: {
-					some: { username }
+				userId: {
+					equals: user.id
 				}
+			},
+			orderBy: {
+				timestamp: 'desc'
+			},
+			include: {
+				category: true
 			}
 		});
 
-		existingBook = await db.book.findMany({
+		stats = await db.BookCategory.findMany({
 			where: {
 				User: {
 					some: { username }
 				}
 			},
 			include: {
-				bookCategory: true
+				Book: true
 			}
 		});
+		stats = stats.map((stats) => ({
+			...stats,
+			Book: stats.Book.map((book) => book.id)
+		}));
 	}
-	console.log(existingBook);
-	console.log(fav);
-	return {};
+
+	return {
+		lastActivity,
+		stats
+	};
 }

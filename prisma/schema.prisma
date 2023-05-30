@@ -24,13 +24,15 @@ model User {
   favorites     Fav[]          @relation("UserFavorites")
   bookCategory  BookCategory[] @relation("UserBookCategory")
   Book          Book[]         @relation("UserBook")
+  activity      activity[]
 }
 
 model BookCategory {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  User User[] @relation("UserBookCategory")
-  Book Book[] @relation("BookCategory")
+  id       Int        @id @default(autoincrement())
+  name     String     @unique
+  User     User[]     @relation("UserBookCategory")
+  Book     Book[]     @relation("BookCategory")
+  activity activity[]
 }
 
 model Roles {
@@ -55,6 +57,7 @@ model Book {
   rating   String?
   rereads  String?
   notes    String?
+  tPages   String?
   covers   Int?
 
   createdAt   DateTime  @default(now())
@@ -63,6 +66,23 @@ model Book {
 
   bookCategory BookCategory[] @relation("BookCategory")
   User         User[]         @relation("UserBook")
+}
+
+model activity {
+  id         String        @id @default(uuid())
+  bookId     String?
+  timestamp  DateTime      @default(now())
+  pages      String?
+  rating     String?
+  title      String?
+  tPages     String?
+  covers     Int?
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     String?
+  category   BookCategory? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  @@index([bookId])
 }
 
 // Use enums when yosu change database

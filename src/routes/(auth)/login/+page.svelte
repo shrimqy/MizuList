@@ -18,6 +18,9 @@
 				<!-- if the same username is found to be in the database already -->
 				<p class="error">Username is taken.</p>
 			{/if}
+			{#if form?.credentials}
+				<p class="error">Wrong Username/Password.</p>
+			{/if}
 		</form>
 		<p>Already have an account? <a href="/login">Log in</a></p>
 	</div>

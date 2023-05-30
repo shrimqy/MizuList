@@ -8,18 +8,28 @@ let fav,
 export async function load({ locals, params }) {
 	const fetchBook = async (id) => {
 		bookId = await params.bookId;
-		const workres = await fetch(`https://openlibrary.org/works/${id}.json`);
+		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);
 		work = await workres.json();
-
 		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=18`);
-
 		const bookData = await bookres.json();
 
-		const matchingBooks = bookData.docs.filter((book) => book.key === work.key); // filter callback checks if the key property of each book matches the work.key value
-		const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
-		isbn = await isbnData.json();
+		const matchingBooks = bookData.docs.filter((book) => book.key === work.key);
 
-		//checking if the book already exists in the user database
+		let isbn = null;
+		if (matchingBooks.length > 0 && matchingBooks[0].isbn && matchingBooks[0].isbn.length > 0) {
+			const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
+			isbn = await isbnData.json();
+		}
+		// console.log(isbn);
+
+		return {
+			work,
+			matchingBooks,
+			isbn
+		};
+	};
+
+	const fetchDb = async () => {
 		if (locals && locals.user && locals.user.name) {
 			username = locals.user.name;
 			fav = await db.fav.findFirst({
@@ -45,24 +55,20 @@ export async function load({ locals, params }) {
 		}
 
 		const isBookIdFound = fav !== null;
-
 		return {
-			work,
-			matchingBooks,
-			isbn,
 			isBookIdFound,
 			existingBook
 		};
 	};
 
-	const result = await fetchBook(params.bookId);
-
+	const result = await fetchBook();
+	const resultdb = await fetchDb();
 	return {
 		work: result.work,
 		bookData: result.matchingBooks[0],
 		isbn: result.isbn,
-		favTag: result.isBookIdFound,
-		existingBook: result.existingBook
+		favTag: resultdb.isBookIdFound,
+		existingBook: resultdb.existingBook
 	};
 }
 /** @type {import('./$types').Actions} */
@@ -123,7 +129,8 @@ export const actions = {
 		const pages = data.get('pages');
 		const rereads = data.get('rereads');
 		const startedAt = data.get('startDate');
-		let startedDateTime = unde;
+		const notes = data.get('notes');
+		let startedDateTime = undefined;
 		if (startedAt) {
 			startedDateTime = new Date(startedAt).toISOString();
 		}
@@ -151,6 +158,7 @@ export const actions = {
 					completedAt: completedDateTime,
 					createdAt: startedDateTime,
 					covers: work.covers[0],
+					notes: notes,
 					bookCategory: {
 						// Disconnecting the category at index 1 from the existing book's categories
 						disconnect: [{ id: existingBook.bookCategory[1].id }],
@@ -175,6 +183,7 @@ export const actions = {
 					rereads: rereads,
 					completedAt: completedDateTime,
 					covers: work.covers[0],
+					// tPages: isbn.pages,
 					bookCategory: {
 						// Connecting the new category and the "All" category to the book
 						connect: [{ id: categoryId }, { id: 1 }]
@@ -186,5 +195,16 @@ export const actions = {
 				}
 			});
 		}
+		await db.activity.create({
+			data: {
+				bookId: bookId,
+				title: work.title,
+				pages: pages,
+				rating: rating,
+				userId: user.id,
+				covers: work.covers[0],
+				categoryId: categoryId
+			}
+		});
 	}
 };

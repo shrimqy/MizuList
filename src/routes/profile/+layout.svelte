@@ -15,8 +15,7 @@
 
 <nav class="profileNav">
 	<a href="/profile" class:selected={$page.url.pathname === '/profile'}>Overview</a>
-	<a href="/profile/list" class:selected={$page.url.pathname === '/profile/list'}>List</a>
-	<a href="/profile/history" class:selected={$page.url.pathname === '/profile/history'}>History</a>
+	<a href="/profile/list" class:selected={$page.url.pathname.startsWith('/profile/list')}>List</a>
 </nav>
 
 <slot />

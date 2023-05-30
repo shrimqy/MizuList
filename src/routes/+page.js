@@ -1,13 +1,22 @@
-export const load = ({ fetch }) => {
-    //to fetch the trending books from the api
-    const fetchBook = async () => {
-        const res = await fetch(`https://openlibrary.org/trending/monthly.json?&limit=18`);
-        const book = await res.json();
-        return book
-    }
-    return {
-        book: fetchBook() //returning the fetchBook function as book prop to the +page.svelte
-    }
-}
+const cache = new Map();
 
+export const load = async ({ fetch }) => {
+	const fetchBook = async () => {
+		if (cache.has('trendingBooks')) {
+			return cache.get('trendingBooks');
+		}
 
+		const res = await fetch(`https://openlibrary.org/trending/monthly.json?&limit=18`);
+		const book = await res.json();
+
+		cache.set('trendingBooks', book);
+
+		return book;
+	};
+
+	const book = await fetchBook();
+
+	return {
+		book
+	};
+};
