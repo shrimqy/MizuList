@@ -2,9 +2,8 @@
 	import { updated } from '$app/stores';
 
 	export let data;
-	let { lastActivity, existingBook, stats } = data;
-	// console.log(stats);
-	console.log(lastActivity);
+	let { lastActivity, existingBook, stats, fav } = data;
+	console.log(fav);
 	const rereads = existingBook.filter(
 		(item) => item.rereads !== null && item.rereads !== ''
 	).length;
@@ -18,6 +17,8 @@
 	);
 	const sum = filteredRating.reduce((acc, item) => acc + parseFloat(item.rating), 0);
 	const averageRating = (sum / filteredRating.length).toFixed(2);
+
+	// console.log(reading);
 
 	function formatDate(dateString) {
 		const date = new Date(dateString);
@@ -70,12 +71,58 @@
 						<div class="header">Mean Score</div>
 					</div>
 				</div>
+				<div class="sList">
+					<div class="listContainer">
+						<div class="listItem">
+							<span class="material-icons" style="color:#2DB039;"> circle </span>
+							<span>Reading</span>
+						</div>
+
+						<div class="listData">{stats[1].Book.length}</div>
+					</div>
+
+					<div class="listContainer">
+						<div class="listItem">
+							<span class="material-icons" style="color:#C3C3C3"> circle </span>
+							<span>Plan to Read</span>
+						</div>
+
+						<div class="listData">{stats[2].Book.length}</div>
+					</div>
+
+					<div class="listContainer">
+						<div class="listItem">
+							<span class="material-icons" style="color:#F9D457"> circle </span>
+							<span>Paused</span>
+						</div>
+
+						<div class="listData">{stats[3].Book.length}</div>
+					</div>
+
+					<div class="listContainer">
+						<div class="listItem">
+							<span class="material-icons" style="color:#A12F31"> circle </span>
+							<span>Dropped</span>
+						</div>
+
+						<div class="listData">{stats[4].Book.length}</div>
+					</div>
+
+					<div class="listContainer">
+						<div class="listItem">
+							<span class="material-icons" style="color:#26448F"> circle </span>
+							<span>Completed</span>
+						</div>
+
+						<div class="listData">{stats[5].Book.length}</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="activity">
 			<h1>Activity</h1>
 			<div class="aContainer">
-				{#each uniqueLastActivity.slice(0, 10) as book}
+				{#each uniqueLastActivity.slice(0, 5) as book}
 					<div class="bookCard">
 						<div class="titleCover">
 							{#if book.bookId}
@@ -120,6 +167,32 @@
 			</div>
 		</div>
 	</div>
+	<div class="favorites">
+		{#if fav}
+			<h1>Favorites</h1>
+			<div class="bFav">
+				{#each fav as book}
+					<div class="favbookCard">
+						<div class="favCover">
+							{#if book.bookId}
+								<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
+									<img
+										src={'http://covers.openlibrary.org/b/id/' +
+											book.covers +
+											'-M.jpg?default=false'}
+										alt={book.title}
+									/>
+								</a>
+							{:else}
+								<span>No cover available</span>
+								<!-- Show this if no cover was found from the API -->
+							{/if}
+						</div>
+					</div>
+				{/each}
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -133,6 +206,10 @@
 		background-color: #edf1f5;
 		color: #5c728a;
 		overflow-y: scroll; /* Always show the vertical scroll bar */
+	}
+
+	.material-icons {
+		font-family: 'Material Icons';
 	}
 
 	/* Hide the vertical scroll bar */
@@ -159,7 +236,8 @@
 		margin: 2rem 0;
 	}
 
-	.analytics h1 {
+	.analytics h1,
+	.favorites h1 {
 		font-size: 23px;
 	}
 
@@ -172,11 +250,17 @@
 		width: 40%;
 	}
 
+	.sContainer {
+		background-color: #f5f5f5;
+		border-bottom-left-radius: 7px;
+		border-bottom-right-radius: 7px;
+	}
 	.sOverview {
 		display: flex;
 		background-color: #fdfdfd;
 		/* margin: 1rem 0; */
-		border-radius: 7px;
+		border-top-left-radius: 7px;
+		border-top-right-radius: 7px;
 	}
 
 	.sData {
@@ -184,16 +268,43 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		padding: 1rem 3rem;
+		padding: 1rem 2rem;
 		font-weight: 600;
 	}
 
 	.sData div {
-		padding: 0.3rem 0;
+		padding: 0.2rem 0;
 	}
 
 	.data {
 		color: #3db4f2;
+	}
+
+	.sList {
+		padding: 1.5rem 2rem;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.listContainer {
+		font-size: 15px;
+		font-weight: 500;
+		display: flex;
+		justify-content: space-between;
+		padding: 0.5rem 0rem;
+		margin-right: 48%;
+		align-items: end;
+	}
+
+	.listItem {
+		display: flex;
+	}
+
+	.listItem span {
+		/* height: inherit; */
+		display: flex;
+		padding-right: 0.3rem;
+		align-items: end;
 	}
 
 	.bookCard {
@@ -202,7 +313,6 @@
 		margin: 0.5rem 0;
 		border-radius: 7px;
 		background-color: #fafafa;
-		align-items: center;
 		padding-right: 1rem;
 	}
 
@@ -277,7 +387,7 @@
 	}
 
 	.progress div {
-		margin: 0.3rem 0rem;
+		margin-right: 0.3rem;
 		padding-right: 0.3rem;
 	}
 
@@ -287,5 +397,31 @@
 		font-size: 12px;
 		font-weight: 700;
 		align-items: center;
+	}
+
+	.bFav {
+		background-color: #fdfdfd;
+		display: flex;
+		border-radius: 7px;
+		padding: 0.5rem;
+		margin-top: 1rem;
+		margin-bottom: 3rem;
+	}
+
+	.favbookCard {
+		padding: 1rem;
+	}
+
+	.favCover {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.favCover img {
+		border-radius: 7px;
+		width: 8rem;
+		height: auto;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 	}
 </style>

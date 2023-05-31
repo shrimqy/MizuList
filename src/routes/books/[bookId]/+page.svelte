@@ -197,19 +197,11 @@
 							id="chapters"
 							name="chapters"
 							bind:value={chapterCount}
-							placeholder="Chapter "
 						/>
 					</div>
 					<div class="input">
 						Pages:
-						<input
-							class="pages"
-							type="number"
-							id="pages"
-							name="pages"
-							bind:value={pageCount}
-							placeholder="Pages "
-						/>
+						<input class="pages" type="number" id="pages" name="pages" bind:value={pageCount} />
 					</div>
 
 					<div class="dropdown">

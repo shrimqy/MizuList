@@ -105,6 +105,7 @@ export const actions = {
 			await db.fav.create({
 				data: {
 					bookId: bookId,
+					covers: work.covers[0],
 					User: {
 						connect: { id: user.id }
 					}

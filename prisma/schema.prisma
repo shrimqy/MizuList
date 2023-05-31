@@ -25,6 +25,7 @@ model User {
   bookCategory  BookCategory[] @relation("UserBookCategory")
   Book          Book[]         @relation("UserBook")
   activity      activity[]
+  avatar        Bytes?
 }
 
 model BookCategory {
@@ -44,6 +45,7 @@ model Roles {
 model Fav {
   id     String @id @default(uuid())
   bookId String @unique
+  covers Int
   User   User[] @relation("UserFavorites")
 }
 

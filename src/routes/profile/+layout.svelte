@@ -1,14 +1,14 @@
 <script>
+	export let data;
+	let { userData } = data;
 	import { page } from '$app/stores';
 </script>
 
 <div class="banner">
 	<div class="profile-header">
-		<img
-			src="https://cdn.myanimelist.net/s/common/userimages/ccd5d0a5-a3f5-4026-8c7d-d863a04f689a_225w?s=a5ee9982a49a58929103f3961d051a53"
-			alt="User Avatar"
-			class="user-avatar"
-		/>
+		{#if userData && userData.avatar}
+			<img src={userData.avatar} alt="User Avatar" class="user-avatar" />
+		{/if}
 		<span class="username">{$page.data.user.name}</span>
 	</div>
 </div>
@@ -49,8 +49,9 @@
 
 	.user-avatar {
 		width: 12%;
+		height: 70%;
 		/* border-radius: 7px; */
-
+		object-fit: cover;
 		/* box-shadow: 0px 1px 10px rgba(255, 255, 255, 0.1); */
 		border-top-left-radius: 7px;
 		border-top-right-radius: 7px;

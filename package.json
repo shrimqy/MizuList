@@ -27,6 +27,7 @@
 		"chart.js": "^4.3.0",
 		"g": "^2.0.1",
 		"prisma": "^4.14.1",
-		"svelte-chartjs": "^3.1.2"
+		"svelte-chartjs": "^3.1.2",
+		"uuid": "^9.0.0"
 	}
 }

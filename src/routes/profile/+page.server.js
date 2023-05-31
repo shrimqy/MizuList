@@ -28,16 +28,27 @@ export async function load(locals) {
 		stats = await db.BookCategory.findMany({
 			where: {
 				User: {
-					some: { username }
+					some: {
+						username: username
+					}
 				}
 			},
 			include: {
-				Book: true
+				Book: {
+					where: {
+						User: {
+							some: {
+								username: username
+							}
+						}
+					}
+				}
 			}
 		});
-		stats = stats.map((stats) => ({
-			...stats,
-			Book: stats.Book.map((book) => book.id)
+
+		stats = stats.map((category) => ({
+			...category,
+			Book: category.Book.map((book) => book.id)
 		}));
 	}
 
