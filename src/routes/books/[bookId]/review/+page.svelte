@@ -107,9 +107,6 @@
 		flex-direction: column;
 	}
 
-	.rheader {
-	}
-
 	.container h1 {
 		margin-bottom: 1rem;
 		border-bottom: 1px solid rgb(250, 244, 244);

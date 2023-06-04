@@ -87,7 +87,6 @@
 
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-
 		color: #647380;
 	}
 
@@ -99,11 +98,12 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%; /* Added height */
+		transition: all 0.3s ease-in-out;
 	}
 
 	.bookCover {
 		height: 80%;
-		width: 80%;
+		width: 90%;
 		background-color: rgb(202, 202, 202);
 		border-radius: 6px;
 		text-align: center;
@@ -114,6 +114,7 @@
 	}
 
 	img {
+		width: 100%;
 		height: 100%;
 		border-style: none;
 		object-fit: cover;
@@ -124,6 +125,10 @@
 	.title {
 		padding: 10px 0;
 		overflow-wrap: break-word;
+	}
+
+	.bookCard:hover {
+		color: #1faafa;
 	}
 
 	/* Style the search box */
