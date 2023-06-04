@@ -26,6 +26,7 @@ model User {
   Book          Book[]         @relation("UserBook")
   activity      activity[]
   avatar        Bytes?
+  reviews       reviews[]
 }
 
 model BookCategory {
@@ -85,6 +86,18 @@ model activity {
   categoryId Int?
 
   @@index([bookId])
+}
+
+model reviews {
+  id             String   @id @default(uuid())
+  bookId         String
+  date           DateTime
+  review         String
+  score          String
+  recommendation String
+  spoiler        String
+  user           User?    @relation(fields: [userId], references: [id])
+  userId         String?
 }
 
 // Use enums when yosu change database

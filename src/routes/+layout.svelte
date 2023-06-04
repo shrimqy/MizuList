@@ -25,10 +25,10 @@
 
 <style>
 	* {
-		/* color: #eeeeee; */
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
 	}
+
 	.navBar {
 		width: 100%;
 		background: #2b2d42;
@@ -41,16 +41,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-wrap: wrap; /* Added */
 	}
 
 	.navLinks {
 		color: #d3d5f3d8;
-		padding: 0 2rem;
+		padding: 0.5rem 1rem; /* Adjusted */
 		transition: all 0.3s ease;
 	}
 
 	.navbut button {
-		width: 100%;
 		font-size: 16px;
 		font-weight: 600;
 		border: 1px;
@@ -77,5 +77,21 @@
 	.navLinks:hover {
 		color: #d3d5f3;
 		transform: scale(1.03);
+	}
+
+	/* Responsive Styles */
+	@media screen and (max-width: 768px) {
+		.navItems {
+			flex-direction: column;
+		}
+
+		.navLinks,
+		.navbut button {
+			padding: 0.5rem; /* Adjusted */
+		}
+
+		.navbut button {
+			width: 100%;
+		}
 	}
 </style>

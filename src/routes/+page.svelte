@@ -63,11 +63,13 @@
 	}
 
 	.container {
-		padding: 7rem 18rem;
+		padding: 2rem; /* Adjusted padding */
+		max-width: 65%; /* Added max-width */
+		margin: 0 auto; /* Centered horizontally */
 	}
 
 	h1 {
-		padding-top: 40px;
+		padding-top: 2rem; /* Adjusted padding */
 		font-size: 22px;
 		color: #5e5e5e;
 		font-weight: 600;
@@ -77,30 +79,32 @@
 		font-size: 16px;
 		font-weight: 600;
 		color: #5e5e5e;
-		padding-bottom: 10px;
+		padding-bottom: 1rem; /* Adjusted padding */
 	}
 
 	.book-container {
-		padding: 1rem 0;
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
+		padding: 1rem 0rem;
+
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
 		color: #647380;
 	}
 
 	.bookCard {
-		width: 21vb;
 		font-size: 15px;
 		color: #647380;
+		padding-right: 0.7rem;
 		font-weight: 600;
 		display: flex;
 		flex-direction: column;
+		height: 100%; /* Added height */
 	}
 
 	.bookCover {
+		height: 80%;
+		width: 80%;
 		background-color: rgb(202, 202, 202);
-		height: 30vh;
-		width: 19.5vh;
 		border-radius: 6px;
 		text-align: center;
 		display: flex;
@@ -110,8 +114,7 @@
 	}
 
 	img {
-		height: 30vh;
-		width: 19.5vh;
+		height: 100%;
 		border-style: none;
 		object-fit: cover;
 		border-radius: 6px;
@@ -128,6 +131,7 @@
 		display: flex;
 		align-items: center;
 		position: relative;
+		margin-bottom: 1rem; /* Added margin */
 	}
 
 	.search-box {
@@ -137,7 +141,8 @@
 		background-color: #fff;
 		font-size: 15px;
 		font-weight: 600;
-		width: 250px;
+		width: 100%; /* Adjusted width */
+		max-width: 300px; /* Added max-width */
 		color: #5e5e5e;
 		height: 40px;
 		box-shadow: 0px 2px 10px rgba(37, 34, 63, 0.1);
@@ -153,5 +158,16 @@
 		color: #9e9e9e;
 		padding: 0px 10px;
 		position: absolute;
+	}
+
+	/* Responsive Styles */
+	@media screen and (max-width: 600px) {
+		.container {
+			padding: 1rem; /* Adjusted padding */
+		}
+
+		.search-box {
+			max-width: none; /* Reset max-width */
+		}
 	}
 </style>

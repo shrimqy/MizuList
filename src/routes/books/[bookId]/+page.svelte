@@ -4,6 +4,7 @@
 	let { work, bookData, isbn, favTag, existingBook } = data;
 	import { Bar } from 'svelte-chartjs';
 	// console.log(bookData);
+	console.log(existingBook);
 	// console.log(work);
 	// console.log(data);
 
@@ -386,7 +387,17 @@
 				</div>
 			</div>
 			<div class="review">
-				<h3 style="padding-bottom: 1rem;">Reviews</h3>
+				<div class="review-head">
+					<h3 style="color: #61778f">Reviews</h3>
+					{#if existingBook.length || existingBook.bookId.length > 0}
+						<a data-sveltekit-preload-data="hover" href="/books/{existingBook.bookId}/review"
+							>Write a review</a
+						>
+					{:else}
+						<a data-sveltekit-preload-data="hover" href="/login">Write a review</a>
+					{/if}
+				</div>
+
 				<div class="review-container">
 					<img
 						src="https://cdn.myanimelist.net/s/common/userimages/ccd5d0a5-a3f5-4026-8c7d-d863a04f689a_225w?s=a5ee9982a49a58929103f3961d051a53"
@@ -422,6 +433,7 @@
 	* {
 		font-family: 'Overpass', sans-serif;
 		outline: none;
+		text-decoration: none;
 	}
 
 	.material-icons {
@@ -440,6 +452,7 @@
 	.container {
 		width: 100%;
 	}
+
 	.bcontainer {
 		background-color: #fafafa;
 		display: flex;
@@ -543,7 +556,24 @@
 		font-weight: 500;
 	}
 
-	.review-container {
+	.review-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		margin-bottom: 1rem;
+	}
+
+	.review-head a {
+		color: #0089fa;
+		font-weight: 500;
+		transition: all ease-in-out 0.3s;
+	}
+
+	.review-head a:hover {
+		color: #005bff;
+	}
+
+	.review .review-container {
 		display: flex;
 		background-color: #fafafa;
 		border-radius: 7px;
@@ -638,7 +668,7 @@
 	}
 
 	.userFav button:hover {
-		background-color: #52c3f9;
+		background-color: #3889e0;
 	}
 	.content {
 		display: flex;

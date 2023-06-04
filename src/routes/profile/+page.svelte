@@ -208,6 +208,35 @@
 		overflow-y: scroll; /* Always show the vertical scroll bar */
 	}
 
+	/* Media queries */
+	@media (max-width: 1024px) {
+		.container {
+			margin: 0 10rem;
+		}
+
+		.analytics {
+			flex-direction: column;
+			gap: 2rem;
+		}
+
+		.favorites {
+			margin-top: 2rem;
+			margin-bottom: 2rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			margin: 0 5rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.container {
+			margin: 0 2rem;
+		}
+	}
+
 	.material-icons {
 		font-family: 'Material Icons';
 	}
@@ -227,13 +256,14 @@
 	}
 
 	.container {
-		margin: 0 20rem;
+		margin: 0 18%;
 	}
 
 	.analytics {
 		display: flex;
 		justify-content: space-between;
-		margin: 2rem 0;
+		padding: 2rem 0;
+		gap: 5rem;
 	}
 
 	.analytics h1,
@@ -244,10 +274,6 @@
 	.sContainer,
 	.aContainer {
 		margin: 1rem 0;
-	}
-
-	.activity {
-		width: 40%;
 	}
 
 	.sContainer {
@@ -270,10 +296,12 @@
 		align-items: center;
 		padding: 1rem 2rem;
 		font-weight: 600;
+		text-align: center;
 	}
 
 	.sData div {
-		padding: 0.2rem 0;
+		padding: 0.2rem;
+		display: flex;
 	}
 
 	.data {

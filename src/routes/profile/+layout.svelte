@@ -36,8 +36,9 @@
 	.profile-header {
 		height: 100%;
 		display: flex;
-		align-items: end;
-		margin: 0 20rem;
+		align-items: flex-end; /* Adjusted */
+		justify-content: start; /* Adjusted */
+		margin: 0 18%; /* Adjusted */
 	}
 
 	.username {
@@ -48,11 +49,9 @@
 	}
 
 	.user-avatar {
-		width: 12%;
-		height: 70%;
-		/* border-radius: 7px; */
+		width: 158px;
+		height: 158px;
 		object-fit: cover;
-		/* box-shadow: 0px 1px 10px rgba(255, 255, 255, 0.1); */
 		border-top-left-radius: 7px;
 		border-top-right-radius: 7px;
 	}
@@ -62,15 +61,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		/* border-top: 1px solid #ccc; */
-		box-shadow: 5px 5px 5px rgba(247, 241, 241, 1);
+		box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1); /* Adjusted */
 	}
 
 	nav a {
 		color: #768ca3;
 		font-weight: 600;
 		font-size: 14px;
-		padding: 1rem 4rem;
+		padding: 1rem 2rem; /* Adjusted */
 		transition: all 0.3s ease;
 	}
 
@@ -80,5 +78,28 @@
 
 	nav a.selected {
 		color: #1faafa; /* Change this to the desired color for the active page */
+	}
+
+	/* Responsive Styles */
+	@media screen and (max-width: 768px) {
+		.profile-header {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.username {
+			padding: 0.5rem; /* Adjusted */
+			text-align: center; /* Added */
+		}
+
+		.user-avatar {
+			width: 120px; /* Adjusted */
+			height: 120px; /* Adjusted */
+			margin-bottom: 0.5rem; /* Added */
+		}
+
+		nav a {
+			padding: 0.5rem 1rem; /* Adjusted */
+		}
 	}
 </style>
