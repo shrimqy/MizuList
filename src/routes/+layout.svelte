@@ -2,25 +2,33 @@
 	import { page } from '$app/stores';
 </script>
 
-<nav class="navBar">
-	<div class="navItems">
-		<a class="navLinks" href="/">Home</a>
+<div class="navBar">
+	<div class="nav">
+		<div class="logo">
+			<img src="/Logo.png" alt="" />
+		</div>
 
-		{#if !$page.data.user}
-			<a class="navLinks" href="/login">Login</a>
-			<form class="navbut">
-				<button><a href="/signup">Sign Up</a> </button>
-			</form>
-		{/if}
+		<nav class="navItems">
+			{#if !$page.data.user}
+				<a class="navLinks" href="/">Search</a>
+				<div class="navLink-right">
+					<a class="navLinks" href="/login">Login</a>
+					<form class="navbut">
+						<button><a href="/signup">Sign Up</a> </button>
+					</form>
+				</div>
+			{/if}
 
-		{#if $page.data.user}
-			<a class="navLinks" href="/profile">Profile</a>
-			<form class="navbut" action="/logout" method="POST">
-				<button type="submit">Log Out</button>
-			</form>
-		{/if}
+			{#if $page.data.user}
+				<a class="navLinks" href="/">Home</a>
+				<a class="navLinks" href="/profile">Profile</a>
+				<form class="navbut" action="/logout" method="POST">
+					<button type="submit">Log Out</button>
+				</form>
+			{/if}
+		</nav>
 	</div>
-</nav>
+</div>
 <slot />
 
 <style>
@@ -30,24 +38,51 @@
 	}
 
 	.navBar {
-		width: 100%;
 		background: #2b2d42;
-		height: 70px;
+		width: 100%;
+		height: 100%;
 		display: flex;
 		justify-content: center;
 	}
 
-	.navItems {
+	.nav {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 45%;
+		max-width: 1050px;
+	}
+	.logo {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		flex-wrap: wrap; /* Added */
+		width: 55px;
+		height: 55px;
+	}
+
+	.logo img {
+		height: 100%;
+		width: 100%;
+	}
+
+	.navItems {
+		width: 100%;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.navLinks {
 		color: #d3d5f3d8;
-		padding: 0.5rem 1rem; /* Adjusted */
 		transition: all 0.3s ease;
+		padding: 0.5rem 1rem;
+	}
+
+	.navLink-right {
+		display: flex;
+		align-items: center;
+		padding: 0.5rem 0rem;
+		padding-right: 2rem;
 	}
 
 	.navbut button {
@@ -87,7 +122,7 @@
 
 		.navLinks,
 		.navbut button {
-			padding: 0.5rem; /* Adjusted */
+			padding: 0.5rem;
 		}
 
 		.navbut button {

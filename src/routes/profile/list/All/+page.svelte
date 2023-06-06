@@ -42,7 +42,7 @@
 								<span>No cover available</span>
 								<!-- Show this if no cover was found from the API -->
 							{/if}
-							<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
+							<a href="/books/{book.bookId}">
 								<div class="title">{book.title}</div>
 							</a>
 						</div>

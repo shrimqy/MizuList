@@ -1,5 +1,6 @@
 <script>
 	/** @type {import('./$types').PageData} */
+
 	export let data;
 	let { work, bookData, isbn, existingBook } = data;
 
@@ -9,20 +10,20 @@
 
 <div class="container">
 	<h1>Review</h1>
-	<form method="post">
+	<form method="post" action="?/review">
 		<div class="content-container">
 			<div class="left-content">
 				<div class="title">{existingBook.title}</div>
 				<div class="review-text">
 					<label>
-						<span class="rheader">Review Content</span>
+						<span class="rheader">Review text:</span>
 						<textarea rows="20" />
 					</label>
 				</div>
 			</div>
 			<div class="right-content">
 				<div class="sbutton">
-					<button type="submit"
+					<button type="submit" formaction="?/review"
 						>Publish <span class="material-symbols-outlined"> send </span></button
 					>
 				</div>
@@ -115,6 +116,7 @@
 	.title {
 		margin-bottom: 1rem;
 		font-weight: 600;
+		font-size: 19px;
 	}
 
 	input[type='radio'] {

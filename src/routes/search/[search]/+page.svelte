@@ -1,43 +1,50 @@
 <script>
-    import { goto } from '$app/navigation'
-	import { fly, fade } from 'svelte/transition'
-    export let inputValue= '';
-    export let data;
-    $: book = data.search.docs;
-    $: console.log(book);
+	import { goto } from '$app/navigation';
+	import { fly, fade } from 'svelte/transition';
+	export let inputValue = '';
+	export let data;
+	$: book = data.search.docs;
+	$: console.log(book);
 	function submitSearch() {
-		goto( inputValue );
+		goto(inputValue);
 	}
 </script>
-<div  class="container">
-    <h3>Search</h3>
-	<form on:submit|preventDefault={ submitSearch } class="search-container">
-		<input bind:value={inputValue} type="search" class="search-box">
+
+<div class="container">
+	<h3>Search</h3>
+	<form on:submit|preventDefault={submitSearch} class="search-container">
+		<input bind:value={inputValue} type="search" class="search-box" />
 		<span class="material-icons">search</span>
 	</form>
-    <div transition:fade class="book-container">
+	<div transition:fade class="book-container">
 		{#each book as book}
-			<a data-sveltekit-preload-data href="/books/{book.key.split("/")[2]}" onerror="this.href='/books/{book.cover_edition_key}">
+			<a
+				href="/books/{book.key.split('/')[2]}"
+				onerror="this.href='/books/{book.cover_edition_key}"
+			>
 				<div class="bookCard">
-					
-					<div class="bookCover">{#if book.cover_edition_key}
-					<img
-						src={'http://covers.openlibrary.org/b/olid/' + book.cover_edition_key +'-M.jpg?default=false'}
-						alt={book.title}
-						onerror="this.style.display='none'"
-					/>
-					{:else}
-						<span>No cover available</span>
-					{/if}
-				</div>
-				<div class="title">{book.title}</div>
-				</a>
+					<div class="bookCover">
+						{#if book.cover_edition_key}
+							<img
+								src={'http://covers.openlibrary.org/b/olid/' +
+									book.cover_edition_key +
+									'-M.jpg?default=false'}
+								alt={book.title}
+								onerror="this.style.display='none'"
+							/>
+						{:else}
+							<span>No cover available</span>
+						{/if}
+					</div>
+					<div class="title">{book.title}</div>
+				</div></a
+			>
 		{/each}
 	</div>
 </div>
 
 <style>
-	*{
+	* {
 		margin: 0px;
 		padding: 0px;
 		font-family: 'Overpass', sans-serif;
@@ -48,14 +55,14 @@
 	}
 
 	.container {
-		color: #EDF1F5;
+		color: #edf1f5;
 		padding: 7rem 18rem;
 	}
 
 	h3 {
 		font-size: 16px;
 		font-weight: 600;
-		color: #5E5E5E;
+		color: #5e5e5e;
 		padding-bottom: 10px;
 	}
 
@@ -74,7 +81,6 @@
 		font-weight: 600;
 		display: flex;
 		flex-direction: column;
-		
 	}
 
 	.bookCover {
@@ -99,8 +105,8 @@
 	}
 
 	.title {
-	padding: 10px 0;
-	overflow-wrap: break-word;
+		padding: 10px 0;
+		overflow-wrap: break-word;
 	}
 
 	/* Style the search box */
@@ -118,20 +124,20 @@
 		font-size: 15px;
 		font-weight: 600;
 		width: 250px;
-		color: #5E5E5E;
+		color: #5e5e5e;
 		height: 40px;
 		box-shadow: 0px 2px 10px rgba(37, 34, 63, 0.1);
 	}
 	.search-box:focus {
-  		outline: none;
+		outline: none;
 	}
 
 	.material-icons {
 		font-family: 'Material Icons';
 		font-weight: 600;
-		font-size: 17px;  /* Preferred icon size */
+		font-size: 17px; /* Preferred icon size */
 		color: #9e9e9e;
 		padding: 0px 10px;
 		position: absolute;
-	}	
+	}
 </style>

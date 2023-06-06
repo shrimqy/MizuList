@@ -10,18 +10,17 @@
 	}
 </script>
 
-<div data-sveltekit-preload-data class="container">
+<div class="container">
 	<h3>Search</h3>
 	<form on:submit|preventDefault={submitSearch} class="search-container">
 		<input bind:value={inputValue} type="search" class="search-box" name="search-box" />
 		<span class="material-icons">search</span>
 	</form>
 	<h1>Trending Weekly Now</h1>
-	<div transition:fade class="book-container" data-sveltekit-preload-data>
+	<div transition:fade class="book-container">
 		{#each book as book}
 			<!-- since the data fetched is an array  -->
 			<a
-				data-sveltekit-preload-data="hover"
 				href="/books/{book.key.split('/')[2]}"
 				onerror="this.href='/books/{book.cover_edition_key}"
 			>
@@ -84,9 +83,8 @@
 
 	.book-container {
 		padding: 1rem 0rem;
-
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		color: #647380;
 	}
 
@@ -120,6 +118,7 @@
 		object-fit: cover;
 		border-radius: 6px;
 		box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+		transition: transform 0.3s, box-shadow 0.3s;
 	}
 
 	.title {
@@ -129,6 +128,11 @@
 
 	.bookCard:hover {
 		color: #1faafa;
+	}
+
+	.bookCard img:hover {
+		transform: scale(1.05);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 	}
 
 	/* Style the search box */

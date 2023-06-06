@@ -3,8 +3,10 @@
 	export let data;
 	let { work, bookData, isbn, favTag, existingBook } = data;
 	import { Bar } from 'svelte-chartjs';
+	import { page } from '$app/stores';
+	console.log($page.data.user);
 	// console.log(bookData);
-	console.log(existingBook);
+	// console.log(existingBook);
 	// console.log(work);
 	// console.log(data);
 
@@ -131,6 +133,10 @@
 				{#if !favTag}
 					<form action="?/addFav" method="POST">
 						<button formaction="?/addFav">Add to Favorites</button>
+					</form>
+				{:else}
+					<form action="?/addFav" method="POST">
+						<button formaction="?/addFav">Remove From Favorites</button>
 					</form>
 				{/if}
 			</div>
@@ -376,25 +382,29 @@
 			<div class="edition-container" style="margin-bottom: 1rem;">
 				<h3 style="color: #61778f">Edition Details</h3>
 				<div class="edition-details">
-					<div class="ed">
-						<h2>Format</h2>
-						<h3>{isbn.number_of_pages} pages, {isbn.physical_format}</h3>
-					</div>
-					<div class="ed">
-						<h2>Publish Date</h2>
-						<h3>{isbn.publish_date} by {isbn.publishers}</h3>
-					</div>
+					{#if isbn}
+						<div class="ed">
+							<h2>Format</h2>
+							<h3>{isbn.number_of_pages} pages, {isbn.physical_format}</h3>
+						</div>
+						<div class="ed">
+							<h2>Publish Date</h2>
+							<h3>{isbn.publish_date} by {isbn.publishers}</h3>
+						</div>
+					{:else}
+						<div class="ed">No Edition Details Available</div>
+					{/if}
 				</div>
 			</div>
 			<div class="review">
 				<div class="review-head">
 					<h3 style="color: #61778f">Reviews</h3>
-					{#if existingBook.length || existingBook.bookId.length > 0}
-						<a data-sveltekit-preload-data="hover" href="/books/{existingBook.bookId}/review"
-							>Write a review</a
-						>
+					{#if existingBook && existingBook.bookId && existingBook.bookId.length > 0}
+						<a href="/books/{existingBook.bookId}/review">Write a review</a>
+					{:else if $page.data.user}
+						<a href="javascript:void(0)">Write a review</a>
 					{:else}
-						<a data-sveltekit-preload-data="hover" href="/login">Write a review</a>
+						<a href="/login">Write a review</a>
 					{/if}
 				</div>
 

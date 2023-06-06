@@ -2,7 +2,6 @@
 /build
 .svelte-kit
 /package
-.env
 .env.*
 node_modules
 .prettierignore

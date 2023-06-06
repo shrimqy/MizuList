@@ -31,6 +31,7 @@
 		width: 100%;
 		background: #2b2d42;
 		height: 220px;
+		box-shadow: 0px 6px 6px rgba(255, 255, 255, 0.6); /* Adjusted */
 	}
 
 	.profile-header {

@@ -6,30 +6,11 @@ let fav,
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
-	const fetchBook = async (id) => {
-		bookId = await params.bookId;
+	bookId = await params.bookId;
+	console.log(bookId);
+	const fetchDb = async () => {
 		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);
 		work = await workres.json();
-		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=18`);
-		const bookData = await bookres.json();
-
-		const matchingBooks = bookData.docs.filter((book) => book.key === work.key);
-
-		let isbn = null;
-		if (matchingBooks.length > 0 && matchingBooks[0].isbn && matchingBooks[0].isbn.length > 0) {
-			const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
-			isbn = await isbnData.json();
-		}
-		// console.log(isbn);
-
-		return {
-			work,
-			matchingBooks,
-			isbn
-		};
-	};
-
-	const fetchDb = async () => {
 		if (locals && locals.user && locals.user.name) {
 			username = locals.user.name;
 			fav = await db.fav.findFirst({
@@ -40,7 +21,6 @@ export async function load({ locals, params }) {
 					}
 				}
 			});
-
 			existingBook = await db.book.findFirst({
 				where: {
 					bookId,
@@ -56,17 +36,15 @@ export async function load({ locals, params }) {
 
 		const isBookIdFound = fav !== null;
 		return {
+			work,
 			isBookIdFound,
 			existingBook
 		};
 	};
 
-	const result = await fetchBook();
 	const resultdb = await fetchDb();
 	return {
-		work: result.work,
-		bookData: result.matchingBooks[0],
-		isbn: result.isbn,
+		work: resultdb.work,
 		favTag: resultdb.isBookIdFound,
 		existingBook: resultdb.existingBook
 	};
@@ -93,13 +71,8 @@ export const actions = {
 
 		//if it does, update the record with the user else create the record with bookId and connec the user.
 		if (existingFav) {
-			await db.fav.update({
-				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
-				data: {
-					User: {
-						connect: { id: user.id }
-					}
-				}
+			await db.fav.delete({
+				where: { id: existingFav.id } // Provide the unique identifier of the existing record
 			});
 		} else {
 			await db.fav.create({

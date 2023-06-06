@@ -135,7 +135,7 @@
 											'-M.jpg?default=false'}
 										alt={book.title}
 									/>
-									<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
+									<a href="/books/{book.bookId}">
 										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
 									</a>
 								</div>
@@ -145,7 +145,7 @@
 							{/if}
 
 							<div class="titleProgress">
-								<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
+								<a href="/books/{book.bookId}">
 									<div class="title">{book.title}</div>
 								</a>
 								<div class="progress">
@@ -175,7 +175,7 @@
 					<div class="favbookCard">
 						<div class="favCover">
 							{#if book.bookId}
-								<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
+								<a href="/books/{book.bookId}">
 									<img
 										src={'http://covers.openlibrary.org/b/id/' +
 											book.covers +
@@ -263,11 +263,16 @@
 		display: flex;
 		justify-content: space-between;
 		padding: 2rem 0;
-		gap: 5rem;
+		gap: 2rem;
+	}
+
+	.activity {
+		width: 40%;
 	}
 
 	.analytics h1,
-	.favorites h1 {
+	.favorites h1,
+	.statistics h1 {
 		font-size: 23px;
 	}
 
@@ -342,6 +347,7 @@
 		border-radius: 7px;
 		background-color: #fafafa;
 		padding-right: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.titleCover {
@@ -444,6 +450,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		position: relative;
 	}
 
 	.favCover img {
@@ -451,5 +458,11 @@
 		width: 8rem;
 		height: auto;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+		transition: transform 0.3s, box-shadow 0.3s;
+	}
+
+	.favCover img:hover {
+		transform: scale(1.05);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 	}
 </style>
