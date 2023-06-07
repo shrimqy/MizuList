@@ -91,9 +91,8 @@ model activity {
 model reviews {
   id             String   @id @default(uuid())
   bookId         String
-  date           DateTime
+  date           DateTime @default(now())
   review         String
-  score          String
   recommendation String
   spoiler        String
   user           User?    @relation(fields: [userId], references: [id])

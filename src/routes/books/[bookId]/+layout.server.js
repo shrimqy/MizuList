@@ -8,9 +8,10 @@ let fav,
 export async function load({ locals, params }) {
 	const fetchBook = async (id) => {
 		bookId = await params.bookId;
+
 		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);
 		work = await workres.json();
-		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=18`);
+		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=6`);
 		const bookData = await bookres.json();
 
 		const matchingBooks = bookData.docs.filter((book) => book.key === work.key);

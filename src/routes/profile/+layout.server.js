@@ -1,7 +1,7 @@
 /** @type {import('./$types').PageServerLoad} */
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-
+export const prerender = true;
 let username, bookId;
 let fav,
 	existingBook = null;

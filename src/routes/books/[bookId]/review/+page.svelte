@@ -17,7 +17,7 @@
 				<div class="review-text">
 					<label>
 						<span class="rheader">Review text:</span>
-						<textarea rows="20" />
+						<textarea name="review" rows="20" />
 					</label>
 				</div>
 			</div>
@@ -31,16 +31,31 @@
 				<div class="recommend">
 					<p>Would you recommend this?</p>
 					<label>
-						<input type="radio" bind:group={recommendation} value="recommended" />
+						<input
+							type="radio"
+							name="recommendation"
+							bind:group={recommendation}
+							value="Recommended"
+						/>
 						Recommended
 					</label>
 					<label>
-						<input type="radio" bind:group={recommendation} value="mixedFeelings" />
+						<input
+							type="radio"
+							name="recommendation"
+							bind:group={recommendation}
+							value="Mixed Feelings"
+						/>
 						Mixed Feelings
 					</label>
 
 					<label>
-						<input type="radio" bind:group={recommendation} value="notRecommended" />
+						<input
+							type="radio"
+							name="recommendation"
+							bind:group={recommendation}
+							value="Not Recommended"
+						/>
 						Not Recommended
 					</label>
 				</div>
@@ -48,10 +63,10 @@
 					Spoiler Warning
 					<div class="sChoice">
 						<label>
-							<input type="radio" bind:group={spoilerWarning} value="true" />Yes
+							<input type="radio" name="spoiler" bind:group={spoilerWarning} value="true" />Yes
 						</label>
 						<label>
-							<input type="radio" bind:group={spoilerWarning} value="false" />No
+							<input type="radio" name="spoiler" bind:group={spoilerWarning} value="false" />No
 						</label>
 					</div>
 				</div>

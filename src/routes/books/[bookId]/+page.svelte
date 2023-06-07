@@ -5,15 +5,10 @@
 	import { Bar } from 'svelte-chartjs';
 	import { page } from '$app/stores';
 	console.log($page.data.user);
-	// console.log(bookData);
-	// console.log(existingBook);
-	// console.log(work);
-	// console.log(data);
 
 	let startDate = null;
 	let finishDate = null;
 
-	// console.log(isbn);
 	let status = 'planToRead';
 	let selectedCategoryId = existingBook ? existingBook.bookCategory[1].id : status;
 	let selectedRating = existingBook ? existingBook.rating : '0';
@@ -29,15 +24,11 @@
 	if (completedAt !== null) {
 		finishDate = completedAt.toISOString().split('T')[0];
 	}
-	function resetForm() {
-		status = 'default';
-	}
 
 	let showForm = false;
 
 	function toggleForm() {
 		showForm = !showForm;
-
 		const container = document.querySelector('.container');
 		container.classList.toggle('blur');
 	}
@@ -203,12 +194,20 @@
 							type="number"
 							id="chapters"
 							name="chapters"
+							min="0"
 							bind:value={chapterCount}
 						/>
 					</div>
 					<div class="input">
 						Pages:
-						<input class="pages" type="number" id="pages" name="pages" bind:value={pageCount} />
+						<input
+							class="pages"
+							min="0"
+							type="number"
+							id="pages"
+							name="pages"
+							bind:value={pageCount}
+						/>
 					</div>
 
 					<div class="dropdown">
@@ -307,6 +306,7 @@
 													type="number"
 													id="rereads"
 													bind:value={rereads}
+													min="0"
 													name="rereads"
 													placeholder="Rereads"
 												/>
@@ -317,6 +317,7 @@
 													type="number"
 													id="chapters"
 													name="chapters"
+													min="0"
 													bind:value={chapterCount}
 													placeholder="Chapter"
 												/>
@@ -324,6 +325,7 @@
 													type="number"
 													id="pages"
 													name="pages"
+													min="0"
 													bind:value={pageCount}
 													placeholder="Pages"
 												/>
@@ -402,7 +404,7 @@
 					{#if existingBook && existingBook.bookId && existingBook.bookId.length > 0}
 						<a href="/books/{existingBook.bookId}/review">Write a review</a>
 					{:else if $page.data.user}
-						<a href="javascript:void(0)">Write a review</a>
+						<a href={null}>Write a review</a>
 					{:else}
 						<a href="/login">Write a review</a>
 					{/if}

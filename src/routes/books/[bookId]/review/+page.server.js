@@ -1,5 +1,5 @@
-let username;
-
+let username, bookId;
+import { db } from '$lib/server/database';
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
 	return {};
@@ -7,37 +7,45 @@ export async function load() {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	//add to favorite Action definiion
+	review: async ({ request, locals, params }) => {
+		const data = await request.formData();
+		const review = data.get('review');
+		const recommendation = data.get('recommendation');
+		const spoiler = data.get('spoiler');
+		console.log(review);
+		console.log(recommendation);
+		console.log(spoiler);
+		bookId = params.bookId;
 
-	addFav: async ({ locals }) => {
-		//throw redirect to login if user isn't logged in
-		if (!(locals && locals.user && locals.user.name)) {
-			username = locals.user.name;
-			throw redirect(302, '/login');
-		}
+		username = locals.user.name;
 		const user = await db.user.findUnique({
 			where: { username }
 		});
 
-		//checking if the book already exists in the DB
-		const existingFav = await db.fav.findFirst({
+		const existing = await db.reviews.findFirst({
 			where: {
-				bookId
+				bookId: bookId,
+				userId: user.id
 			}
 		});
 
-		//if it does, update the record with the user else create the record with bookId and connec the user.
-		if (existingFav) {
-			await db.fav.delete({
-				where: { id: existingFav.id } // Provide the unique identifier of the existing record
+		if (existing) {
+			await db.reviews.update({
+				where: { id: existing.id },
+				data: {
+					review: review,
+					recommendation: recommendation,
+					spoiler: spoiler
+				}
 			});
 		} else {
-			await db.fav.create({
+			await db.reviews.create({
 				data: {
+					review: review,
+					recommendation: recommendation,
+					spoiler: spoiler,
 					bookId: bookId,
-					covers: work.covers[0],
-					User: {
-						connect: { id: user.id }
-					}
+					userId: user.id
 				}
 			});
 		}
