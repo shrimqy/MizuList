@@ -51,7 +51,7 @@
 	}
 </script>
 
-<title>{$page.data.user.name}'s Profile</title>
+<title>{$page.data.user.username}'s Profile</title>
 <div class="container">
 	<div class="analytics">
 		<div class="statistics">

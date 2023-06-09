@@ -1,11 +1,14 @@
 <script>
 	/** @type {import('./$types').Actions} */
+
+	import { formatDate } from '$lib/utils';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
 
 	// console.log(reviews);
 	$: favTag = data.favTag;
 	import { page } from '$app/stores';
+	import { bind } from 'svelte/internal';
 
 	let startDate = null;
 	let finishDate = null;
@@ -79,13 +82,6 @@
 	let isExpanded = false;
 	let buttonText = 'See More';
 	const characterLimit = 300;
-
-	let reviewText =
-		'Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor, Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,  Lorem ipsum dolor sit ametermentum tristiqueuat dolor,';
-
-	let truncatedReviewText = reviewText.substring(0, characterLimit) + '...'; //stores the truncated version of the review text based on the character limit.
-	let isTextTruncated = reviewText.length > characterLimit; //indicates whether the review text has been truncated or not.
-	//resposbile for toggling the expansion state of the content
 	function toggleExpansion() {
 		isExpanded = !isExpanded;
 		buttonText = isExpanded ? 'Show Less' : 'Read More';
@@ -422,23 +418,32 @@
 
 				{#each reviews as review}
 					<div class="review-container">
-						<img src={review.user.avatar} alt="User Avatar" class="user-avatar" />
+						<img
+							src={`/uploads/${review.user.username}.png`}
+							alt="User Avatar"
+							class="user-avatar"
+						/>
 						<div class="review-body">
 							<div class="review-header">
 								<h3 class="user-name">{review.user.username}</h3>
-								<span class="review-date">May 18, 2023</span>
+								<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
 							</div>
 
 							<div class="review-content">
-								<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable. -->
-								<p class="review-text">{isExpanded ? reviewText : truncatedReviewText}</p>
+								<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
+								<p class="review-text">
+									{isExpanded ? review.review : review.review.slice(0, characterLimit) + '...'}
+								</p>
 							</div>
-							{#if isTextTruncated}
+
+							{#if review.review.length > characterLimit}
 								<button class="see-more-btn" on:click={toggleExpansion}>
 									{#if isExpanded}
-										<span class="material-icons">expand_less</span>{:else}
+										<span class="material-icons">expand_less</span>
+									{:else}
 										<span class="material-icons">expand_more</span>
-									{/if}{buttonText}
+									{/if}
+									{buttonText}
 								</button>
 							{/if}
 						</div>
@@ -617,8 +622,10 @@
 
 	.user-avatar {
 		height: 54px;
+		width: 54px;
 		border-radius: 50%;
 		margin-right: 2rem;
+		object-fit: cover;
 	}
 
 	.user-name {

@@ -20,7 +20,7 @@
 			{/if}
 
 			{#if $page.data.user}
-				<a data-sveltekit-preload-data class="navLinks" href="/">Home</a>
+				<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
 				<a class="navLinks" href="/profile">Profile</a>
 				<form class="navbut" action="/logout" method="POST">
 					<button type="submit">Log Out</button>

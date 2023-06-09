@@ -91,7 +91,7 @@ model activity {
 model reviews {
   id             String   @id @default(uuid())
   bookId         String
-  date           DateTime @default(now())
+  date           DateTime @updatedAt
   review         String
   recommendation String
   spoiler        String

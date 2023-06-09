@@ -4,7 +4,7 @@
 	// export let data;
 </script>
 
-<title>{$page.data.user.name}'s Book List</title>
+<title>{$page.data.user.username}'s Book List</title>
 <nav class="listNav">
 	<a href="/profile/list/All" class:selected={$page.url.pathname === '/profile/list/All'}>All</a>
 	<a href="/profile/list" class:selected={$page.url.pathname === '/profile/list'}>Reading</a>
