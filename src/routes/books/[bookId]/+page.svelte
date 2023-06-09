@@ -1,10 +1,11 @@
 <script>
 	/** @type {import('./$types').Actions} */
 	export let data;
-	let { work, bookData, isbn, favTag, existingBook } = data;
-	import { Bar } from 'svelte-chartjs';
+	let { work, bookData, isbn, existingBook, reviews } = data;
+
+	// console.log(reviews);
+	$: favTag = data.favTag;
 	import { page } from '$app/stores';
-	console.log($page.data.user);
 
 	let startDate = null;
 	let finishDate = null;
@@ -91,6 +92,7 @@
 	}
 </script>
 
+<title>{work.title}</title>
 <div class="banner" />
 <div class="container">
 	<div class="bcontainer">
@@ -121,15 +123,23 @@
 			</div>
 
 			<div class="userFav">
-				{#if !favTag}
-					<form action="?/addFav" method="POST">
-						<button formaction="?/addFav">Add to Favorites</button>
-					</form>
-				{:else}
-					<form action="?/addFav" method="POST">
-						<button formaction="?/addFav">Remove From Favorites</button>
-					</form>
-				{/if}
+				{#key (favTag, $page.data.user)}
+					{#if !favTag || !$page.data.user}
+						<form action="?/addFav" method="POST">
+							<button class="addFavButton" formaction="?/addFav">
+								Add to Favorites
+								<span class="material-icons-outlined"> favorite_border </span>
+							</button>
+						</form>
+					{:else}
+						<form action="?/addFav" method="POST">
+							<button class="addFavButton" formaction="?/addFav">
+								Remove from Favorites
+								<span class="material-symbols-outlined"> favorite </span>
+							</button>
+						</form>
+					{/if}
+				{/key}
 			</div>
 		</div>
 
@@ -410,32 +420,30 @@
 					{/if}
 				</div>
 
-				<div class="review-container">
-					<img
-						src="https://cdn.myanimelist.net/s/common/userimages/ccd5d0a5-a3f5-4026-8c7d-d863a04f689a_225w?s=a5ee9982a49a58929103f3961d051a53"
-						alt="User Avatar"
-						class="user-avatar"
-					/>
-					<div class="review-body">
-						<div class="review-header">
-							<h3 class="user-name">John Doe</h3>
-							<span class="review-date">May 18, 2023</span>
-						</div>
+				{#each reviews as review}
+					<div class="review-container">
+						<img src={review.user.avatar} alt="User Avatar" class="user-avatar" />
+						<div class="review-body">
+							<div class="review-header">
+								<h3 class="user-name">{review.user.username}</h3>
+								<span class="review-date">May 18, 2023</span>
+							</div>
 
-						<div class="review-content">
-							<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable. -->
-							<p class="review-text">{isExpanded ? reviewText : truncatedReviewText}</p>
+							<div class="review-content">
+								<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable. -->
+								<p class="review-text">{isExpanded ? reviewText : truncatedReviewText}</p>
+							</div>
+							{#if isTextTruncated}
+								<button class="see-more-btn" on:click={toggleExpansion}>
+									{#if isExpanded}
+										<span class="material-icons">expand_less</span>{:else}
+										<span class="material-icons">expand_more</span>
+									{/if}{buttonText}
+								</button>
+							{/if}
 						</div>
-						{#if isTextTruncated}
-							<button class="see-more-btn" on:click={toggleExpansion}>
-								{#if isExpanded}
-									<span class="material-icons">expand_less</span>{:else}
-									<span class="material-icons">expand_more</span>
-								{/if}{buttonText}
-							</button>
-						{/if}
 					</div>
-				</div>
+				{/each}
 			</div>
 		</div>
 	</div>
@@ -449,6 +457,14 @@
 	}
 
 	.material-icons {
+		font-family: 'Material Icons';
+	}
+
+	.material-symbols-outlined {
+		font-family: 'Material Symbols Outlined';
+	}
+
+	.material-icons-outlined {
 		font-family: 'Material Icons';
 	}
 
@@ -664,23 +680,32 @@
 		box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.2);
 	}
 
-	.userFav button {
-		width: 12rem;
-		color: #dff3fd;
+	.addFavButton {
+		color: #ff2c55;
+		font-weight: 500;
 		font-family: 'Poppins', sans-serif;
-		font-size: 14px;
-		border: none;
+		display: flex;
+		font-size: 12px;
+		justify-content: center;
+		align-items: center;
+		width: 12rem;
+		border: 1px solid #ff2c55;
 		border-radius: 4px;
-		background-color: #1faafa;
+		background-color: #fff;
 		cursor: pointer;
-		padding: 0.5rem 1rem;
+		padding: 0.6rem 0.5rem;
 		margin-top: 1rem;
 		margin-bottom: 1rem;
 		transition: background-color 0.3s ease-in-out;
 	}
 
+	.addFavButton span {
+		font-size: 15px;
+		padding-left: 0.5rem;
+	}
+
 	.userFav button:hover {
-		background-color: #3889e0;
+		background-color: #ff2c560e;
 	}
 	.content {
 		display: flex;

@@ -1,6 +1,5 @@
 <script>
-	import { updated } from '$app/stores';
-
+	import { page } from '$app/stores';
 	export let data;
 	let { lastActivity, existingBook, stats, fav } = data;
 	console.log(fav);
@@ -52,6 +51,7 @@
 	}
 </script>
 
+<title>{$page.data.user.name}'s Profile</title>
 <div class="container">
 	<div class="analytics">
 		<div class="statistics">
@@ -135,7 +135,7 @@
 											'-M.jpg?default=false'}
 										alt={book.title}
 									/>
-									<a href="/books/{book.bookId}">
+									<a data-sveltekit-preload-data href="/books/{book.bookId}">
 										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
 									</a>
 								</div>
@@ -175,7 +175,7 @@
 					<div class="favbookCard">
 						<div class="favCover">
 							{#if book.bookId}
-								<a href="/books/{book.bookId}">
+								<a data-sveltekit-preload-data href="/books/{book.bookId}">
 									<img
 										src={'http://covers.openlibrary.org/b/id/' +
 											book.covers +
@@ -361,7 +361,7 @@
 		display: flex;
 	}
 
-	.material-symbols-rounded {
+	/* .material-symbols-rounded {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -374,9 +374,9 @@
 		background-color: rgba(0, 0, 0, 0.5);
 		border-radius: 50%;
 		opacity: 0;
-		visibility: hidden; /*element is not rendered*/
+		visibility: hidden; 
 		transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-	}
+	} */
 
 	/* .imageContainer:hover .material-symbols-rounded {
 		opacity: 1;

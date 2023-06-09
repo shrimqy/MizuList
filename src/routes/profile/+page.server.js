@@ -1,7 +1,7 @@
 /** @type {import('./$types').PageServerLoad} */
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-
+export const prerender = true;
 let username, fav, lastActivity, stats;
 
 export async function load(locals) {

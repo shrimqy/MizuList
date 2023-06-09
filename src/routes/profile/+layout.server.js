@@ -2,7 +2,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 export const prerender = true;
-let username, bookId;
+let username, bookId, user;
 let fav,
 	existingBook = null;
 
@@ -11,7 +11,7 @@ export async function load(locals) {
 	console.log(locals.locals.user.name);
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
-		const user = await db.user.findUnique({
+		user = await db.user.findUnique({
 			where: { username }
 		});
 
@@ -33,14 +33,9 @@ export async function load(locals) {
 				bookCategory: true
 			}
 		});
-		if (user && user.avatar) {
-			const avatarBuffer = user.avatar; // Assuming the avatar property is the Buffer
-			const avatarDataUrl = `data:image/png;base64,${avatarBuffer.toString('base64')}`;
-			userData = {
-				...user,
-				avatar: avatarDataUrl
-			};
-		}
+
+		// console.log(user);
+
 		// Attach bookCategory to each book
 		existingBook = existingBook.map((book) => ({
 			...book, // '...' allows to expand elements from an array or properties from an object
@@ -50,6 +45,6 @@ export async function load(locals) {
 	return {
 		existingBook,
 		fav,
-		userData
+		user
 	};
 }

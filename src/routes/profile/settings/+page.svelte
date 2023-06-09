@@ -1,7 +1,7 @@
 <script>
 	/** @type {import('./$types').PageData} */
 	export let data;
-	let { userData } = data;
+	let { user } = data;
 	let uploadedImage;
 
 	function handleImageUpload(event) {
@@ -34,9 +34,9 @@
 		</button>
 	</div>
 
-	{#if userData && userData.avatar}
+	{#if user && user.avatar}
 		<div>
-			<img src={userData.avatar} style="max-width: 50ch;" alt="Avatar" />
+			<img src={`/uploads/${user.username}.png`} alt="User Avatar" class="user-avatar" />
 		</div>
 	{/if}
 </form>

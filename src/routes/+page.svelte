@@ -10,6 +10,7 @@
 	}
 </script>
 
+<title>Home</title>
 <div class="container">
 	<h3>Search</h3>
 	<form on:submit|preventDefault={submitSearch} class="search-container">
@@ -21,6 +22,7 @@
 		{#each book as book}
 			<!-- since the data fetched is an array  -->
 			<a
+				data-sveltekit-preload-data
 				href="/books/{book.key.split('/')[2]}"
 				onerror="this.href='/books/{book.cover_edition_key}"
 			>
@@ -30,6 +32,7 @@
 						{#if book.cover_edition_key}
 							<!-- Book cover source -->
 							<img
+								loading="lazy"
 								src={'http://covers.openlibrary.org/b/olid/' +
 									book.cover_edition_key +
 									'-M.jpg?default=false'}

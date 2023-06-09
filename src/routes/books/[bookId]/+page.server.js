@@ -34,16 +34,31 @@ export async function load({ locals, params }) {
 			});
 		}
 
+		const reviews = await db.reviews.findMany({
+			where: {
+				bookId
+			},
+			include: {
+				user: {
+					select: {
+						username: true
+					}
+				}
+			}
+		});
+
 		const isBookIdFound = fav !== null;
 		return {
 			work,
 			isBookIdFound,
-			existingBook
+			existingBook,
+			reviews
 		};
 	};
 
 	const resultdb = await fetchDb();
 	return {
+		reviews: resultdb.reviews,
 		work: resultdb.work,
 		favTag: resultdb.isBookIdFound,
 		existingBook: resultdb.existingBook

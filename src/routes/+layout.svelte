@@ -10,7 +10,7 @@
 
 		<nav class="navItems">
 			{#if !$page.data.user}
-				<a class="navLinks" href="/">Search</a>
+				<a data-sveltekit-preload-data class="navLinks" href="/">Search</a>
 				<div class="navLink-right">
 					<a class="navLinks" href="/login">Login</a>
 					<form class="navbut">
@@ -20,7 +20,7 @@
 			{/if}
 
 			{#if $page.data.user}
-				<a class="navLinks" href="/">Home</a>
+				<a data-sveltekit-preload-data class="navLinks" href="/">Home</a>
 				<a class="navLinks" href="/profile">Profile</a>
 				<form class="navbut" action="/logout" method="POST">
 					<button type="submit">Log Out</button>

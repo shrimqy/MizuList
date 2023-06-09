@@ -1,15 +1,18 @@
 <script>
 	export let data;
-	let { userData } = data;
+	let { user } = data;
 	import { page } from '$app/stores';
+	console.log($page.data.user);
+	import { base } from '$app/paths';
+	import { fade } from 'svelte/transition';
 </script>
 
 <div class="banner">
 	<div class="profile-header">
-		{#if userData && userData.avatar}
-			<img src={userData.avatar} alt="User Avatar" class="user-avatar" />
+		{#if user && user.avatar}
+			<img src={`/uploads/${user.username}.png`} alt="User Avatar" class="user-avatar" />
 		{/if}
-		<span class="username">{$page.data.user.name}</span>
+		<span class="username">{$page.data.user.username}</span>
 	</div>
 </div>
 
