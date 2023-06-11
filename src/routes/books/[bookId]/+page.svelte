@@ -1,7 +1,7 @@
 <script>
 	/** @type {import('./$types').Actions} */
 
-	import { formatDate } from '$lib/utils';
+	import { formatDate, filterTags } from '$lib/utils';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
 
@@ -51,40 +51,14 @@
 		showMore = !showMore;
 	}
 
-	//to filter tags to an appropriate styling
-	function filterTags(tags) {
-		const filteredTags = tags.filter((tag) => {
-			if (typeof tag !== 'string') return false;
-			return /^[a-zA-Z\s(){}[\]&.,'-]+$/.test(tag);
-		});
-
-		return filteredTags.map((tag) => {
-			const words = tag.split(' ');
-			return words
-				.map((word, index) => {
-					if (/^[\(\[].*[\)\]]$/.test(word)) {
-						return word;
-					} else if (word.includes('-')) {
-						const subWords = word.split('-');
-						const capitalizedSubWords = subWords.map((subWord) => {
-							return subWord.charAt(0).toUpperCase() + subWord.slice(1).toLowerCase();
-						});
-						return capitalizedSubWords.join('-');
-					} else {
-						return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-					}
-				})
-				.join(' ');
-		});
-	}
-
-	//review
-	let isExpanded = false;
+	// Review
+	let isExpanded = [];
 	let buttonText = 'See More';
 	const characterLimit = 300;
-	function toggleExpansion() {
-		isExpanded = !isExpanded;
-		buttonText = isExpanded ? 'Show Less' : 'Read More';
+
+	function toggleExpansion(reviewIndex) {
+		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
+		buttonText = isExpanded[reviewIndex] ? 'Show Less' : 'Read More';
 	}
 </script>
 
@@ -416,7 +390,7 @@
 					{/if}
 				</div>
 
-				{#each reviews as review}
+				{#each reviews as review, reviewIndex}
 					<div class="review-container">
 						<img
 							src={`/uploads/${review.user.username}.png`}
@@ -432,13 +406,17 @@
 							<div class="review-content">
 								<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
 								<p class="review-text">
-									{isExpanded ? review.review : review.review.slice(0, characterLimit) + '...'}
+									{#if isExpanded[reviewIndex]}
+										{review.review}
+									{:else}
+										{review.review.slice(0, characterLimit) + '...'}
+									{/if}
 								</p>
 							</div>
 
 							{#if review.review.length > characterLimit}
-								<button class="see-more-btn" on:click={toggleExpansion}>
-									{#if isExpanded}
+								<button class="see-more-btn" on:click={() => toggleExpansion(reviewIndex)}>
+									{#if isExpanded[reviewIndex]}
 										<span class="material-icons">expand_less</span>
 									{:else}
 										<span class="material-icons">expand_more</span>
@@ -611,6 +589,7 @@
 		background-color: #fafafa;
 		border-radius: 7px;
 		padding: 1rem;
+		margin: 1rem 0;
 	}
 
 	.review-header {

@@ -1,5 +1,4 @@
 //Date
-
 export function formatDate(dateString, format = 'default') {
 	const date = new Date(dateString);
 	const now = new Date();
@@ -17,7 +16,7 @@ export function formatDate(dateString, format = 'default') {
 			day: 'numeric',
 			hour: 'numeric',
 			minute: 'numeric',
-			hour12: false
+			hour12: true
 		},
 		// Example: Route B
 		anotherRouteFormat: {
@@ -56,4 +55,31 @@ export function formatDate(dateString, format = 'default') {
 		};
 		return date.toLocaleString('en-US', defaultOptions);
 	}
+}
+
+//to filter tags to an appropriate styling
+export function filterTags(tags) {
+	const filteredTags = tags.filter((tag) => {
+		if (typeof tag !== 'string') return false;
+		return /^[a-zA-Z\s(){}[\]&.,'-]+$/.test(tag);
+	});
+
+	return filteredTags.map((tag) => {
+		const words = tag.split(' ');
+		return words
+			.map((word, index) => {
+				if (/^[\(\[].*[\)\]]$/.test(word)) {
+					return word;
+				} else if (word.includes('-')) {
+					const subWords = word.split('-');
+					const capitalizedSubWords = subWords.map((subWord) => {
+						return subWord.charAt(0).toUpperCase() + subWord.slice(1).toLowerCase();
+					});
+					return capitalizedSubWords.join('-');
+				} else {
+					return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+				}
+			})
+			.join(' ');
+	});
 }

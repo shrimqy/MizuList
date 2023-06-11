@@ -8,7 +8,6 @@ let fav,
 
 export async function load(locals) {
 	let userData = null;
-	console.log(locals.locals.user.name);
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
 		user = await db.user.findUnique({
@@ -41,6 +40,8 @@ export async function load(locals) {
 			...book, // '...' allows to expand elements from an array or properties from an object
 			bookCategory: book.bookCategory.map((category) => category.id)
 		}));
+	} else {
+		throw redirect(302, '/');
 	}
 	return {
 		existingBook,

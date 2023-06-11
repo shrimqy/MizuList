@@ -1,5 +1,6 @@
 let username, bookId;
 import { db } from '$lib/server/database';
+import { redirect } from '@sveltejs/kit';
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
 	return {};
@@ -49,5 +50,7 @@ export const actions = {
 				}
 			});
 		}
+
+		throw redirect(302, `/books/${bookId}`);
 	}
 };
