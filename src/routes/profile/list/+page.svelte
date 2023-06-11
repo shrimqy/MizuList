@@ -2,7 +2,6 @@
 	export let data;
 	let { existingBook, fav } = data;
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
-	console.log(filteredItems);
 	let progress = '?';
 </script>
 
@@ -38,13 +37,14 @@
 										><button class="material-symbols-rounded">open_in_new</button>
 									</a>
 								</div>
+								<a href="/books/{book.bookId}">
+									<div class="title">{book.title}</div>
+								</a>
 							{:else}
-								<span>No cover available</span>
+								<span>No cover</span>
 								<!-- Show this if no cover was found from the API -->
-							{/if}
-							<a href="/books/{book.bookId}">
 								<div class="title">{book.title}</div>
-							</a>
+							{/if}
 						</div>
 
 						<!-- <button class="fbutton" id="addToListButton" on:click|preventDefault={setDefaultStatus}
@@ -130,7 +130,7 @@
 	.listContainer {
 		display: flex;
 		flex-direction: column;
-		padding: 3rem 0rem;
+		padding: 1rem 0rem;
 	}
 
 	.bookCard:hover .bookHoverCover img {
@@ -160,7 +160,7 @@
 		display: flex;
 		justify-content: space-between;
 		margin: 0.3rem 0;
-		border-radius: 1px;
+		border-radius: 3px;
 		background-color: #fafafa;
 		align-items: center;
 		padding: 0.4rem 0.5rem;

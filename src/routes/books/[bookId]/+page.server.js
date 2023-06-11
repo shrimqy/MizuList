@@ -7,6 +7,9 @@ let fav,
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
 	bookId = await params.bookId;
+	if (!bookId) {
+		throw redirect('/');
+	}
 	console.log(bookId);
 	const fetchDb = async () => {
 		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);

@@ -2,10 +2,11 @@
 	/** @type {import('./$types').Actions} */
 
 	import { formatDate, filterTags } from '$lib/utils';
+	import { fade } from 'svelte/transition';
+
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
 
-	// console.log(reviews);
 	$: favTag = data.favTag;
 	import { page } from '$app/stores';
 	import { bind } from 'svelte/internal';
@@ -33,8 +34,6 @@
 
 	function toggleForm() {
 		showForm = !showForm;
-		const container = document.querySelector('.container');
-		container.classList.toggle('blur');
 	}
 
 	//to select the default option when the add to list button is clicked upon
@@ -202,7 +201,7 @@
 					</div>
 
 					{#if showForm}
-						<div class="editor-popout">
+						<div class="editor-popout" transition:fade={{ duration: 300 }}>
 							<form method="POST" action="?/userStatus">
 								<div class="editor">
 									<div class="editor-banner">
@@ -316,7 +315,7 @@
 							</form>
 						</div>
 
-						<div id="overlay" />
+						<div id="overlay" transition:fade={{ duration: 300 }} />
 					{/if}
 				</form>
 			</div>
@@ -455,16 +454,17 @@
 		background-color: #edf1f5;
 	}
 
-	.banner {
+	/* .banner {
 		background-color: #2b2d42;
 		height: 100px;
-	}
+	} */
 
 	.container {
 		width: 100%;
 	}
 
 	.bcontainer {
+		padding-top: 1rem;
 		background-color: #fafafa;
 		display: flex;
 		justify-content: center;
@@ -833,14 +833,18 @@
 		display: flex;
 		align-items: center;
 		cursor: pointer;
-		background-color: #007bff;
-		color: #fff;
+		background-color: #fff;
+		color: #000;
 		transition: background-color 0.3s ease;
+	}
+
+	.dropdown-content button {
+		width: max-content;
 	}
 
 	.sbutton:hover,
 	.listEditor:hover {
-		background-color: #0056b3;
+		background-color: #0057b313;
 	}
 
 	.sbutton span {
@@ -854,15 +858,13 @@
 	}
 
 	.dropdown-content {
-		display: none;
+		opacity: 0;
 		position: absolute;
-		background-color: #f9f9f9;
-		min-width: 160px;
 		z-index: 1;
 	}
 
 	.dropdown-content button {
-		margin-top: 0.1rem;
+		margin-top: 0.2rem;
 		border-radius: 4px;
 		border: none;
 		display: block;
@@ -871,7 +873,8 @@
 	}
 
 	.dropdown:hover .dropdown-content {
-		display: block;
+		opacity: 1;
+		transition: 0.3s ease-in-out;
 	}
 
 	.editor-popout {
@@ -884,6 +887,7 @@
 		box-shadow: 0 2px 5px rgb(0, 0, 0, 0.1);
 		border-radius: 8px;
 		z-index: 999;
+		transition: opacity 0.3s ease-in;
 	}
 
 	.editor-banner {
@@ -954,11 +958,16 @@
 		top: 0; /* Position the button at the top */
 		right: 0; /* Position the button at the right */
 		color: #fff;
+		transition: all 0.3s ease-in-out;
 	}
 
 	.cancelButton .material-icons {
 		display: inline-block;
 		vertical-align: middle;
+	}
+
+	.cancelButton:hover {
+		color: #c4ced8;
 	}
 
 	.editor-popout form {
@@ -1011,7 +1020,8 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		pointer-events: none;
+		z-index: 10;
+		pointer-events: auto;
 		backdrop-filter: blur(0.35px);
 		background-color: rgb(43, 45, 66, 0.3);
 	}

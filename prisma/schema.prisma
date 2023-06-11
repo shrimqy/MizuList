@@ -59,6 +59,7 @@ model Book {
   chapters String?
   rating   String?
   rereads  String?
+  author   String?
   notes    String?
   tPages   String?
   covers   Int?
