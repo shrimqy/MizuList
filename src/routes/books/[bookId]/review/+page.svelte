@@ -34,70 +34,72 @@
 	<SvelteToast />
 </div>
 <div class="container" transition:fade={{ duration: 300 }}>
-	<h1>Review</h1>
-	<form method="POST" action="?/review" use:enhance={reviewUpdate}>
-		<div class="content-container">
-			<div class="left-content">
-				<div class="title">{existingBook.title}</div>
-				<div class="review-text">
-					<label>
-						<span class="rheader">Review text:</span>
-						<textarea name="review" rows="20" />
-					</label>
-				</div>
-			</div>
-			<div class="right-content">
-				<div class="sbutton">
-					<button type="submit"
-						>Publish <span class="material-symbols-outlined"> send </span></button
-					>
-				</div>
-
-				<div class="recommend">
-					<p>Would you recommend this?</p>
-					<label>
-						<input
-							type="radio"
-							name="recommendation"
-							bind:group={recommendation}
-							value="Recommended"
-						/>
-						Recommended
-					</label>
-					<label>
-						<input
-							type="radio"
-							name="recommendation"
-							bind:group={recommendation}
-							value="Mixed Feelings"
-						/>
-						Mixed Feelings
-					</label>
-
-					<label>
-						<input
-							type="radio"
-							name="recommendation"
-							bind:group={recommendation}
-							value="Not Recommended"
-						/>
-						Not Recommended
-					</label>
-				</div>
-				<div class="spoiler">
-					Spoiler Warning
-					<div class="sChoice">
+	<div class="rcontainer">
+		<h1>Review</h1>
+		<form method="POST" action="?/review" use:enhance={reviewUpdate}>
+			<div class="content-container">
+				<div class="left-content">
+					<div class="title">{existingBook.title}</div>
+					<div class="review-text">
 						<label>
-							<input type="radio" name="spoiler" bind:group={spoilerWarning} value="true" />Yes
-						</label>
-						<label>
-							<input type="radio" name="spoiler" bind:group={spoilerWarning} value="false" />No
+							<span class="rheader">Review text:</span>
+							<textarea name="review" rows="20" />
 						</label>
 					</div>
 				</div>
+				<div class="right-content">
+					<div class="sbutton">
+						<button type="submit"
+							>Publish <span class="material-symbols-outlined"> send </span></button
+						>
+					</div>
+
+					<div class="recommend">
+						<p>Would you recommend this?</p>
+						<label>
+							<input
+								type="radio"
+								name="recommendation"
+								bind:group={recommendation}
+								value="Recommended"
+							/>
+							Recommended
+						</label>
+						<label>
+							<input
+								type="radio"
+								name="recommendation"
+								bind:group={recommendation}
+								value="Mixed Feelings"
+							/>
+							Mixed Feelings
+						</label>
+
+						<label>
+							<input
+								type="radio"
+								name="recommendation"
+								bind:group={recommendation}
+								value="Not Recommended"
+							/>
+							Not Recommended
+						</label>
+					</div>
+					<div class="spoiler">
+						Spoiler Warning
+						<div class="sChoice">
+							<label>
+								<input type="radio" name="spoiler" bind:group={spoilerWarning} value="true" />Yes
+							</label>
+							<label>
+								<input type="radio" name="spoiler" bind:group={spoilerWarning} value="false" />No
+							</label>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
+	</div>
 </div>
 
 <style>
@@ -107,17 +109,19 @@
 		text-decoration: none;
 	}
 
-	:root {
-		background-color: #fafafa;
-	}
-
 	.material-symbols-outlined {
 		font-family: 'Material Symbols Outlined';
 		font-weight: 500;
 	}
 
 	.container {
-		margin: 2rem 18%;
+		width: 100%;
+		height: 100vh;
+		background-color: #fafafa;
+	}
+
+	.rcontainer {
+		padding: 2rem 18%;
 		max-width: 1200px;
 	}
 
