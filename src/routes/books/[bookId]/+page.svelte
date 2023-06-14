@@ -3,13 +3,18 @@
 
 	import { formatDate, filterTags } from '$lib/utils';
 	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+	import { enhance } from '$app/forms';
 
+	// import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
 
 	$: favTag = data.favTag;
-	import { page } from '$app/stores';
-	import { bind } from 'svelte/internal';
+	import { page, updated } from '$app/stores';
+	// console.log($page.form);
+	import { transition_in } from 'svelte/internal';
 
 	let startDate = null;
 	let finishDate = null;
@@ -59,9 +64,43 @@
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
 		buttonText = isExpanded[reviewIndex] ? 'Show Less' : 'Read More';
 	}
+
+	const Fav = ({ formElement, formData, action, cancel }) => {
+		return async ({ result, update }) => {
+			if (result.data.success) {
+				toast.push('Favorite Updated!', {
+					theme: {
+						'--toastColor': 'mintcream',
+						'--toastBackground': 'rgba(72,187,120,0.9)',
+						'--toastBarBackground': '#2F855A'
+					}
+				});
+			}
+			await update();
+		};
+	};
+
+	const statusUpdate = ({ formElement, formData, action, cancel }) => {
+		return async ({ result, update }) => {
+			if (result.data.success) {
+				toast.push('Book Updated!', {
+					theme: {
+						'--toastColor': 'mintcream',
+						'--toastBackground': 'rgba(72,187,120,0.9)',
+						'--toastBarBackground': '#2F855A'
+					}
+				});
+			}
+
+			await update({ reset: false });
+		};
+	};
 </script>
 
 <title>{work.title}</title>
+<div class="wrap">
+	<SvelteToast />
+</div>
 <div class="banner" />
 <div class="container">
 	<div class="bcontainer">
@@ -94,14 +133,14 @@
 			<div class="userFav">
 				{#key (favTag, $page.data.user)}
 					{#if !favTag || !$page.data.user}
-						<form action="?/addFav" method="POST">
+						<form action="?/addFav" method="POST" use:enhance={Fav}>
 							<button class="addFavButton" formaction="?/addFav">
 								Add to Favorites
 								<span class="material-icons-outlined"> favorite_border </span>
 							</button>
 						</form>
 					{:else}
-						<form action="?/addFav" method="POST">
+						<form action="?/addFav" method="POST" use:enhance={Fav}>
 							<button class="addFavButton" formaction="?/addFav">
 								Remove from Favorites
 								<span class="material-symbols-outlined"> favorite </span>
@@ -133,7 +172,7 @@
 						</div>
 					</div>
 				</div>
-				<form method="POST" action="?/userStatus" class="userStatus">
+				<form method="POST" action="?/userStatus" class="userStatus" use:enhance={statusUpdate}>
 					{#if existingBook == null}
 						<button class="fbutton" id="addToListButton" on:click|preventDefault={setDefaultStatus}
 							>Add to List</button
@@ -381,7 +420,9 @@
 				<div class="review-head">
 					<h3 style="color: #61778f">Reviews</h3>
 					{#if existingBook && existingBook.bookId && existingBook.bookId.length > 0}
-						<a href="/books/{existingBook.bookId}/review">Write a review</a>
+						<a data-sveltekit-preload-data href="/books/{existingBook.bookId}/review"
+							>Write a review</a
+						>
 					{:else if $page.data.user}
 						<a href={null}>Write a review</a>
 					{:else}
@@ -450,10 +491,6 @@
 		font-family: 'Material Icons';
 	}
 
-	:root {
-		background-color: #edf1f5;
-	}
-
 	/* .banner {
 		background-color: #2b2d42;
 		height: 100px;
@@ -461,6 +498,7 @@
 
 	.container {
 		width: 100%;
+		background-color: #edf1f5;
 	}
 
 	.bcontainer {
