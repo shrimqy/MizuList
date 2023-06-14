@@ -1,40 +1,56 @@
 <script>
-	import { page } from '$app/stores';
+	import { page, navigating } from '$app/stores';
 </script>
 
-<div class="navBar">
-	<div class="nav">
-		<div class="logo">
-			<img src="/Logo.png" alt="" />
+<div class="header">
+	{#if $navigating}
+		<div class="load-bar">
+			<div class="box" />
 		</div>
+	{/if}
+	<div class="navBar">
+		<div class="nav">
+			<div class="logo">
+				<img src="/Logo.png" alt="" />
+			</div>
 
-		<nav class="navItems">
-			{#if !$page.data.user}
-				<a data-sveltekit-preload-data class="navLinks" href="/">Search</a>
-				<div class="navLink-right">
-					<a class="navLinks" href="/login">Login</a>
-					<form class="navbut">
-						<button><a href="/signup">Sign Up</a> </button>
+			<nav class="navItems">
+				{#if !$page.data.user}
+					<a data-sveltekit-preload-data class="navLinks" href="/">Search</a>
+					<div class="navLink-right">
+						<a class="navLinks" href="/login">Login</a>
+						<form class="navbut">
+							<button><a href="/signup">Sign Up</a> </button>
+						</form>
+					</div>
+				{/if}
+
+				{#if $page.data.user}
+					<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
+					<a class="navLinks" href="/profile">Profile</a>
+					<form class="navbut" action="/logout" method="POST">
+						<button type="submit">Log Out</button>
 					</form>
-				</div>
-			{/if}
-
-			{#if $page.data.user}
-				<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-				<a class="navLinks" href="/profile">Profile</a>
-				<form class="navbut" action="/logout" method="POST">
-					<button type="submit">Log Out</button>
-				</form>
-			{/if}
-		</nav>
+				{/if}
+			</nav>
+		</div>
 	</div>
 </div>
+
 <slot />
 
 <style>
 	* {
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
+	}
+
+	.header {
+		position: relative;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 999;
 	}
 
 	.navBar {
@@ -127,6 +143,33 @@
 
 		.navbut button {
 			width: 100%;
+		}
+	}
+
+	.load-bar {
+		position: fixed;
+		z-index: 1900;
+		width: 100%;
+		height: 2px;
+		overflow: hidden;
+	}
+
+	.box {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 50%;
+		height: 100%;
+		background-color: #3577ff;
+		animation: loading 2s ease-in-out infinite alternate;
+	}
+
+	@keyframes loading {
+		0% {
+			transform: translateX(-85%);
+		}
+		100% {
+			transform: translateX(185%);
 		}
 	}
 </style>

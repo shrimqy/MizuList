@@ -2,7 +2,6 @@
 	import { page } from '$app/stores';
 	export let data;
 	let { lastActivity, existingBook, stats, fav } = data;
-	console.log(fav);
 	const rereads = existingBook.filter(
 		(item) => item.rereads !== null && item.rereads !== ''
 	).length;

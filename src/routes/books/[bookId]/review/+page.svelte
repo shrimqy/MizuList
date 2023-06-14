@@ -1,16 +1,41 @@
 <script>
 	/** @type {import('./$types').PageData} */
-
+	import { enhance } from '$app/forms';
+	import { fade } from 'svelte/transition';
+	import { redirect } from '@sveltejs/kit';
+	import { page } from '$app/stores';
+	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import { goto } from '$app/navigation';
 	export let data;
 	let { work, bookData, isbn, existingBook } = data;
+	console.log(existingBook);
 
 	let recommendation = null;
 	let spoilerWarning = false;
+	const reviewUpdate = ({ formElement, formData, action, cancel }) => {
+		return async ({ result, update }) => {
+			if (result.data.success) {
+				toast.push('Review Updated!', {
+					theme: {
+						'--toastColor': 'mintcream',
+						'--toastBackground': 'rgba(72,187,120,0.9)',
+						'--toastBarBackground': '#2F855A'
+					}
+				});
+			}
+			goto(`/books/${existingBook.bookId}`, { invalidateAll: true });
+			await invalidateAll();
+			await update({ reset: false });
+		};
+	};
 </script>
 
-<div class="container">
+<div class="wrap">
+	<SvelteToast />
+</div>
+<div class="container" transition:fade={{ duration: 300 }}>
 	<h1>Review</h1>
-	<form method="post" action="?/review">
+	<form method="POST" action="?/review" use:enhance={reviewUpdate}>
 		<div class="content-container">
 			<div class="left-content">
 				<div class="title">{existingBook.title}</div>
@@ -23,7 +48,7 @@
 			</div>
 			<div class="right-content">
 				<div class="sbutton">
-					<button type="submit" formaction="?/review"
+					<button type="submit"
 						>Publish <span class="material-symbols-outlined"> send </span></button
 					>
 				</div>

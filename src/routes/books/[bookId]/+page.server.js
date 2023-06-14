@@ -103,6 +103,7 @@ export const actions = {
 				}
 			});
 		}
+		return { success: true };
 	},
 
 	//Add to List Function
@@ -198,5 +199,6 @@ export const actions = {
 				categoryId: categoryId
 			}
 		});
+		return { success: true };
 	}
 };

@@ -7,6 +7,7 @@ let fav,
 
 export async function load(locals) {
 	let userData = null;
+
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
 		user = await db.user.findUnique({

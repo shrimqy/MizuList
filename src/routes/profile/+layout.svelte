@@ -2,7 +2,6 @@
 	export let data;
 	let { user } = data;
 	import { page } from '$app/stores';
-	console.log($page.data.user);
 	import { base } from '$app/paths';
 	import { fade } from 'svelte/transition';
 </script>

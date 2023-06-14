@@ -4,7 +4,6 @@ import { redirect } from '@sveltejs/kit';
 let username, fav, lastActivity, stats;
 
 export async function load(locals) {
-	// console.log(locals.locals.user.name);
 	if (locals && locals.locals.user && locals.locals.user.name) {
 		username = locals.locals.user.name;
 		const user = await db.user.findUnique({

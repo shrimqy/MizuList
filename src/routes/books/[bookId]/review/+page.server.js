@@ -1,23 +1,22 @@
 let username, bookId;
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
+
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
 	return {};
 }
 /** @type {import('./$types').Actions} */
 export const actions = {
-	//add to favorite Action definiion
 	review: async ({ request, locals, params }) => {
+		if (!(locals && locals.user && locals.user.name)) {
+			throw redirect(302, '/login');
+		}
 		const data = await request.formData();
 		const review = data.get('review');
 		const recommendation = data.get('recommendation');
 		const spoiler = data.get('spoiler');
-		console.log(review);
-		console.log(recommendation);
-		console.log(spoiler);
 		bookId = params.bookId;
-
 		username = locals.user.name;
 		const user = await db.user.findUnique({
 			where: { username }
@@ -50,7 +49,7 @@ export const actions = {
 				}
 			});
 		}
-
-		throw redirect(302, `/books/${bookId}`);
+		// throw redirect(`/books/${bookId}`)
+		return { success: true };
 	}
 };

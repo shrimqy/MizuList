@@ -99,7 +99,7 @@
 
 	.addButton {
 		margin-top: 1rem;
-		margin-left: 20rem;
+		margin-left: 23%;
 		background-color: #fafafa;
 		text-align: center;
 		border-radius: 20px;
@@ -149,7 +149,7 @@
 	.listNav {
 		display: flex;
 		align-items: center;
-		padding: 0 20rem;
+		padding: 0 20%;
 		justify-content: space-around;
 
 		background: #fafafa;

@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation'; //for navigation to the search page
 	import { fade } from 'svelte/transition'; //for transitions
+
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
 	let inputValue = '';
