@@ -10,6 +10,7 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
+	console.log(reviews);
 
 	$: favTag = data.favTag;
 	import { page, updated } from '$app/stores';
@@ -441,6 +442,29 @@
 							<div class="review-header">
 								<h3 class="user-name">{review.user.username}</h3>
 								<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
+							</div>
+
+							<div class="review-tags">
+								{#if review.recommendation == 'Mixed Feelings'}
+									<div class="rtag" style="border: 1px solid #787878; color: #787878">
+										<span class="material-icons-outlined">star_half</span>
+										{review.recommendation}
+									</div>
+								{:else if review.recommendation == 'Recommended'}
+									<div class="rtag" style="border: 1px solid #26448f; color: #26448f">
+										<span class="material-icons-outlined">star</span>
+										{review.recommendation}
+									</div>
+								{:else}
+									<div class="rtag" style="border: 1px solid #a12f31; color: #a12f31">
+										<span class="material-icons-outlined">star_outline</span>
+										{review.recommendation}
+									</div>
+								{/if}
+
+								{#if review.spoiler == 'true'}
+									<div class="rtag" style="border: 1px solid #ff2c55; color: #ff2c55">Spoiler</div>
+								{/if}
 							</div>
 
 							<div class="review-content">
@@ -1042,15 +1066,18 @@
 		width: 160%;
 	}
 
-	/* .e-2 input {
-		width: 10rem;
-		margin-right: 1rem;
-		padding: 0.4rem;
-		color: #5c7289;
-		border: none;
-		border-radius: 4px;
-		background-color: #edf1f5;
-	} */
+	.review-tags {
+		display: flex;
+		gap: 2%;
+		font-size: 13px;
+		margin-bottom: 1rem;
+	}
+
+	.rtag {
+		display: flex;
+		border-radius: 5px;
+		padding: 0.2rem 0.5rem;
+	}
 
 	#overlay {
 		position: fixed;
