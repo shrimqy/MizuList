@@ -349,6 +349,13 @@
 		flex-wrap: wrap;
 	}
 
+	.bookCard:hover {
+		transition: transform 0.3s ease-in-out;
+		transform: scale(1.01);
+		object-fit: cover;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	}
+
 	.titleCover {
 		display: flex;
 		align-items: center;
@@ -385,7 +392,6 @@
 	.imageContainer img {
 		width: 67px;
 		height: 90px;
-		object-fit: cover;
 		border-top-left-radius: 7px;
 		border-bottom-left-radius: 7px;
 	}
@@ -443,19 +449,14 @@
 
 	.favbookCard {
 		padding: 1rem;
-	}
-
-	.favCover {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		position: relative;
+		height: 100%;
 	}
 
 	.favCover img {
 		border-radius: 7px;
 		width: 8rem;
-		height: auto;
+		height: 12rem;
+		object-fit: cover;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 		transition: transform 0.3s, box-shadow 0.3s;
 	}

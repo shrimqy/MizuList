@@ -59,7 +59,7 @@
 	// Review
 	let isExpanded = [];
 	let buttonText = 'See More';
-	const characterLimit = 300;
+	const characterLimit = 1000;
 
 	function toggleExpansion(reviewIndex) {
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
@@ -103,7 +103,7 @@
 	<SvelteToast />
 </div>
 <div class="banner" />
-<div class="container">
+<div class="container" transition:fade={{ duration: 300 }}>
 	<div class="bcontainer">
 		<div class="dataCover">
 			<div class="cover">
@@ -680,7 +680,12 @@
 	}
 
 	.review-text {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		color: #1e1915;
 		margin-bottom: 10px;
+		line-height: 20px;
+		font-size: 12px;
+		word-spacing: px;
 		white-space: pre-wrap;
 		overflow: hidden;
 		transition: max-height 0.5s ease-in-out;
