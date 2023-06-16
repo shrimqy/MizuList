@@ -8,7 +8,6 @@
 	import { goto } from '$app/navigation';
 	export let data;
 	let { work, bookData, isbn, existingBook } = data;
-	console.log(existingBook);
 
 	let recommendation = null;
 	let spoilerWarning = false;
@@ -172,6 +171,8 @@
 		border: none;
 		border-radius: 4px;
 		padding: 1rem;
+		outline: none;
+
 		background-color: #edf1f5;
 		min-width: 100%; /* Expand the textarea to full width */
 		max-width: 100%;

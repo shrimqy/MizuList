@@ -1,8 +1,7 @@
 <script>
 	export let data;
 	let { existingBook, fav } = data;
-	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(6));
-	console.log(filteredItems);
+	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(3));
 	let progress = '?';
 </script>
 

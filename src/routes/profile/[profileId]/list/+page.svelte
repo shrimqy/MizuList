@@ -5,7 +5,6 @@
 	let { existingBook, fav } = data;
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
 	let progress = '?';
-	console.log(filteredItems);
 	let showForm = [];
 	function toggleForm(index) {
 		showForm[index] = !showForm[index];

@@ -1,5 +1,7 @@
 <script>
 	import { page, navigating } from '$app/stores';
+	console.log($page);
+	let username = $page.data.user?.name;
 </script>
 
 <div class="header">
@@ -23,11 +25,9 @@
 							<button><a href="/signup">Sign Up</a> </button>
 						</form>
 					</div>
-				{/if}
-
-				{#if $page.data.user}
+				{:else}
 					<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-					<a class="navLinks" href="/profile">Profile</a>
+					<a class="navLinks" href="/profile/{username}">Profile</a>
 					<form class="navbut" action="/logout" method="POST">
 						<button type="submit">Log Out</button>
 					</form>

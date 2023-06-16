@@ -1,32 +1,30 @@
-/** @type {import('./$types').PageServerLoad} */
-import { redirect } from '@sveltejs/kit';
-
-export async function load() {
-	throw redirect('/profile');
-}
-
 import { db } from '$lib/server/database';
+import { redirect } from '@sveltejs/kit';
+let username, bookId, isbn, work;
+let fav,
+	existingBook = null;
 
+/** @type {import('./$types').PageServerLoad} */
+export async function load() {
+	return {};
+}
 /** @type {import('./$types').Actions} */
 export const actions = {
-	addBook: async ({ locals, request, params }) => {
+	//Add to List Function
+	userStatus: async ({ request, params, locals }) => {
+		//redirect if mot logged in
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}
-		const username = locals.user.name;
-		const user = await db.user.findUnique({
-			where: { username }
-		});
-
-		const referer = request.headers.get('referer');
+		//getting form data
+		username = locals.user.name;
+		const bookId = await params.bookId;
 		const data = await request.formData();
 		const title = data.get('title');
-		const author = data.get('author');
 		const rating = data.get('rating');
 		const status = data.get('status');
-		const categoryId = parseInt(status, 10);
+		const categoryId = parseInt(status, 10); //to convert the status to Int, shit doesn't work otherwise for somereason
 		const chapters = data.get('chapters');
-		const tpages = data.get('tpages');
 		const pages = data.get('pages');
 		const rereads = data.get('rereads');
 		const startedAt = data.get('startDate');
@@ -41,66 +39,56 @@ export const actions = {
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
-
-		const existingBook = await db.Book.findFirst({
+		const user = await db.user.findUnique({
+			where: { username }
+		});
+		existingBook = await db.book.findFirst({
 			where: {
-				title
+				title,
+				User: {
+					some: { username }
+				}
 			},
 			include: {
 				bookCategory: true
 			}
 		});
 
-		console.log(existingBook);
-
+		// Creating/updating the userStatus
 		if (existingBook) {
 			await db.Book.update({
-				where: { id: existingBook.id },
+				where: { id: existingBook.id }, // Provide the unique identifier of the existing record
 				data: {
-					title: title,
 					pages: pages,
 					chapters: chapters,
 					rating: rating,
 					rereads: rereads,
 					completedAt: completedDateTime,
 					createdAt: startedDateTime,
-					author: author,
-					tPages: tpages,
 					notes: notes,
 					bookCategory: {
 						// Disconnecting the category at index 1 from the existing book's categories
 						disconnect: [{ id: existingBook.bookCategory[1].id }],
+
 						// Connecting the new category and the "All" category to the book
 						connect: [{ id: categoryId }, { id: 1 }]
 					},
 					User: {
-						connect: { id: user.id }
-					}
-				}
-			});
-		} else {
-			await db.Book.create({
-				data: {
-					UserId: user.id,
-					title: title,
-					pages: pages,
-					chapters: chapters,
-					rating: rating,
-					author: author,
-					tPages: tpages,
-					rereads: rereads,
-					completedAt: completedDateTime,
-					bookCategory: {
-						// Connecting the new category and the "All" category to the book
-						connect: [{ id: categoryId }, { id: 1 }]
-					},
-					User: {
-						//connect to the User record using the id
 						connect: { id: user.id }
 					}
 				}
 			});
 		}
-		throw redirect(303, `${referer}`);
+		await db.activity.create({
+			data: {
+				bookId: bookId,
+				title: existingBook.title,
+				pages: pages,
+				rating: rating,
+				userId: user.id,
+				...(existingBook.covers && { covers: existingBook.covers[0] }),
+				categoryId: categoryId
+			}
+		});
 	}
 };

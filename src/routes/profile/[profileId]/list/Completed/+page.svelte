@@ -1,15 +1,14 @@
 <script>
 	export let data;
 	let { existingBook, fav } = data;
-	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(3));
-	console.log(filteredItems);
+	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(6));
 	let progress = '?';
 </script>
 
 <div class="container">
 	<div class="listContainer">
 		<div class="listBookData">
-			{#each existingBook as book}
+			{#each filteredItems as book}
 				<!-- since the data fetched is an array  -->
 
 				<!-- Link to the book page -->
@@ -42,7 +41,7 @@
 								<span>No cover available</span>
 								<!-- Show this if no cover was found from the API -->
 							{/if}
-							<a href="/books/{book.bookId}">
+							<a data-sveltekit-preload-data="hover" href="/books/{book.bookId}">
 								<div class="title">{book.title}</div>
 							</a>
 						</div>

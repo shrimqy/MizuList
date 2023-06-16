@@ -4,7 +4,6 @@
 	export let inputValue = '';
 	export let data;
 	$: book = data.search.docs;
-	$: console.log(book);
 	function submitSearch() {
 		goto(inputValue);
 	}

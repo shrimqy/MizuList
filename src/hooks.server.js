@@ -17,6 +17,7 @@ export async function handle({ event, resolve }) {
 	});
 
 	// if `user` exists set `events.local`
+	console.log(user);
 	if (user) {
 		event.locals.user = {
 			name: user.username,

@@ -1,23 +1,29 @@
 <script>
 	export let data;
-	let { user } = data;
+	let { userData } = data;
 	import { page } from '$app/stores';
-	import { base } from '$app/paths';
-	import { fade } from 'svelte/transition';
 </script>
 
 <div class="banner">
 	<div class="profile-header">
-		{#if user && user.avatar}
-			<img src={`/uploads/${user.username}.png`} alt="User Avatar" class="user-avatar" />
+		{#if userData && userData.avatar}
+			<img src={`/uploads/${userData.username}.png`} alt="User Avatar" class="user-avatar" />
 		{/if}
-		<span class="username">{$page.data.user.username}</span>
+		<span class="username">{userData.username}</span>
 	</div>
 </div>
 
 <nav class="profileNav">
-	<a href="/profile" class:selected={$page.url.pathname === '/profile'}>Overview</a>
-	<a href="/profile/list" class:selected={$page.url.pathname.startsWith('/profile/list')}>List</a>
+	<a
+		href="/profile/{userData.username}"
+		class:selected={$page.url.pathname === `/profile/` + userData.username}>Overview</a
+	>
+	<a
+		href="/profile/{userData.username}/list"
+		class:selected={$page.url.pathname.startsWith(`/profile/` + userData.username + `/list`)}
+		>List</a
+	>
+	<a href="/settings">Settings</a>
 </nav>
 
 <slot />

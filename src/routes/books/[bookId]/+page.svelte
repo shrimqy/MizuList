@@ -10,11 +10,9 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
-	console.log(reviews);
 
 	$: favTag = data.favTag;
 	import { page, updated } from '$app/stores';
-	// console.log($page.form);
 	import { transition_in } from 'svelte/internal';
 
 	let startDate = null;

@@ -2,6 +2,8 @@
 	/** @type {import('./$types').LayoutData} */
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
+	let username = $page.data.user.username;
+	console.log(username);
 	let showForm = false;
 	function toggleForm() {
 		showForm = !showForm;
@@ -10,20 +12,29 @@
 
 <title>{$page.data.user.username}'s Book List</title>
 <nav class="listNav">
-	<a href="/profile/list/All" class:selected={$page.url.pathname === '/profile/list/All'}>All</a>
-	<a href="/profile/list" class:selected={$page.url.pathname === '/profile/list'}>Reading</a>
-	<a href="/profile/list/Planning" class:selected={$page.url.pathname === '/profile/list/Planning'}
-		>Plan to Read</a
-	>
-	<a href="/profile/list/Paused" class:selected={$page.url.pathname === '/profile/list/Paused'}
-		>Paused</a
-	>
-	<a href="/profile/list/Dropped" class:selected={$page.url.pathname === '/profile/list/Dropped'}
-		>Dropped</a
+	<a
+		href="/profile/{username}/list/All"
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/All'}>All</a
 	>
 	<a
-		href="/profile/list/Completed"
-		class:selected={$page.url.pathname === '/profile/list/Completed'}>Completed</a
+		href="/profile/{username}/list/"
+		class:selected={$page.url.pathname === '/profile/' + username + '/list'}>Reading</a
+	>
+	<a
+		href="/profile/{username}/list/Planning"
+		class:selected={$page.url.pathname === '/profile/' + username + 'list/Planning'}>Plan to Read</a
+	>
+	<a
+		href="/profile/{username}/list/Paused"
+		class:selected={$page.url.pathname === '/profile/' + username + 'list/Paused'}>Paused</a
+	>
+	<a
+		href="/profile/{username}/list/Dropped"
+		class:selected={$page.url.pathname === '/profile/' + username + 'list/Dropped'}>Dropped</a
+	>
+	<a
+		href="/profile/{username}/list/Completed"
+		class:selected={$page.url.pathname === '/profile/' + username + 'list/Completed'}>Completed</a
 	>
 </nav>
 <button class="addButton" on:click|preventDefault={toggleForm}>
@@ -33,10 +44,10 @@
 
 {#if showForm}
 	<div class="editor-popout" transition:fade={{ duration: 300 }}>
-		<form method="POST" action="/profile/addBook?/addBook">
+		<form method="POST" action="/profile/{username}/list/addBook?/addBook">
 			<div class="editor">
 				<div class="ebutton">
-					<button formaction="/profile/list/addBook?/addBook" type="submit">Save</button>
+					<button formaction="/profile/{username}/list/addBook?/addBook" type="submit">Save</button>
 				</div>
 				<button type="button" class="cancelButton" on:click={toggleForm}>
 					<span class="material-icons">close</span>

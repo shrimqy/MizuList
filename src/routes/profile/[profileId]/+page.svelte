@@ -16,8 +16,6 @@
 	const sum = filteredRating.reduce((acc, item) => acc + parseFloat(item.rating), 0);
 	const averageRating = (sum / filteredRating.length).toFixed(2);
 
-	// console.log(reading);
-
 	function formatDate(dateString) {
 		const date = new Date(dateString);
 		const now = new Date();
@@ -74,7 +72,7 @@
 					<div class="listContainer">
 						<div class="listItem">
 							<span class="material-icons" style="color:#2DB039;"> circle </span>
-							<span>Reading</span>
+							<a href="/profile/list">Reading</a>
 						</div>
 
 						<div class="listData">{stats[1].Book.length}</div>
@@ -83,7 +81,7 @@
 					<div class="listContainer">
 						<div class="listItem">
 							<span class="material-icons" style="color:#C3C3C3"> circle </span>
-							<span>Plan to Read</span>
+							<a href="/profile/list/Planning">Plan to Read</a>
 						</div>
 
 						<div class="listData">{stats[2].Book.length}</div>
@@ -92,7 +90,7 @@
 					<div class="listContainer">
 						<div class="listItem">
 							<span class="material-icons" style="color:#F9D457"> circle </span>
-							<span>Paused</span>
+							<a href="/profile/list/Paused">Paused</a>
 						</div>
 
 						<div class="listData">{stats[3].Book.length}</div>
@@ -101,7 +99,7 @@
 					<div class="listContainer">
 						<div class="listItem">
 							<span class="material-icons" style="color:#A12F31"> circle </span>
-							<span>Dropped</span>
+							<a href="/profile/list/Dropped">Dropped</a>
 						</div>
 
 						<div class="listData">{stats[4].Book.length}</div>
@@ -110,7 +108,7 @@
 					<div class="listContainer">
 						<div class="listItem">
 							<span class="material-icons" style="color:#26448F"> circle </span>
-							<span>Completed</span>
+							<a href="/profile/list/Completed">Completed</a>
 						</div>
 
 						<div class="listData">{stats[5].Book.length}</div>
@@ -332,11 +330,24 @@
 		display: flex;
 	}
 
-	.listItem span {
+	.listItem {
 		/* height: inherit; */
 		display: flex;
-		padding-right: 0.3rem;
+		padding-right: 0.5rem;
+		line-height: 20px;
 		align-items: end;
+	}
+
+	.listItem a {
+		transition: all 0.3s ease-in-out;
+	}
+
+	.listItem a:hover {
+		color: #1faafa;
+	}
+
+	.listItem span {
+		padding-right: 0.5rem;
 	}
 
 	.bookCard {
@@ -347,13 +358,12 @@
 		background-color: #fafafa;
 		padding-right: 1rem;
 		flex-wrap: wrap;
+		transition: transform 0.3s, box-shadow 0.3s;
 	}
 
 	.bookCard:hover {
-		transition: transform 0.3s ease-in-out;
-		transform: scale(1.01);
-		object-fit: cover;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		transform: scale(1.05);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 	}
 
 	.titleCover {

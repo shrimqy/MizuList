@@ -21,7 +21,6 @@ export async function load({ locals, params }) {
 			const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
 			isbn = await isbnData.json();
 		}
-		// console.log(isbn);
 
 		return {
 			work,
