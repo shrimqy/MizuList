@@ -1,17 +1,10 @@
 <script>
 	export let data;
 	let { userData } = data;
-	import { page } from '$app/stores';
+	let username = $page.data.userData?.username;
+	console.log(username);
+	import { page, navigating } from '$app/stores';
 </script>
-
-<div class="banner">
-	<div class="profile-header">
-		{#if userData && userData.avatar}
-			<img src={`/uploads/${userData.username}.png`} alt="User Avatar" class="user-avatar" />
-		{/if}
-		<span class="username">{userData.username}</span>
-	</div>
-</div>
 
 <nav class="profileNav">
 	<a
@@ -33,36 +26,6 @@
 		margin: 0;
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
-	}
-
-	.banner {
-		width: 100%;
-		background: #2b2d42;
-		height: 220px;
-		box-shadow: 0px 6px 6px rgba(255, 255, 255, 0.6); /* Adjusted */
-	}
-
-	.profile-header {
-		height: 100%;
-		display: flex;
-		align-items: flex-end; /* Adjusted */
-		justify-content: start; /* Adjusted */
-		margin: 0 18%; /* Adjusted */
-	}
-
-	.username {
-		padding: 1rem;
-		font-size: 22px;
-		font-weight: 600;
-		color: #e6ecf2;
-	}
-
-	.user-avatar {
-		width: 158px;
-		height: 158px;
-		object-fit: cover;
-		border-top-left-radius: 7px;
-		border-top-right-radius: 7px;
 	}
 
 	.profileNav {
@@ -91,22 +54,6 @@
 
 	/* Responsive Styles */
 	@media screen and (max-width: 768px) {
-		.profile-header {
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.username {
-			padding: 0.5rem; /* Adjusted */
-			text-align: center; /* Added */
-		}
-
-		.user-avatar {
-			width: 120px; /* Adjusted */
-			height: 120px; /* Adjusted */
-			margin-bottom: 0.5rem; /* Added */
-		}
-
 		nav a {
 			padding: 0.5rem 1rem; /* Adjusted */
 		}

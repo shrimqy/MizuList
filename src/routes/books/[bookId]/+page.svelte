@@ -101,7 +101,7 @@
 	<SvelteToast />
 </div>
 <div class="banner" />
-<div class="container" transition:fade={{ duration: 300 }}>
+<div class="container" transition:fade={{ duration: 500 }}>
 	<div class="bcontainer">
 		<div class="dataCover">
 			<div class="cover">
