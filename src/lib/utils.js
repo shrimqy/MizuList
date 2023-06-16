@@ -8,7 +8,6 @@ export function formatDate(dateString, format = 'default') {
 	const hours = Math.floor(diffInMs / (1000 * 60 * 60));
 	const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-	// Check if a specific format is defined for the route
 	const routeOptions = {
 		// Example: Route A
 		reviewDate: {
@@ -55,6 +54,18 @@ export function formatDate(dateString, format = 'default') {
 		};
 		return date.toLocaleString('en-US', defaultOptions);
 	}
+}
+
+export function filterDataLastDay(data) {
+	const currentTime = new Date();
+	const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // Assuming 24 hours in a day
+
+	return data.filter((entry) => {
+		const entryTime = new Date(entry.timestamp);
+		const timeDifference = currentTime - entryTime;
+
+		return timeDifference <= oneDayInMilliseconds;
+	});
 }
 
 //to filter tags to an appropriate styling

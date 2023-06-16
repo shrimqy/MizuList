@@ -1,186 +1,166 @@
 <script>
-	import { goto } from '$app/navigation'; //for navigation to the search page
-	import { fade } from 'svelte/transition'; //for transitions
-
-	export let data; //data fetch from the API
-	let book = data.book.works; //assigning the data to book
-	let inputValue = '';
-
-	function submitSearch() {
-		goto('search/' + inputValue); //search page url
-	}
+	/** @type {import('./$types').PageData} */
+	import { formatDate, filterDataLastDay } from '$lib/utils';
+	export let data;
+	let { lastActivity } = data;
 </script>
 
-<title>Home</title>
-<div class="container">
-	<h3>Search</h3>
-	<form on:submit|preventDefault={submitSearch} class="search-container">
-		<input bind:value={inputValue} type="search" class="search-box" name="search-box" />
-		<span class="material-icons">search</span>
-	</form>
-	<h1>Trending Weekly Now</h1>
-	<div class="book-container">
-		{#each book as book}
-			<!-- since the data fetched is an array  -->
-			<a
-				data-sveltekit-preload-data
-				href="/books/{book.key.split('/')[2]}"
-				onerror="this.href='/books/{book.cover_edition_key}"
-			>
-				<!-- Link to the book page -->
-				<div class="bookCard">
-					<div class="bookCover">
-						{#if book.cover_edition_key}
-							<!-- Book cover source -->
-							<img
-								loading="lazy"
-								src={'http://covers.openlibrary.org/b/olid/' +
-									book.cover_edition_key +
-									'-M.jpg?default=false'}
-								alt={book.title}
-							/>
-						{:else}
-							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
-						{/if}
+<div class="page-content">
+	<div class="container">
+		<div class="activity" style="width: 60%;">
+			<h1>Activity</h1>
+			<div class="aContainer">
+				{#each filterDataLastDay(lastActivity.slice(0, 15)) as book}
+					<div class="bookCard">
+						<div class="titleCover">
+							<div class="imageContainer">
+								{#if book.bookId}
+									<!-- Book cover source -->
+
+									<img
+										src={'http://covers.openlibrary.org/b/id/' +
+											book.covers +
+											'-M.jpg?default=false'}
+										alt={book.title}
+									/>
+									<a data-sveltekit-preload-data href="/books/{book.bookId}">
+										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
+									</a>
+								{:else}
+									<span>No cover</span>
+									<!-- Show this if no cover was found from the API -->
+								{/if}
+							</div>
+							<div class="details">
+								<a href="/profile/{book.user.username}/">
+									<div class="title">{book.user.username}</div>
+								</a>
+
+								<div class="status">
+									{book.category.name}
+									<div class="bookTitle">{book.title}</div>
+									<div>{book.pages ? book.pages : '-'}/{book.tPages ? book.tPages : '?'}</div>
+									<div>
+										Scored
+										<span>{book.rating !== null && book.rating !== '0' ? book.rating : '-'}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="timeStamp">
+							{formatDate(book.timestamp)}
+						</div>
 					</div>
-					<div class="title">{book.title}</div>
-				</div>
-			</a>
-		{/each}
+				{/each}
+			</div>
+		</div>
+		<div class="list-preview">
+			<h1>Book in Progress</h1>
+		</div>
 	</div>
 </div>
 
 <style>
 	* {
-		margin: 0px;
-		padding: 0px;
 		font-family: 'Overpass', sans-serif;
+		outline: none;
+		text-decoration: none;
 	}
 
 	:root {
 		background-color: #edf1f5;
+		color: #5c728a;
+		overflow-y: scroll; /* Always show the vertical scroll bar */
 	}
 
-	a {
-		text-decoration: none;
+	.page-content {
+		margin: 0 18%;
 	}
 
 	.container {
-		padding: 2rem; /* Adjusted padding */
-		max-width: 65%; /* Added max-width */
-		margin: 0 auto; /* Centered horizontally */
+		display: flex;
+		justify-content: space-between;
+		padding: 2rem 0;
+		gap: 2rem;
 	}
 
 	h1 {
-		padding-top: 2rem; /* Adjusted padding */
-		font-size: 22px;
-		color: #5e5e5e;
-		font-weight: 600;
+		font-size: 20px;
 	}
 
-	h3 {
-		font-size: 16px;
-		font-weight: 600;
-		color: #5e5e5e;
-		padding-bottom: 1rem; /* Adjusted padding */
-	}
-
-	.book-container {
-		padding: 1rem 0rem;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		color: #647380;
+	.aContainer {
+		margin: 1rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
 	}
 
 	.bookCard {
-		font-size: 15px;
-		color: #647380;
-		padding-right: 0.7rem;
-		font-weight: 600;
-		display: flex;
-		flex-direction: column;
-		height: 100%; /* Added height */
-		transition: all 0.3s ease-in-out;
-	}
-
-	.bookCover {
-		height: 80%;
-		width: 90%;
-		background-color: rgb(202, 202, 202);
-		border-radius: 6px;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		color: #fff;
-	}
-
-	img {
 		width: 100%;
-		height: 100%;
-		border-style: none;
-		object-fit: cover;
-		border-radius: 6px;
-		box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-		transition: transform 0.3s, box-shadow 0.3s;
-	}
-
-	.title {
-		padding: 10px 0;
-		overflow-wrap: break-word;
+		display: flex;
+		min-height: 6.5rem;
+		border-radius: 5px;
+		background-color: #fafafa;
+		transition: transform 0.3s, box-shadow 0.3s ease-in-out;
 	}
 
 	.bookCard:hover {
+		transform: scale(1.002);
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.titleCover {
+		width: 100%;
+		display: flex;
+	}
+
+	.imageContainer {
+		position: relative;
+		padding: 0;
+		display: flex;
+		width: 77px;
+		align-items: center;
+	}
+
+	.imageContainer img {
+		width: 77px;
+		height: 100%;
+		object-fit: cover;
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+
+	.details {
+		display: flex;
+		padding-left: 1rem;
+		margin: 0.5rem 0;
+		gap: 10px;
+		flex-direction: column;
+	}
+
+	.status {
+		display: flex;
+		gap: 5px;
+	}
+
+	.title,
+	.bookTitle {
+		color: #3db4f2;
+		font-weight: 500;
+		font-size: 16px;
+		transition: all 0.3s ease-in-out;
+	}
+
+	.title:hover {
 		color: #1faafa;
 	}
 
-	.bookCard img:hover {
-		transform: scale(1.05);
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-	}
-
-	/* Style the search box */
-	.search-container {
-		display: flex;
-		align-items: center;
-		position: relative;
-		margin-bottom: 1rem; /* Added margin */
-	}
-
-	.search-box {
-		padding: 10px 15px 10px 40px;
-		border: none;
-		border-radius: 7px;
-		background-color: #fff;
-		font-size: 15px;
+	.timeStamp {
+		color: #9299a1;
+		font-size: 11px;
+		margin: 0.5rem 0.5rem;
+		width: 6rem;
 		font-weight: 600;
-		width: 100%; /* Adjusted width */
-		max-width: 300px; /* Added max-width */
-		color: #5e5e5e;
-		height: 40px;
-		box-shadow: 0px 2px 10px rgba(37, 34, 63, 0.1);
-	}
-	.search-box:focus {
-		outline: none;
-	}
-
-	.material-icons {
-		font-family: 'Material Icons';
-		font-weight: 600;
-		font-size: 17px; /* Preferred icon size */
-		color: #9e9e9e;
-		padding: 0px 10px;
-		position: absolute;
-	}
-
-	/* Responsive Styles */
-	@media screen and (max-width: 600px) {
-		.container {
-			padding: 1rem; /* Adjusted padding */
-		}
-
-		.search-box {
-			max-width: none; /* Reset max-width */
-		}
+		text-align: right;
 	}
 </style>

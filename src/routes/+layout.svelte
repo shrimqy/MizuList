@@ -3,9 +3,7 @@
 
 	export let data;
 	let { userData } = data;
-	console.log($page);
 	let username = $page.data.userData?.username;
-	console.log(username);
 </script>
 
 {#if $page.url.pathname.startsWith(`/profile/` + userData.username)}
@@ -24,7 +22,7 @@
 
 					<nav class="navItems">
 						{#if !username}
-							<a data-sveltekit-preload-data class="navLinks" href="/">Search</a>
+							<a data-sveltekit-preload-data class="navLinks" href="/Browse">Browse</a>
 							<div class="navLink-right">
 								<a class="navLinks" href="/login">Login</a>
 								<form class="navbut">
@@ -33,6 +31,7 @@
 							</div>
 						{:else}
 							<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
+							<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
 							<a class="navLinks" href="/profile/{username}">Profile</a>
 							<form class="navbut" action="/logout" method="POST">
 								<button type="submit">Log Out</button>
@@ -73,6 +72,7 @@
 						</div>
 					{:else}
 						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
+						<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
 						<a class="navLinks" href="/profile/{username}">Profile</a>
 						<form class="navbut" action="/logout" method="POST">
 							<button type="submit">Log Out</button>

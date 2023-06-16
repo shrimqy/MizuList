@@ -56,12 +56,10 @@
 
 	// Review
 	let isExpanded = [];
-	let buttonText = 'See More';
 	const characterLimit = 1000;
 
 	function toggleExpansion(reviewIndex) {
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
-		buttonText = isExpanded[reviewIndex] ? 'Show Less' : 'Read More';
 	}
 
 	const Fav = ({ formElement, formData, action, cancel }) => {
@@ -483,7 +481,7 @@
 									{:else}
 										<span class="material-icons">expand_more</span>
 									{/if}
-									{buttonText}
+									{isExpanded[reviewIndex] ? 'Read Less' : 'Read More'}
 								</button>
 							{/if}
 						</div>
