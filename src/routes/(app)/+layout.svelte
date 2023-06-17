@@ -3,7 +3,6 @@
 
 	export let data;
 	let { userprofile } = data;
-	console.log($page);
 	let username = $page.data.user?.name;
 </script>
 

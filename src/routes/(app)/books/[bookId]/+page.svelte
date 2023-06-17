@@ -374,6 +374,10 @@
 				<h3>{bookData.language ? bookData.language.join(', ') : 'N/A'}</h3>
 				<h2>Edition Count</h2>
 				<h3>{bookData.edition_count || 'N/A'}</h3>
+				<a class="amazonLink" href="https://www.amazon.in/s?k={bookData.title}" target="_blank">
+					<h2>Amazon</h2>
+					<span class="material-icons-outlined"> open_in_new </span>
+				</a>
 			</div>
 			<div class="tag-container">
 				{#if bookData.subject && bookData.subject.length > 0}
@@ -547,6 +551,7 @@
 		font-size: 11px;
 		padding: 6px 15px;
 		margin-bottom: 0.9rem;
+
 		margin-right: 8px;
 		border-radius: 3px;
 		box-sizing: border-box;
@@ -567,6 +572,19 @@
 
 	.book-details h3 {
 		white-space: pre-wrap;
+	}
+
+	.amazonLink {
+		color: #6e8297;
+		text-decoration: none;
+		display: flex;
+		align-items: start;
+	}
+
+	.amazonLink span {
+		margin: 0.35rem 0rem;
+		font-size: 14px;
+		font-weight: 600;
 	}
 
 	.tag-container h3 {

@@ -73,18 +73,20 @@ model Book {
 }
 
 model activity {
-  id         String        @id @default(uuid())
-  bookId     String?
-  timestamp  DateTime      @default(now())
-  pages      String?
-  rating     String?
-  title      String?
-  tPages     String?
-  covers     Int?
-  user       User?         @relation(fields: [userId], references: [id])
-  userId     String?
-  category   BookCategory? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
+  id           String        @id @default(uuid())
+  bookId       String?
+  timestamp    DateTime      @default(now())
+  pages        String?
+  rating       String?
+  title        String?
+  tPages       String?
+  activityText String?
+  likes        Int?
+  covers       Int?
+  user         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  category     BookCategory? @relation(fields: [categoryId], references: [id])
+  categoryId   Int?
 
   @@index([bookId])
 }
