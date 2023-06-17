@@ -1,17 +1,17 @@
 /** @type {import('./$types').LayoutServerLoad} */
 import { db } from '$lib/server/database';
-let userData;
+let userprofile, username;
 // get `locals.user` and pass it to the `page` store
-export async function load({ locals, cookies }) {
-	let username = locals.user?.name;
+export async function load({ locals, cookies, params }) {
+	username = params.profileId;
 	if (username) {
-		userData = await db.user.findUnique({
+		userprofile = await db.user.findUnique({
 			where: { username }
 		});
 	}
 
 	return {
-		userData,
-		user: locals.user
+		user: locals.user,
+		userprofile
 	};
 }

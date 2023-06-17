@@ -32,7 +32,7 @@
 								{/if}
 							</div>
 							<div class="details">
-								<a href="/profile/{book.user.username}/">
+								<a data-sveltekit-preload-code href="/profile/{book.user.username}/">
 									<div class="title">{book.user.username}</div>
 								</a>
 

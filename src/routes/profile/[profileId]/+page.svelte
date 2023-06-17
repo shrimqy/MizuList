@@ -2,12 +2,13 @@
 	import { page } from '$app/stores';
 	export let data;
 	import { formatDate, filterTags } from '$lib/utils';
-	let { lastActivity, existingBook, stats, fav } = data;
+
+	let { lastActivity, existingBook, stats, fav, userData } = data;
 	const rereads = existingBook.filter(
 		(item) => item.rereads !== null && item.rereads !== ''
 	).length;
 
-	const uniqueLastActivity = lastActivity.filter(
+	const uniqueLastActivity = lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
 
@@ -18,7 +19,7 @@
 	const averageRating = (sum / filteredRating.length).toFixed(2);
 </script>
 
-<title>{$page.data.user.username}'s Profile</title>
+<title>{userData.username}'s Profile</title>
 <div class="container">
 	<div class="analytics">
 		<div class="statistics">

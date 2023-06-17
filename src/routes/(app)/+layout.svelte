@@ -2,60 +2,19 @@
 	import { page, navigating } from '$app/stores';
 
 	export let data;
-	let { userData } = data;
-	let username = $page.data.userData?.username;
+	let { userprofile } = data;
+	console.log($page);
+	let username = $page.data.user?.name;
 </script>
 
-{#if $page.url.pathname.startsWith(`/profile/` + userData.username)}
-	<div class="banner">
-		<div class="header">
-			{#if $navigating}
-				<div class="load-bar">
-					<div class="box" />
-				</div>
-			{/if}
-			<div class="navBar">
-				<div class="nav">
-					<div class="logo">
-						<img src="/Logo.png" alt="" />
-					</div>
-
-					<nav class="navItems">
-						{#if !username}
-							<a data-sveltekit-preload-data class="navLinks" href="/Browse">Browse</a>
-							<div class="navLink-right">
-								<a class="navLinks" href="/login">Login</a>
-								<form class="navbut">
-									<button><a href="/signup">Sign Up</a> </button>
-								</form>
-							</div>
-						{:else}
-							<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-							<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
-							<a class="navLinks" href="/profile/{username}">Profile</a>
-							<form class="navbut" action="/logout" method="POST">
-								<button type="submit">Log Out</button>
-							</form>
-						{/if}
-					</nav>
-				</div>
-			</div>
-		</div>
-		<div class="profile-header">
-			{#if userData && userData?.avatar}
-				<img src={`/uploads/${userData?.username}.png`} alt="User Avatar" class="user-avatar" />
-			{/if}
-			<span class="username">{userData?.username}</span>
-		</div>
-	</div>
-{:else}
+<div class="banner">
 	<div class="header">
 		{#if $navigating}
 			<div class="load-bar">
 				<div class="box" />
 			</div>
 		{/if}
-		<div class="navBar-nologin">
+		<div class="navBar">
 			<div class="nav">
 				<div class="logo">
 					<img src="/Logo.png" alt="" />
@@ -63,7 +22,8 @@
 
 				<nav class="navItems">
 					{#if !username}
-						<a data-sveltekit-preload-data class="navLinks" href="/">Search</a>
+						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
+						<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
 						<div class="navLink-right">
 							<a class="navLinks" href="/login">Login</a>
 							<form class="navbut">
@@ -82,13 +42,14 @@
 			</div>
 		</div>
 	</div>
-	<!-- <div class="profile-header">
+</div>
+
+<!-- <div class="profile-header">
 		{#if userData && userData?.avatar}
 			<img src={`/uploads/${userData?.username}.png`} alt="User Avatar" class="user-avatar" />
 		{/if}
 		<span class="username">{userData?.username}</span>
 	</div> -->
-{/if}
 
 <slot />
 
@@ -115,7 +76,7 @@
 		justify-content: center;
 	}
 
-	.navBar-nologin {
+	.navBar {
 		background: #2b2d42;
 		width: 100%;
 		height: 3.5rem;
@@ -150,12 +111,6 @@
 		justify-content: center;
 	}
 
-	.navLinks {
-		color: #d3d5f3d8;
-
-		padding: 0.5rem 1rem;
-	}
-
 	.navLink-right {
 		display: flex;
 		align-items: center;
@@ -163,7 +118,16 @@
 		padding-right: 2rem;
 	}
 
-	.navbut button {
+	.navBar a {
+		color: #d3d5f3d8;
+		font-weight: 600;
+		font-size: 14px;
+		padding: 0rem 1.3rem;
+		transition: all 0.3s ease;
+	}
+
+	.navbut button,
+	.navbut a {
 		font-size: 16px;
 		font-weight: 600;
 		border: 1px;
@@ -171,13 +135,13 @@
 		background-color: #3577ff;
 		color: #fff;
 		cursor: pointer;
-		padding: 10px 12px;
+		padding: 10px 10px;
 		text-decoration: none;
 		transition: all 0.3s ease-in-out;
 	}
 
 	.navbut button,
-	a {
+	.navbut a {
 		color: #fff;
 	}
 
@@ -236,40 +200,10 @@
 		}
 	}
 
-	.banner {
-		width: 100%;
-		background: #2b2d42;
-		height: 300px;
-		display: flex;
-		flex-direction: column;
-		box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.1);
-		background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-			url(https://s4.anilist.co/file/anilistcdn/user/banner/b5509366-eoLTht6H4nXH.jpg);
-		background-size: cover; /* Adjusts the size of the background image to cover the entire container */
-		background-position: center; /* Centers the background image within the container */
-		background-repeat: no-repeat; /* Prevents the background image from repeating */
-	}
-
-	.profile-header {
-		height: 100%;
-		display: flex;
-		align-items: flex-end; /* Adjusted */
-		justify-content: start; /* Adjusted */
-		margin: 0 18%; /* Adjusted */
-	}
-
-	.username {
-		padding: 1rem;
-		font-size: 22px;
-		font-weight: 600;
-		color: #e6ecf2;
-	}
-
-	.user-avatar {
-		width: 158px;
-		height: 158px;
-		object-fit: cover;
-		border-top-left-radius: 7px;
-		border-top-right-radius: 7px;
+	/* Responsive Styles */
+	@media screen and (max-width: 768px) {
+		nav a {
+			padding: 0.5rem 1rem; /* Adjusted */
+		}
 	}
 </style>
