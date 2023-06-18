@@ -134,7 +134,8 @@
 											</div>
 
 											<div class="ebutton">
-												<button formaction="?/userStatus" type="submit">Save</button>
+												<button class="esave" formaction="?/userStatus" type="submit">Save</button>
+												<button class="edelete" formaction="?/delete" type="submit">Delete</button>
 											</div>
 										</div>
 									</div>
@@ -481,13 +482,24 @@
 		padding: 0.5rem;
 		margin-bottom: 1rem;
 		cursor: pointer;
-		background-color: #007bff;
 		color: #fff;
 		transition: background-color 0.3s ease;
 	}
 
-	.ebutton button:hover {
+	.esave {
+		background-color: #0277f5;
+	}
+
+	.edelete {
+		background-color: #c0495d;
+	}
+
+	.esave:hover {
 		background-color: #0089fa;
+	}
+
+	.edelete:hover {
+		background-color: #e6556d;
 	}
 
 	.cancelButton {

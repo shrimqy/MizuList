@@ -4,9 +4,7 @@
 	export let data;
 
 	let { lastActivity, existingBook, user } = data;
-	console.log(user);
-	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
-	console.log(filteredItems);
+	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 </script>
 
 <div class="page-content">
@@ -14,7 +12,7 @@
 		<div class="activity" style="width: 67%;">
 			<h1>Global Activity</h1>
 			<div class="aContainer">
-				{#each filterDataLastDay(lastActivity.slice(0, 15)) as book}
+				{#each filterDataLastDay(lastActivity.slice(0, 20)) as book}
 					<div class="bookCard">
 						<div class="titleCover">
 							<div class="imageContainer">
@@ -51,8 +49,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="timeStamp">
-							{formatDate(book.timestamp)}
+						<div class="A-Right">
+							<div class="timeStamp">
+								{formatDate(book.timestamp)}
+							</div>
+							<div class="likes">
+								<span class="material-icons-round" style="font-size: 13px;"> favorite </span>
+							</div>
 						</div>
 					</div>
 				{/each}
@@ -96,6 +99,10 @@
 		background-color: #edf1f5;
 		color: #5c728a;
 		overflow-y: scroll; /* Always show the vertical scroll bar */
+	}
+
+	.material-icons-round {
+		font-family: 'Material Symbols Rounded';
 	}
 
 	.page-content {
@@ -181,7 +188,10 @@
 		color: #1faafa;
 	}
 
-	.timeStamp {
+	.A-Right {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
 		color: #9299a1;
 		font-size: 11px;
 		margin: 0.5rem 0.5rem;

@@ -2,7 +2,7 @@
 	/** @type {import('./$types').LayoutData} */
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
-	let username = $page.data.user.username;
+	let username = $page.data.user.name;
 	console.log(username);
 	let showForm = false;
 	function toggleForm() {
@@ -10,7 +10,7 @@
 	}
 </script>
 
-<title>{$page.data.user.username}'s Book List</title>
+<title>{$page.data.user.name}'s Book List</title>
 <nav class="listNav">
 	<a
 		href="/profile/{username}/list/All"
