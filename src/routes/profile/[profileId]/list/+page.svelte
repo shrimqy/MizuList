@@ -3,9 +3,24 @@
 
 	export let data;
 	let { existingBook, fav } = data;
+
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
+	console.log(filteredItems);
 	let progress = '?';
 	let showForm = [];
+	const convertedItems = filteredItems.map((item) => {
+		const convertedCreatedAt = new Date(item.createdAt).toISOString().split('T')[0];
+		const convertedUpdatedAt = new Date(item.updatedAt).toISOString().split('T')[0];
+		const convertedcompletedAt = new Date(item.completedAt).toISOString().split('T')[0];
+		return {
+			...item,
+			createdAt: convertedCreatedAt,
+			updatedAt: convertedUpdatedAt,
+			completedAt: convertedcompletedAt
+		};
+	});
+
+	console.log(convertedItems);
 	function toggleForm(index) {
 		showForm[index] = !showForm[index];
 	}
@@ -14,7 +29,7 @@
 <div class="container">
 	<div class="listContainer">
 		<div class="listBookData">
-			{#each filteredItems as book, index}
+			{#each convertedItems as book, index}
 				<!-- since the data fetched is an array  -->
 
 				<!-- Link to the book page -->
@@ -99,9 +114,9 @@
 									<span>Days</span>
 								</div>
 								<div class="dateEnd">
-									<div>{book.createdAt ? book.createdAt.toISOString().split('T')[0] : '-'}</div>
+									<div>{book.createdAt ? book.createdAt : '-'}</div>
 									<div>
-										{book.completedAt ? book.completedAt.toISOString().split('T')[0] : '-'}
+										{book.completedAt ? book.completedAt : '-'}
 									</div>
 									<div>
 										{book.completedAt && book.createdAt
@@ -153,7 +168,7 @@
 									<div class="editor-container">
 										<div class="e-userStatus">
 											<div class="e-1">
-												<select id="status" name="status" bind:value={book.bookCategory}>
+												<select id="status" name="status" bind:value={book.bookCategory[1]}>
 													<option value={2}>Reading</option>
 													<option value={3} id="defaultOption">Plan to Read</option>
 													<option value={4}>Paused</option>

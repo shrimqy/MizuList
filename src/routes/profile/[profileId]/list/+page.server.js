@@ -20,6 +20,7 @@ export const actions = {
 		username = locals.user.name;
 		const bookId = await params.bookId;
 		const data = await request.formData();
+		console.log(data);
 		const title = data.get('title');
 		const rating = data.get('rating');
 		const status = data.get('status');
@@ -35,10 +36,12 @@ export const actions = {
 		}
 
 		const completedAt = data.get('finishDate');
-		const completedDateTime = undefined;
+		let completedDateTime;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
+
+		console.log(completedDateTime);
 		const user = await db.user.findUnique({
 			where: { username }
 		});
