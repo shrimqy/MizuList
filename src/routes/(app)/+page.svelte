@@ -17,27 +17,20 @@
 		}
 	}
 	let { lastActivity, existingBook, user, status } = data;
-	// console.log(user);
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
 	$: uniqueLastActivity = $page.data.lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
+	$: status = $page.data.status;
 	$: combinedArray = status.concat(uniqueLastActivity);
 	$: sortedCombinedArray = combinedArray.sort(
 		(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 	);
-	let i = -1;
+
 	const like = ({ formElement, formData, action, cancel }) => {
 		return async ({ result, update, existingActivity }) => {
 			if (result.data.success) {
-				// toast.push('Status Published!', {
-				// 	theme: {
-				// 		'--toastColor': 'mintcream',
-				// 		'--toastBackground': 'rgba(72,187,120,0.9)',
-				// 		'--toastBarBackground': '#2F855A'
-				// 	}
-				// });
 				await invalidateAll();
 				await update();
 			}
@@ -81,7 +74,7 @@
 				{#each sortedCombinedArray.slice(0, 30) as book}
 					<form action="?/like" method="post" use:enhance={like}>
 						<input type="hidden" name="id" bind:value={book.id} />
-						{#if book.bookId}
+						{#if book.title}
 							<div class="bookCard">
 								<div class="titleCover">
 									<div class="imageContainer">
@@ -140,12 +133,10 @@
 									</div>
 
 									<div class="likes">
-										{#if book.Like.length > 0}
-											<span class="likeCount">{book.Like[0].User.length}</span>
-										{/if}
-										{#if book.Like.length > 0 && book.Like[0].userId === $page.data.userData.id}
-											<button formaction="?/like" class="like"
-												><span
+										{#if book.Like[0]?.User.some((user) => user.id === $page.data.userData.id)}
+											<button formaction="?/like" class="like">
+												<div class="likeCount">{book.Like[0].User.length}</div>
+												<span
 													class="material-icons-round"
 													style="font-weight: 800; color: #b93850;"
 												>
@@ -153,10 +144,10 @@
 												</span></button
 											>
 										{:else}
-											<button formaction="?/like" class="like"
-												><span class="material-icons-round" style="font-size: 15px;">
-													favorite_border
-												</span></button
+											<button formaction="?/like" class="like">
+												{#if book.Like.length > 0}
+													<div class="likeCount">{book.Like[0].User.length}</div>
+												{/if}<span class="material-icons-round"> favorite_border </span></button
 											>
 										{/if}
 									</div>
@@ -185,7 +176,23 @@
 										{formatDate(book.timestamp)}
 									</div>
 									<div class="likes">
-										<span class="material-icons-round" style="font-size: 13px;"> favorite </span>
+										{#if book.Like[0]?.User.some((user) => user.id === $page.data.userData.id)}
+											<button formaction="?/like" class="like">
+												<div class="likeCount">{book.Like[0].User.length}</div>
+												<span
+													class="material-icons-round"
+													style="font-weight: 800; color: #b93850;"
+												>
+													favorite
+												</span></button
+											>
+										{:else}
+											<button formaction="?/like" class="like">
+												{#if book.Like.length > 0}
+													<div class="likeCount">{book.Like[0].User.length}</div>
+												{/if}<span class="material-icons-round"> favorite_border </span></button
+											>
+										{/if}
 									</div>
 								</div>
 							</div>
@@ -353,7 +360,6 @@
 
 	.timeStamp {
 		color: #9299a1;
-		width: max-content;
 		font-size: 11px;
 		font-weight: 700;
 	}
@@ -460,29 +466,50 @@
 	.A-Right {
 		display: flex;
 		flex-direction: column;
+		text-align: right;
 		justify-content: space-between;
 		color: #9299a1;
-		padding: 0.5rem 0.5rem;
+		padding: 1rem 1rem;
 		font-size: 11px;
 		width: 6rem;
 		font-weight: 600;
-		text-align: right;
 	}
 
-	.likes button,
-	.like span {
-		color: inherit;
-		border: none;
-		cursor: pointer;
+	.likes {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.likes button {
+		display: flex;
+		align-items: start;
+		justify-content: center;
 		background-color: transparent;
-		transition: transform 0.3s, box-shadow 0.3s;
+		border: none;
+		color: inherit;
+		box-sizing: border-box;
+		font-weight: 600;
+		gap: 1px;
+		cursor: pointer;
+	}
+
+	.likeCount {
+		font-size: 16px;
+		display: flex;
+		align-items: start;
+	}
+
+	.likes span {
+		display: flex;
+		align-items: start;
+		font-size: 15px;
+		height: 100%;
+		transition: transform 0.3s ease-in-out;
 	}
 
 	.like span:hover {
 		color: #e35b73;
-		text-transform: scale(2);
-
-		font-weight: 400;
+		font-weight: 700;
 	}
 
 	.list-preview {

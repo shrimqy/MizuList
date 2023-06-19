@@ -33,7 +33,11 @@ export async function load(locals) {
 			user: true,
 			Like: {
 				include: {
-					User: true
+					User: {
+						select: {
+							id: true
+						}
+					}
 				}
 			}
 		}
@@ -45,7 +49,15 @@ export async function load(locals) {
 		},
 		include: {
 			user: true,
-			Like: true
+			Like: {
+				include: {
+					User: {
+						select: {
+							id: true
+						}
+					}
+				}
+			}
 		}
 	});
 	return {
@@ -95,7 +107,7 @@ export const actions = {
 			where: { id }
 		});
 		let existinglike;
-		if (existingActivity) {
+		if (existingActivity !== null) {
 			existinglike = await db.Like.findFirst({
 				where: { activityId: existingActivity.id },
 				include: { User: true }
@@ -103,7 +115,6 @@ export const actions = {
 
 			if (existinglike) {
 				if (existinglike.User.some((u) => u.username === username)) {
-					console.log('update disconnect');
 					await db.Like.update({
 						where: { id: existinglike.id },
 						data: {
@@ -118,7 +129,6 @@ export const actions = {
 						where: { activityId: existingActivity.id },
 						include: { User: true }
 					});
-					console.log(`update`);
 					await db.Like.update({
 						where: { id: existinglike.id },
 						data: {
@@ -140,16 +150,46 @@ export const actions = {
 					}
 				});
 			}
+		} else if (existingStatus) {
+			existinglike = await db.Like.findFirst({
+				where: { statusId: existingStatus.id },
+				include: { User: true }
+			});
+			if (existinglike) {
+				if (existinglike.User?.some((u) => u.username === username)) {
+					console.log('update some');
+					await db.Like.update({
+						where: { id: existinglike.id },
+						data: {
+							User: {
+								// Disconnect the User record using the id
+								disconnect: { id: user.id }
+							}
+						}
+					});
+				} else {
+					await db.Like.update({
+						where: { id: existinglike?.id },
+						data: {
+							User: {
+								// Connect the User record using the id
+								connect: { id: user.id }
+							}
+						}
+					});
+				}
+			} else {
+				await db.Like.create({
+					data: {
+						User: {
+							// Connect the User record using the id
+							connect: { id: user.id }
+						},
+						statusId: existingStatus.id
+					}
+				});
+			}
 		}
-		// else if (existingStatus) {
-		// 	existinglike = await db.like.findUnique({
-		// 		where: { statusId: existingStatus.id }
-		// 	});
-		// 	// await db.likes.update({
-		// 	// 	where: { id },
-		// 	// 	data: { likes: user.id }
-		// 	// });
-		// }
 		return { success: true };
 	}
 };
