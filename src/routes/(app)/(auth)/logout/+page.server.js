@@ -9,7 +9,6 @@ export async function load() {
 
 export const actions = {
 	default({ cookies }) {
-		console.log(cookies);
 		cookies.set('session', '', {
 			//setting the cooking to blank
 			path: '/',

@@ -8,7 +8,6 @@
 	import { goto } from '$app/navigation';
 	export let data;
 	let { work, bookData, isbn, existingBook } = data;
-
 	let recommendation = null;
 	let spoilerWarning = false;
 	const reviewUpdate = ({ formElement, formData, action, cancel }) => {

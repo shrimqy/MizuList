@@ -5,6 +5,7 @@
 
 	import { onMount } from 'svelte';
 	import Navbar from './navbar.svelte';
+	import { fade } from 'svelte/transition';
 	let uploadedImage;
 	let fileInput;
 
@@ -58,7 +59,7 @@
 
 <div class="container">
 	<Navbar />
-	<div class="content">
+	<div class="content" in:fade={{ duration: 300 }}>
 		<div class="bio">
 			<h3>Bio</h3>
 			<form method="post" action="?/updateAvatar">

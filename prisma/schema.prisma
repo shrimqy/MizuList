@@ -27,6 +27,8 @@ model User {
   activity      activity[]
   avatar        String?
   reviews       reviews[]
+  status        status[]
+  likes         Like[]         @relation("userLikes")
 }
 
 model BookCategory {
@@ -62,7 +64,7 @@ model Book {
   author   String?
   notes    String?
   tPages   String?
-  covers   Int?
+  covers   String?
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -73,22 +75,39 @@ model Book {
 }
 
 model activity {
-  id           String        @id @default(uuid())
-  bookId       String?
-  timestamp    DateTime      @default(now())
-  pages        String?
-  rating       String?
-  title        String?
-  tPages       String?
-  activityText String?
-  likes        Int?
-  covers       Int?
-  user         User?         @relation(fields: [userId], references: [id])
-  userId       String?
-  category     BookCategory? @relation(fields: [categoryId], references: [id])
-  categoryId   Int?
+  id         String        @id @default(uuid())
+  bookId     String?
+  timestamp  DateTime      @default(now())
+  pages      String?
+  rating     String?
+  title      String?
+  tPages     String?
+  covers     String?
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     String?
+  category   BookCategory? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  Like       Like[]
 
   @@index([bookId])
+}
+
+model status {
+  id           String   @id @default(uuid())
+  timestamp    DateTime @default(now())
+  activityText String?
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       String?
+  Like         Like[]
+}
+
+model Like {
+  id         String    @id @default(uuid())
+  status     status?   @relation(fields: [statusId], references: [id])
+  statusId   String?
+  User       User[]    @relation("userLikes")
+  activity   activity? @relation(fields: [activityId], references: [id])
+  activityId String?
 }
 
 model reviews {

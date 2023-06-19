@@ -4,16 +4,15 @@
 	import { formatDate, filterTags } from '$lib/utils';
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 
 	// import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
-
 	$: favTag = data.favTag;
 	import { page, updated } from '$app/stores';
-	import { transition_in } from 'svelte/internal';
 
 	let startDate = null;
 	let finishDate = null;
@@ -74,6 +73,7 @@
 				});
 			}
 			await update();
+			invalidateAll();
 		};
 	};
 
@@ -88,8 +88,8 @@
 					}
 				});
 			}
-
 			await update({ reset: false });
+			await invalidateAll();
 		};
 	};
 </script>
@@ -99,7 +99,7 @@
 	<SvelteToast />
 </div>
 <div class="banner" />
-<div class="container" transition:fade={{ duration: 500 }}>
+<div class="container" in:fade={{ duration: 500 }}>
 	<div class="bcontainer">
 		<div class="dataCover">
 			<div class="cover">

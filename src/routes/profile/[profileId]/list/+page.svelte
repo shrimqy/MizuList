@@ -1,5 +1,5 @@
 <script>
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 
 	export let data;
 	let { existingBook, fav } = data;
@@ -19,27 +19,35 @@
 
 				<!-- Link to the book page -->
 				<form>
-					<div class="bookCard">
+					<div class="bookCard" in:slide={{ x: 0, y: 100, duration: 500 }}>
 						<div class="titleCover">
 							{#if book.bookId}
 								<!-- Book cover source -->
 								<div class="bookHoverCover">
 									<img
-										src={'http://covers.openlibrary.org/b/id/' +
+										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
 											'-M.jpg?default=false'}
+										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+									{book.covers} +
+									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
+									<a data-sveltekit-preload-data href="/books/{book.bookId}">
+										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
+									</a>
 								</div>
 
 								<div class="imageContainer">
 									<img
-										src={'http://covers.openlibrary.org/b/id/' +
+										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
 											'-M.jpg?default=false'}
+										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+									{book.covers} +
+									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
-
 									<button
 										class="material-symbols-rounded"
 										on:click|preventDefault={() => toggleForm(index)}>open_in_new</button
@@ -121,10 +129,13 @@
 												<div class="editor-cover">
 													{#if book.covers}
 														<img
-															src={'http://covers.openlibrary.org/b/id/' +
+															src={'https://covers.openlibrary.org/b/olid/' +
 																book.covers +
 																'-M.jpg?default=false'}
-															alt={'book.title'}
+															onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+														{book.covers} +
+														'-M.jpg?default=false';"
+															alt={book.title}
 														/>
 													{:else}
 														<span>No cover available</span>
@@ -429,7 +440,6 @@
 		transform: translate(-50%, -50%);
 		background-color: #fafafa;
 		box-shadow: 0 2px 5px rgb(0, 0, 0, 0.1);
-
 		border-radius: 8px;
 		z-index: 999;
 		transition: opacity 0.3s ease-in;

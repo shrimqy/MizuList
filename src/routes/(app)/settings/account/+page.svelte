@@ -1,4 +1,6 @@
 <script>
+	import { fade } from 'svelte/transition';
+
 	/** @type {import('./$types').PageData} */
 	export let data;
 	let { userData } = data;
@@ -13,7 +15,7 @@
 
 <div class="container">
 	<Navbar />
-	<div class="content">
+	<div class="content" in:fade={{ duration: 300 }}>
 		<div class="listInput">
 			<h3>User name</h3>
 

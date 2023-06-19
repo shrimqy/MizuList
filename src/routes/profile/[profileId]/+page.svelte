@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	export let data;
 	import { formatDate, filterTags } from '$lib/utils';
+	import { fade } from 'svelte/transition';
 
 	let { lastActivity, existingBook, stats, fav, userData } = data;
 	const rereads = existingBook.filter(
@@ -20,7 +21,7 @@
 </script>
 
 <title>{userData.username}'s Profile</title>
-<div class="container">
+<div class="container" in:fade={{ duration: 300 }}>
 	<div class="analytics">
 		<div class="statistics">
 			<h1>Statistics</h1>
@@ -98,9 +99,12 @@
 
 								<div class="imageContainer">
 									<img
-										src={'http://covers.openlibrary.org/b/id/' +
+										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
 											'-M.jpg?default=false'}
+										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+									{book.covers} +
+									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
 									<a data-sveltekit-preload-data href="/books/{book.bookId}">
@@ -135,8 +139,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="favorites">
-		{#if fav}
+	{#if fav.length > 0}
+		<div class="favorites">
 			<h1>Favorites</h1>
 			<div class="bFav">
 				{#each fav as book}
@@ -159,8 +163,8 @@
 					</div>
 				{/each}
 			</div>
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>

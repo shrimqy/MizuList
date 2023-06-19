@@ -1,6 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'; //for navigation to the search page
-	import { fade } from 'svelte/transition'; //for transitions
+	import { fade, fly, scale } from 'svelte/transition'; //for transitions
 
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
@@ -29,11 +29,10 @@
 			>
 				<!-- Link to the book page -->
 				<div class="bookCard">
-					<div class="bookCover">
+					<div class="bookCover" in:scale={{ duration: 300 }}>
 						{#if book.cover_edition_key}
 							<!-- Book cover source -->
 							<img
-								loading="lazy"
 								src={'http://covers.openlibrary.org/b/olid/' +
 									book.cover_edition_key +
 									'-M.jpg?default=false'}

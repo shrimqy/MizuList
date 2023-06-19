@@ -1,6 +1,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-let username, bookId, isbn, work;
+import { log } from 'console';
+let username, bookId, isbn, work, matchingBooks;
 let fav,
 	existingBook = null;
 
@@ -10,9 +11,31 @@ export async function load({ locals, params }) {
 	if (!bookId) {
 		throw redirect('/');
 	}
-	const fetchDb = async () => {
+
+	const fetchBook = async (id) => {
+		bookId = await params.bookId;
+
 		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);
 		work = await workres.json();
+		const bookres = await fetch(`https://openlibrary.org/search.json?title=${work.title}&limit=6`);
+		const bookData = await bookres.json();
+
+		matchingBooks = bookData.docs.filter((book) => book.key === work.key);
+
+		let isbn = null;
+		if (matchingBooks.length > 0 && matchingBooks[0].isbn && matchingBooks[0].isbn.length > 0) {
+			const isbnData = await fetch(`https://openlibrary.org/isbn/${matchingBooks[0].isbn[0]}.json`);
+			isbn = await isbnData.json();
+		}
+
+		return {
+			work,
+			matchingBooks,
+			isbn
+		};
+	};
+
+	const fetchDb = async () => {
 		if (locals && locals.user && locals.user.name) {
 			username = locals.user.name;
 			fav = await db.fav.findFirst({
@@ -51,17 +74,20 @@ export async function load({ locals, params }) {
 
 		const isBookIdFound = fav !== null;
 		return {
-			work,
 			isBookIdFound,
 			existingBook,
 			reviews
 		};
 	};
-
+	const result = await fetchBook();
 	const resultdb = await fetchDb();
 	return {
+		work: result.work,
+		bookData: result.matchingBooks[0],
+		isbn: result.isbn,
+		favTag: resultdb.isBookIdFound,
+		existingBook: resultdb.existingBook,
 		reviews: resultdb.reviews,
-		work: resultdb.work,
 		favTag: resultdb.isBookIdFound,
 		existingBook: resultdb.existingBook
 	};
@@ -122,6 +148,9 @@ export const actions = {
 		const rereads = data.get('rereads');
 		const startedAt = data.get('startDate');
 		const notes = data.get('notes');
+
+		const coverEditionKey =
+			matchingBooks[0].cover_edition_key || (work && work.cover && work.cover[0]);
 		let startedDateTime = undefined;
 		if (startedAt) {
 			startedDateTime = new Date(startedAt).toISOString();
@@ -149,7 +178,7 @@ export const actions = {
 					rereads: rereads,
 					completedAt: completedDateTime,
 					createdAt: startedDateTime,
-					covers: work.covers[0],
+					covers: coverEditionKey,
 					notes: notes,
 					bookCategory: {
 						// Disconnecting the category at index 1 from the existing book's categories
@@ -174,7 +203,7 @@ export const actions = {
 					rating: rating,
 					rereads: rereads,
 					completedAt: completedDateTime,
-					covers: work.covers[0],
+					covers: coverEditionKey,
 					// tPages: isbn.pages,
 					bookCategory: {
 						// Connecting the new category and the "All" category to the book
@@ -194,7 +223,7 @@ export const actions = {
 				pages: pages,
 				rating: rating,
 				userId: user.id,
-				covers: work.covers[0],
+				covers: coverEditionKey,
 				categoryId: categoryId
 			}
 		});
