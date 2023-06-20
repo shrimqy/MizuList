@@ -111,7 +111,6 @@ export const actions = {
 				bookId
 			}
 		});
-
 		//if it does, update the record with the user else create the record with bookId and connec the user.
 		if (existingFav) {
 			await db.fav.delete({

@@ -1,8 +1,9 @@
 <script>
-	export let data;
-	let username = $page.data.user?.name;
 	import { page, navigating } from '$app/stores';
-	let { userData } = data;
+	$: username = $page.data.user?.name;
+	import { invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
+	$: userData = $page.data.userData;
 </script>
 
 {#if $page.url.pathname.startsWith(`/profile/`)}

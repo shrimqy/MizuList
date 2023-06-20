@@ -1,23 +1,24 @@
 <script>
 	import { page } from '$app/stores';
-	export let data;
 	import { formatDate, filterTags } from '$lib/utils';
 	import { fade } from 'svelte/transition';
+	$: lastActivity = $page.data.lastActivity;
+	$: existingBook = $page.data.existingBook;
+	$: stats = $page.data.stats;
+	$: fav = $page.data.fav;
+	$: userData = $page.data.userData;
 
-	let { lastActivity, existingBook, stats, fav, userData } = data;
-	const rereads = existingBook.filter(
-		(item) => item.rereads !== null && item.rereads !== ''
-	).length;
+	$: rereads = existingBook.filter((item) => item.rereads !== null && item.rereads !== '').length;
 
-	const uniqueLastActivity = lastActivity?.filter(
+	$: uniqueLastActivity = lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
 
-	const filteredRating = existingBook.filter(
+	$: filteredRating = existingBook.filter(
 		(item) => item.rating !== null && item.rating !== '' && item.rating !== '0'
 	);
-	const sum = filteredRating.reduce((acc, item) => acc + parseFloat(item.rating), 0);
-	const averageRating = (sum / filteredRating.length).toFixed(2);
+	$: sum = filteredRating.reduce((acc, item) => acc + parseFloat(item.rating), 0);
+	$: averageRating = (sum / filteredRating.length).toFixed(2);
 </script>
 
 <title>{userData.username}'s Profile</title>

@@ -109,8 +109,8 @@
 												alt="User Avatar"
 												class="user-avatar"
 											/>
-											<a data-sveltekit-preload-code href="/profile/{book.user.username}/">
-												<div class="username">{book.user.username}</div>
+											<a data-sveltekit-preload-code href="/profile/{book.user?.username}/">
+												<div class="username">{book.user?.username}</div>
 											</a>
 										</div>
 
@@ -133,7 +133,7 @@
 									</div>
 
 									<div class="likes">
-										{#if book.Like[0]?.User.some((user) => user.id === $page.data.userData.id)}
+										{#if book.Like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
 											<button formaction="?/like" class="like">
 												<div class="likeCount">{book.Like[0].User.length}</div>
 												<span
@@ -176,7 +176,7 @@
 										{formatDate(book.timestamp)}
 									</div>
 									<div class="likes">
-										{#if book.Like[0]?.User.some((user) => user.id === $page.data.userData.id)}
+										{#if book.Like[0]?.User.some((user) => user?.id === $page.data?.userData?.id)}
 											<button formaction="?/like" class="like">
 												<div class="likeCount">{book.Like[0].User.length}</div>
 												<span
