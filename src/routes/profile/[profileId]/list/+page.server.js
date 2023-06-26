@@ -84,7 +84,7 @@ export const actions = {
 		}
 		await db.activity.create({
 			data: {
-				bookId: bookId,
+				bookId: existingBook.id,
 				title: existingBook.title,
 				pages: pages,
 				rating: rating,

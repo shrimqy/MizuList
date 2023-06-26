@@ -1,8 +1,10 @@
 /** @type {import('./$types').PageServerLoad} */
-import { db } from '$lib/server/database';
+import { db } from '$lib/server/database'; //database import
 let lastActivity, userData, existingBook, username, status;
 export async function load(locals) {
 	username = locals.locals.user?.name;
+
+	//finding books from the user
 	if (username) {
 		userData = await db.user.findUnique({
 			where: { username }
@@ -24,6 +26,8 @@ export async function load(locals) {
 			bookCategory: book.bookCategory.map((category) => category.id)
 		}));
 	}
+
+	//Fetching activity list
 	lastActivity = await db.activity.findMany({
 		orderBy: {
 			timestamp: 'desc'
@@ -43,6 +47,7 @@ export async function load(locals) {
 		}
 	});
 
+	//fetching status updates
 	status = await db.status.findMany({
 		orderBy: {
 			timestamp: 'desc'
@@ -68,7 +73,10 @@ export async function load(locals) {
 	};
 }
 /** @type {import('./$types').Actions} */
+
+//action definitions
 export const actions = {
+	//status action
 	activityStatus: async ({ request, locals, params }) => {
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
@@ -79,6 +87,8 @@ export const actions = {
 
 		const data = await request.formData();
 		const textData = data.get('text');
+
+		//creates a new status
 		await db.status.create({
 			data: {
 				userId: user.id,
@@ -88,6 +98,7 @@ export const actions = {
 		return { success: true };
 	},
 
+	//to keep track of the likes
 	like: async ({ request, locals, params }) => {
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');

@@ -1,8 +1,5 @@
 <script>
 	import { page, navigating } from '$app/stores';
-
-	export let data;
-	let { userprofile } = data;
 	let username = $page.data.user?.name;
 </script>
 
@@ -20,6 +17,7 @@
 				</div>
 
 				<nav class="navItems">
+					<!-- route protection  -->
 					{#if !username}
 						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
 						<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
@@ -42,14 +40,6 @@
 		</div>
 	</div>
 </div>
-
-<!-- <div class="profile-header">
-		{#if userData && userData?.avatar}
-			<img src={`/uploads/${userData?.username}.png`} alt="User Avatar" class="user-avatar" />
-		{/if}
-		<span class="username">{userData?.username}</span>
-	</div> -->
-
 <slot />
 
 <style>

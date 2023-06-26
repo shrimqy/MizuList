@@ -1,13 +1,18 @@
 <script>
 	/** @type {import('./$types').PageData} */
+
+	//dependencies
 	import { formatDate, filterDataLastDay } from '$lib/utils';
 	import { fade } from 'svelte/transition';
 	import { enhance } from '$app/forms';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { invalidateAll } from '$app/navigation';
-	import { bind } from 'svelte/internal';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	export let data;
+	let { lastActivity, existingBook, user, status } = data;
+
+	//toggling status publish form
 	let showPublish = false;
 	function togglePublish(value) {
 		if (value == true) {
@@ -16,9 +21,11 @@
 			showPublish = false;
 		}
 	}
-	let { lastActivity, existingBook, user, status } = data;
+
+	//filter the list of user by reading category
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
+	//filter function to uniquely identify each books
 	$: uniqueLastActivity = $page.data.lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
@@ -28,7 +35,8 @@
 		(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 	);
 
-	const like = ({ formElement, formData, action, cancel }) => {
+	//use function definition for 'like' action
+	const like = () => {
 		return async ({ result, update, existingActivity }) => {
 			if (result.data.success) {
 				await invalidateAll();
@@ -36,6 +44,16 @@
 			}
 		};
 	};
+
+	//updates page every 5 sec
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidateAll(); //rerun load functions
+		}, 5000);
+		return () => {
+			clearInterval(interval);
+		};
+	});
 </script>
 
 <div class="wrap">
@@ -520,8 +538,8 @@
 		margin-top: 1rem;
 		display: grid;
 		background-color: #fafafa;
-		grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
-		grid-template-rows: repeat(auto-fit, minmax(115px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
+		grid-template-rows: repeat(auto-fill, minmax(115px, 1fr));
 		box-sizing: border-box;
 		border-radius: 4px;
 		padding: 1rem;

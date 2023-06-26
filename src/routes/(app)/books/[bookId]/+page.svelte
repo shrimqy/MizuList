@@ -3,16 +3,14 @@
 
 	import { formatDate, filterTags } from '$lib/utils';
 	import { fade } from 'svelte/transition';
-	import { onMount } from 'svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
-
-	// import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+
 	export let data;
 	let { work, bookData, isbn, existingBook, reviews } = data;
 	$: favTag = data.favTag;
-	import { page, updated } from '$app/stores';
+	import { page } from '$app/stores';
 
 	let startDate = null;
 	let finishDate = null;
@@ -39,13 +37,15 @@
 		showForm = !showForm;
 	}
 
-	//to select the default option when the add to list button is clicked upon
+	//to select the default option when the add to list button is clicked on
 	function setDefaultStatus() {
 		document.getElementById('addToListButton').style.display = 'none';
 		document.getElementById('status').style.display = 'inline';
 		document.getElementById('defaultOption').selected = true;
 		status = 'planToRead';
 	}
+
+	//reviewtoggle
 	let showMore = false;
 	const maxTagsToShow = 15; // Define the maximum number of tags to show initially
 
@@ -61,7 +61,8 @@
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
 	}
 
-	const Fav = ({ formElement, formData, action, cancel }) => {
+	//Fav Action
+	const Fav = () => {
 		return async ({ result, update }) => {
 			if (result.data.success) {
 				toast.push('Favorite Updated!', {
@@ -77,7 +78,8 @@
 		};
 	};
 
-	const statusUpdate = ({ formElement, formData, action, cancel }) => {
+	//status Action
+	const statusUpdate = () => {
 		return async ({ result, update }) => {
 			if (result.data.success) {
 				toast.push('Book Updated!', {
@@ -95,9 +97,12 @@
 </script>
 
 <title>{work.title}</title>
+
+<!-- Toast Component -->
 <div class="wrap">
 	<SvelteToast />
 </div>
+
 <div class="banner" />
 <div class="container" in:fade={{ duration: 500 }}>
 	<div class="bcontainer">
@@ -225,6 +230,7 @@
 						/>
 					</div>
 
+					<!-- List-Editor-dropdown-menu -->
 					<div class="dropdown">
 						<button formaction="?/userStatus" class="sbutton" type="submit"
 							>Submit <span class="material-icons">expand_more</span></button
@@ -236,6 +242,7 @@
 						</div>
 					</div>
 
+					<!-- List-Editor -->
 					{#if showForm}
 						<div class="editor-popout" transition:fade={{ duration: 300 }}>
 							<form method="POST" action="?/userStatus">
@@ -514,11 +521,6 @@
 	.material-icons-outlined {
 		font-family: 'Material Icons';
 	}
-
-	/* .banner {
-		background-color: #2b2d42;
-		height: 100px;
-	} */
 
 	.container {
 		width: 100%;

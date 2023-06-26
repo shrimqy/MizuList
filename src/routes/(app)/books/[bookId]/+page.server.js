@@ -12,7 +12,7 @@ export async function load({ locals, params }) {
 		throw redirect('/');
 	}
 
-	const fetchBook = async (id) => {
+	const fetchBook = async () => {
 		bookId = await params.bookId;
 
 		const workres = await fetch(`https://openlibrary.org/works/${bookId}.json`);

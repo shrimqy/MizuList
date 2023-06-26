@@ -11,23 +11,23 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.1.0",
-		"@sveltejs/kit": "^1.20.4",
-		"@zerodevx/svelte-toast": "^0.9.3",
+		"@sveltejs/kit": "^1.20.5",
+		"@zerodevx/svelte-toast": "^0.9.4",
 		"eslint": "^8.43.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"prettier": "^2.8.8",
 		"prettier-plugin-svelte": "^2.10.1",
-		"svelte": "^3.59.1",
+		"svelte": "^3.59.2",
 		"vite": "^4.3.9"
 	},
 	"type": "module",
 	"dependencies": {
-		"@prisma/client": "^4.15.0",
+		"@prisma/client": "^4.16.1",
 		"bcrypt": "^5.1.0",
 		"chart.js": "^4.3.0",
 		"g": "^2.0.1",
-		"prisma": "^4.15.0",
+		"prisma": "^4.16.1",
 		"svelte-chartjs": "^3.1.2",
 		"svelte-french-toast": "1.0.4-beta.0",
 		"uuid": "^9.0.0"
