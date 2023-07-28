@@ -1,5 +1,7 @@
 /** @type {import('./$types').PageServerLoad} */
 import { db } from '$lib/server/database'; //database import
+import { redirect } from '@sveltejs/kit';
+
 let lastActivity, userData, existingBook, username, status;
 export async function load(locals) {
 	username = locals.locals.user?.name;

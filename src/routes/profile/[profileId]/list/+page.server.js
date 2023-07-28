@@ -20,7 +20,6 @@ export const actions = {
 		username = locals.user.name;
 		const bookId = await params.bookId;
 		const data = await request.formData();
-		console.log(data);
 		const title = data.get('title');
 		const rating = data.get('rating');
 		const status = data.get('status');

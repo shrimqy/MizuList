@@ -5,13 +5,14 @@
 	let { existingBook, fav } = data;
 
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
-	console.log(filteredItems);
 	let progress = '?';
 	let showForm = [];
 	const convertedItems = filteredItems.map((item) => {
 		const convertedCreatedAt = new Date(item.createdAt).toISOString().split('T')[0];
 		const convertedUpdatedAt = new Date(item.updatedAt).toISOString().split('T')[0];
-		const convertedcompletedAt = new Date(item.completedAt).toISOString().split('T')[0];
+		const convertedcompletedAt = item.completedAt
+			? new Date(item.completedAt).toISOString().split('T')[0]
+			: null;
 		return {
 			...item,
 			createdAt: convertedCreatedAt,
@@ -20,7 +21,6 @@
 		};
 	});
 
-	console.log(convertedItems);
 	function toggleForm(index) {
 		showForm[index] = !showForm[index];
 	}

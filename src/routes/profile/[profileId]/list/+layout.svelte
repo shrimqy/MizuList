@@ -5,8 +5,9 @@
 	export let data;
 	let { userData } = data;
 
-	let username = $page.data.user?.name;
-	console.log(username);
+	let username = $page.data.userData?.username;
+
+	console.log($page.data.userData?.username);
 	let showForm = false;
 	function toggleForm() {
 		showForm = !showForm;
