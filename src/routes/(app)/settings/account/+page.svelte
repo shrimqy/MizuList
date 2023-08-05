@@ -11,26 +11,48 @@
 	function toggleSave() {
 		showSave = true;
 	}
+	let showPassword = false;
+	function togglePassword() {
+		showPassword = true;
+	}
 </script>
 
 <div class="container">
 	<Navbar />
 	<div class="content" in:fade={{ duration: 300 }}>
 		<div class="listInput">
-			<h3>User name</h3>
+			<div class="section">
+				<h3>User Name</h3>
 
-			<form method="post" action="?/updateUser">
-				<input
-					type="text"
-					class="input"
-					name="username"
-					value={userData.username}
-					on:focus={toggleSave}
-				/>
-				{#if showSave}
-					<button formaction="?/updateUser" type="submit">Save</button>
-				{/if}
-			</form>
+				<form method="post" action="?/updateUsername">
+					<input
+						type="text"
+						class="input"
+						name="username"
+						value={userData.username}
+						on:input={toggleSave}
+					/>
+					{#if showSave}
+						<button formaction="?/updateUsername" type="submit">Save Username</button>
+					{/if}
+				</form>
+			</div>
+
+			<div class="section">
+				<h3>Change Password</h3>
+				<form method="post" action="?/updatePassword">
+					<input
+						type="password"
+						class="input"
+						placeholder="New Password"
+						name="password"
+						on:input={togglePassword}
+					/>
+					{#if showPassword}
+						<button formaction="?/updatePassword" type="submit">Save Password</button>
+					{/if}
+				</form>
+			</div>
 		</div>
 	</div>
 </div>
@@ -38,6 +60,14 @@
 <style>
 	* {
 		font-family: 'Overpass', sans-serif;
+	}
+
+	h3 {
+		color: #5c728a;
+		font-size: 15px;
+		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto Bold, Oxygen,
+			Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		font-weight: 600;
 	}
 
 	:root {
@@ -68,17 +98,23 @@
 	.listInput {
 		display: flex;
 		flex-direction: column;
+		gap: 20px;
+	}
+
+	.section {
+		display: flex;
+		flex-direction: column;
 		gap: 10px;
 	}
 
 	.listInput button {
-		margin-top: 0.5rem;
+		margin-top: 1rem;
 		background-color: #3db4f2;
 		outline: none;
 		color: #fafafa;
 		cursor: pointer;
 		border: none;
-		padding: 10px 13px;
+		padding: 9px 10px;
 		border-radius: 4px;
 		transition: box-shadow 0.3s;
 	}
@@ -86,13 +122,17 @@
 	.input {
 		border: none;
 		outline: none;
-		color: #4f6277;
+		color: #627891;
 		font-size: 15px;
 		background-color: #f2f5f7;
 		border-radius: 4px;
 		padding: 7px 13px;
 		min-width: 100%;
 		box-sizing: border-box;
+	}
+
+	input::placeholder {
+		color: #9eb1c9;
 	}
 
 	.listInput button:hover {

@@ -2,6 +2,12 @@
 import { db } from '$lib/server/database'; //database import
 import { redirect } from '@sveltejs/kit';
 
+const cache = {
+	data: null,
+	timestamp: null,
+	expirationTime: 60 * 5000 // Cache expiration time in milliseconds (e.g., 1 minute)
+};
+
 let lastActivity, userData, existingBook, username, status;
 export async function load(locals) {
 	username = locals.locals.user?.name;
@@ -67,11 +73,33 @@ export async function load(locals) {
 			}
 		}
 	});
+
+	const fetchBook = async () => {
+		const currentTime = Date.now();
+
+		// Check if cache exists and has not expired
+		if (cache.data && cache.timestamp && currentTime - cache.timestamp < cache.expirationTime) {
+			return cache.data;
+		}
+
+		const res = await fetch(`https://openlibrary.org/trending/monthly.json?&limit=18`);
+		const book = await res.json();
+
+		// Update cache with fetched data and current timestamp
+		cache.data = book;
+		cache.timestamp = currentTime;
+
+		return book;
+	};
+
+	const book = await fetchBook();
+
 	return {
 		lastActivity: lastActivity.slice(0, 20),
 		userData: userData,
 		existingBook,
-		status
+		status,
+		book
 	};
 }
 /** @type {import('./$types').Actions} */
@@ -107,7 +135,6 @@ export const actions = {
 		}
 		const data = await request.formData();
 		const id = data.get('id');
-		console.log(id);
 		const user = await db.user.findUnique({
 			where: { username }
 		});
@@ -170,7 +197,6 @@ export const actions = {
 			});
 			if (existinglike) {
 				if (existinglike.User?.some((u) => u.username === username)) {
-					console.log('update some');
 					await db.Like.update({
 						where: { id: existinglike.id },
 						data: {

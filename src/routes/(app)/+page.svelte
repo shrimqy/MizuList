@@ -10,7 +10,9 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	export let data;
-	let { lastActivity, existingBook, user, status } = data;
+	let { lastActivity, existingBook, user, book } = data;
+
+	let books = data.book.works;
 
 	//toggling status publish form
 	let showPublish = false;
@@ -21,7 +23,6 @@
 			showPublish = false;
 		}
 	}
-
 	//filter the list of user by reading category
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
@@ -29,15 +30,14 @@
 	$: uniqueLastActivity = $page.data.lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
-	$: status = $page.data.status;
-	$: combinedArray = status.concat(uniqueLastActivity);
+	$: combinedArray = $page.data.status.concat(uniqueLastActivity);
 	$: sortedCombinedArray = combinedArray.sort(
 		(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 	);
 
 	//use function definition for 'like' action
 	const like = () => {
-		return async ({ result, update, existingActivity }) => {
+		return async ({ result, update }) => {
 			if (result.data.success) {
 				await invalidateAll();
 				await update();
@@ -145,6 +145,7 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="A-Right">
 									<div class="timeStamp">
 										{formatDate(book.timestamp)}
@@ -219,14 +220,14 @@
 				{/each}
 			</div>
 		</div>
-		{#if user?.name && filteredItems.length > 0}
-			<div class="list-preview">
+		<div class="list-preview">
+			{#if user?.name && filteredItems.length > 0}
 				<h1>Books in Progress</h1>
 				<div class="list-container">
 					{#each filteredItems as book}
 						<div class="listCard">
-							<a data-sveltekit-preload-data href="/books/{book.bookId}">
-								{#if book.bookId}
+							{#if book.bookId}
+								<a data-sveltekit-preload-data href="/books/{book.bookId}">
 									<img
 										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
@@ -236,19 +237,41 @@
 											'-M.jpg?default=false';"
 										alt={book.title}
 									/>
-									<a data-sveltekit-preload-data href="/books/{book.bookId}">
-										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
-									</a>
-								{:else}
-									<span>No cover</span>
-									<!-- Show this if no cover was found from the API -->
-								{/if}
-							</a>
+								</a>
+							{:else}
+								<span>{book.title}</span>
+								<!-- Show this if no cover was found from the API -->
+							{/if}
 						</div>
 					{/each}
 				</div>
+			{/if}
+			<h1>Trending Books</h1>
+			<div class="list-container">
+				{#each books.slice(0, 8) as book}
+					<div class="listCard">
+						<a
+							data-sveltekit-preload-data
+							href="/books/{book.key.split('/')[2]}"
+							onerror="this.href='/books/{book.cover_edition_key}"
+						>
+							{#if book.cover_edition_key}
+								<!-- Book cover source -->
+								<img
+									src={'http://covers.openlibrary.org/b/olid/' +
+										book.cover_edition_key +
+										'-M.jpg?default=false'}
+									alt={book.title}
+								/>
+							{:else}
+								<span>No cover available</span>
+								<!-- Show this if no cover was found from the API -->
+							{/if}
+						</a>
+					</div>
+				{/each}
 			</div>
-		{/if}
+		</div>
 	</div>
 </div>
 
@@ -488,7 +511,7 @@
 		justify-content: space-between;
 		color: #9299a1;
 		padding: 1rem 1rem;
-		font-size: 11px;
+		/* font-size: 11px; */
 		width: 6rem;
 		font-weight: 600;
 	}
@@ -496,6 +519,7 @@
 	.likes {
 		display: flex;
 		justify-content: flex-end;
+		font-size: 15px;
 	}
 
 	.likes button {
@@ -511,16 +535,8 @@
 		cursor: pointer;
 	}
 
-	.likeCount {
-		font-size: 16px;
-		display: flex;
-		align-items: start;
-	}
-
 	.likes span {
 		display: flex;
-		align-items: start;
-		font-size: 15px;
 		height: 100%;
 		transition: transform 0.3s ease-in-out;
 	}
@@ -532,10 +548,12 @@
 
 	.list-preview {
 		width: 45%;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.list-container {
-		margin-top: 1rem;
 		display: grid;
 		background-color: #fafafa;
 		grid-template-columns: repeat(auto-fill, minmax(20%, 1fr));
