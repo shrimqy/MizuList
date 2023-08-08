@@ -82,7 +82,7 @@ export async function load(locals) {
 			return cache.data;
 		}
 
-		const res = await fetch(`https://openlibrary.org/trending/monthly.json?&limit=18`);
+		const res = await fetch(`https://openlibrary.org/trending/weekly.json?&limit=8`);
 		const book = await res.json();
 
 		// Update cache with fetched data and current timestamp

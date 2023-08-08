@@ -123,7 +123,7 @@
 									<div class="details">
 										<div class="coverUser">
 											<img
-												src={`/uploads/${book.user?.username}.png`}
+												src={`/uploads/${book.user?.id}.png`}
 												alt="User Avatar"
 												class="user-avatar"
 											/>
@@ -177,7 +177,7 @@
 								<div class="statusContent">
 									<div class="statusHeader">
 										<img
-											src={`/uploads/${book.user?.username}.png`}
+											src={`/uploads/${book.user?.id}.png`}
 											alt="User Avatar"
 											class="userstatusavatar"
 										/>
@@ -246,7 +246,7 @@
 					{/each}
 				</div>
 			{/if}
-			<h1>Trending Books</h1>
+			<a style="color: #5c728a; margin-top: 13px" href="/browse"><h1>Trending Books</h1></a>
 			<div class="list-container">
 				{#each books.slice(0, 8) as book}
 					<div class="listCard">
@@ -550,7 +550,11 @@
 		width: 45%;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.3rem;
+	}
+
+	.list-preview h1 {
+		text-align: center;
 	}
 
 	.list-container {

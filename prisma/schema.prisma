@@ -26,6 +26,7 @@ model User {
   Book          Book[]         @relation("UserBook")
   activity      activity[]
   avatar        String?
+  bio           String?
   reviews       reviews[]
   status        status[]
   likes         Like[]         @relation("userLikes")

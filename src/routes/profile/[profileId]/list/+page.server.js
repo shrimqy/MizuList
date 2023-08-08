@@ -39,8 +39,6 @@ export const actions = {
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
-
-		console.log(completedDateTime);
 		const user = await db.user.findUnique({
 			where: { username }
 		});

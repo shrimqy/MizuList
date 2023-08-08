@@ -24,71 +24,81 @@
 <title>{userData.username}'s Profile</title>
 <div class="container" in:fade={{ duration: 300 }}>
 	<div class="analytics">
-		<div class="statistics">
-			<h1>Statistics</h1>
-			<div class="sContainer">
-				<div class="sOverview">
-					<div class="sData">
-						<div class="data">{existingBook.length}</div>
-						<div class="header">Total Entries</div>
-					</div>
-					<div class="sData">
-						<div class="data">{rereads}</div>
-						<div class="header">Rereads</div>
-					</div>
-					<div class="sData">
-						<div class="data">{averageRating}</div>
-						<div class="header">Mean Score</div>
-					</div>
+		<div class="left-section">
+			{#if userData?.bio}
+				<div class="bio">
+					<h1>Bio</h1>
+					<p>{userData.bio}</p>
 				</div>
-				<div class="sList">
-					<div class="listContainer">
-						<div class="listItem">
-							<span class="material-icons" style="color:#2DB039;"> circle </span>
-							<a href="/profile/list">Reading</a>
-						</div>
+			{/if}
 
-						<div class="listData">{stats[1].Book.length}</div>
+			<div class="statistics">
+				<h1>Statistics</h1>
+				<div class="sContainer">
+					<div class="sOverview">
+						<div class="sData">
+							<div class="data">{existingBook.length}</div>
+							<div class="header">Total Entries</div>
+						</div>
+						<div class="sData">
+							<div class="data">{rereads}</div>
+							<div class="header">Rereads</div>
+						</div>
+						<div class="sData">
+							<div class="data">{averageRating}</div>
+							<div class="header">Mean Score</div>
+						</div>
 					</div>
+					<div class="sList">
+						<div class="listContainer">
+							<div class="listItem">
+								<span class="material-icons" style="color:#2DB039;"> circle </span>
+								<a href="/profile/list">Reading</a>
+							</div>
 
-					<div class="listContainer">
-						<div class="listItem">
-							<span class="material-icons" style="color:#C3C3C3"> circle </span>
-							<a href="/profile/list/Planning">Plan to Read</a>
+							<div class="listData">{stats[1].Book.length}</div>
 						</div>
 
-						<div class="listData">{stats[2].Book.length}</div>
-					</div>
+						<div class="listContainer">
+							<div class="listItem">
+								<span class="material-icons" style="color:#C3C3C3"> circle </span>
+								<a href="/profile/list/Planning">Plan to Read</a>
+							</div>
 
-					<div class="listContainer">
-						<div class="listItem">
-							<span class="material-icons" style="color:#F9D457"> circle </span>
-							<a href="/profile/list/Paused">Paused</a>
+							<div class="listData">{stats[2].Book.length}</div>
 						</div>
 
-						<div class="listData">{stats[3].Book.length}</div>
-					</div>
+						<div class="listContainer">
+							<div class="listItem">
+								<span class="material-icons" style="color:#F9D457"> circle </span>
+								<a href="/profile/list/Paused">Paused</a>
+							</div>
 
-					<div class="listContainer">
-						<div class="listItem">
-							<span class="material-icons" style="color:#A12F31"> circle </span>
-							<a href="/profile/list/Dropped">Dropped</a>
+							<div class="listData">{stats[3].Book.length}</div>
 						</div>
 
-						<div class="listData">{stats[4].Book.length}</div>
-					</div>
+						<div class="listContainer">
+							<div class="listItem">
+								<span class="material-icons" style="color:#A12F31"> circle </span>
+								<a href="/profile/list/Dropped">Dropped</a>
+							</div>
 
-					<div class="listContainer">
-						<div class="listItem">
-							<span class="material-icons" style="color:#26448F"> circle </span>
-							<a href="/profile/list/Completed">Completed</a>
+							<div class="listData">{stats[4].Book.length}</div>
 						</div>
 
-						<div class="listData">{stats[5].Book.length}</div>
+						<div class="listContainer">
+							<div class="listItem">
+								<span class="material-icons" style="color:#26448F"> circle </span>
+								<a href="/profile/list/Completed">Completed</a>
+							</div>
+
+							<div class="listData">{stats[5].Book.length}</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
 		<div class="activity">
 			<h1>Activity</h1>
 			<div class="aContainer">
@@ -243,10 +253,17 @@
 		width: 40%;
 	}
 
+	.bio p {
+		background-color: #fdfdfd;
+		padding: 1rem;
+		margin: 1rem 0;
+		border-radius: 7px;
+	}
+
 	.analytics h1,
 	.favorites h1,
 	.statistics h1 {
-		font-size: 23px;
+		font-size: 16px;
 	}
 
 	.sContainer,

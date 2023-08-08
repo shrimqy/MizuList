@@ -22,7 +22,7 @@
 				<p class="error">Wrong Username/Password.</p>
 			{/if}
 		</form>
-		<p>Already have an account? <a href="/login">Log in</a></p>
+		<p>Don't have an account? <a href="/signup">Register</a></p>
 	</div>
 </div>
 

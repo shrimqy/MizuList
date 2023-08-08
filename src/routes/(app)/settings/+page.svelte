@@ -62,12 +62,14 @@
 	<div class="content" in:fade={{ duration: 300 }}>
 		<div class="bio">
 			<h3>Bio</h3>
-			<form method="post" action="?/updateAvatar">
+			<form method="post" action="?/updateBio">
 				<textarea
 					on:focus={toggleSave}
 					autocomplete="off"
-					placeholder="A little about yourself..."
+					name="bio"
+					placeholder={userData.bio ? userData.bio : 'A little about yourself...'}
 					style="min-height: 51px; height: 95px;"
+					bind:value={userData.bio}
 				/>
 				{#if showSave}
 					<button formaction="?/updateBio" type="submit">Save</button>
@@ -116,7 +118,7 @@
 
 				{#if userData && userData.avatar}
 					<div class="avatarsaved">
-						<img src={`/uploads/${userData.username}.png`} alt="User Avatar" class="user-avatar" />
+						<img src={`/uploads/${userData.id}.png`} alt="User Avatar" class="user-avatar" />
 					</div>
 				{/if}
 			</form>

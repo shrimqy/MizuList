@@ -45,14 +45,14 @@
 		{#if !username}
 			<div class="profile-header">
 				{#if userData && userData?.avatar}
-					<img src={`/uploads/${userData?.username}.png`} alt="User Avatar" class="user-avatar" />
+					<img src={`/uploads/${userData?.id}.png`} alt="User Avatar" class="user-avatar" />
 				{/if}
 				<span class="username">{userData?.username}</span>
 			</div>
 		{:else}
 			<div class="profile-header">
 				{#if userData?.avatar}
-					<img src={`/uploads/${userData.username}.png`} alt="User Avatar" class="user-avatar" />
+					<img src={`/uploads/${userData.id}.png`} alt="User Avatar" class="user-avatar" />
 				{/if}
 				<span class="username">{userData.username}</span>
 			</div>

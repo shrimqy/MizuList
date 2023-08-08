@@ -33,7 +33,7 @@ export const actions = {
 			throw redirect(302, '/login');
 		}
 
-		const username = locals.user.name;
+		const id = locals.user.id;
 
 		const data = await request.formData();
 		const imageFile = data.get('avatar');
@@ -46,7 +46,7 @@ export const actions = {
 		}
 
 		// Generate a unique filename for the image
-		const filename = `${username}.png`;
+		const filename = `${id}.png`;
 		const filePath = path.join(uploadDirectory, filename);
 
 		// Check if the file already exists
@@ -67,6 +67,19 @@ export const actions = {
 		await db.User.update({
 			where: { username },
 			data: { avatar: filePath }
+		});
+	},
+
+	updateBio: async ({ request, locals }) => {
+		const username = locals.user.name;
+		const data = await request.formData();
+		const bio = data.get('bio');
+		const user = await db.user.findUnique({
+			where: { username }
+		});
+		await db.User.update({
+			where: { username },
+			data: { bio: bio }
 		});
 	}
 };

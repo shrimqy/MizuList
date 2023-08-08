@@ -7,7 +7,6 @@
 
 	let username = $page.data.userData?.username;
 
-	console.log($page.data.userData?.username);
 	let showForm = false;
 	function toggleForm() {
 		showForm = !showForm;
