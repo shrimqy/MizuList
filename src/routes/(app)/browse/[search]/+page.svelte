@@ -15,7 +15,7 @@
 		<input bind:value={inputValue} type="search" class="search-box" />
 		<span class="material-icons">search</span>
 	</form>
-	<div transition:fade class="book-container">
+	<div class="book-container">
 		{#each book as book}
 			<a
 				href="/books/{book.key.split('/')[2]}"

@@ -3,9 +3,37 @@
 
 	export let data;
 	let { existingBook, fav } = data;
-	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
+
+	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(1));
+	filteredItems.sort((a, b) => {
+		// Assuming 'a' and 'b' are objects with a 'title' property
+		const titleA = a.title.toLowerCase();
+		const titleB = b.title.toLowerCase();
+
+		if (titleA < titleB) {
+			return -1;
+		}
+		if (titleA > titleB) {
+			return 1;
+		}
+		return 0;
+	});
 	let progress = '?';
 	let showForm = [];
+	const convertedItems = filteredItems.map((item) => {
+		const convertedCreatedAt = new Date(item.createdAt).toISOString().split('T')[0];
+		const convertedUpdatedAt = new Date(item.updatedAt).toISOString().split('T')[0];
+		const convertedcompletedAt = item.completedAt
+			? new Date(item.completedAt).toISOString().split('T')[0]
+			: null;
+		return {
+			...item,
+			createdAt: convertedCreatedAt,
+			updatedAt: convertedUpdatedAt,
+			completedAt: convertedcompletedAt
+		};
+	});
+
 	function toggleForm(index) {
 		showForm[index] = !showForm[index];
 	}
@@ -13,8 +41,20 @@
 
 <div class="container">
 	<div class="listContainer">
+		<div class="list-head">
+			<div class="titleCover">
+				<div class="list-cover" />
+				<div class="list-title">Title</div>
+			</div>
+
+			<div class="contentWrapperHead">
+				<div class="list-score">Score</div>
+				<div class="list-progress">Progress</div>
+				<div class="list-date">Dates</div>
+			</div>
+		</div>
 		<div class="listBookData">
-			{#each existingBook as book, index}
+			{#each convertedItems as book, index}
 				<!-- since the data fetched is an array  -->
 
 				<!-- Link to the book page -->
@@ -25,21 +65,29 @@
 								<!-- Book cover source -->
 								<div class="bookHoverCover">
 									<img
-										src={'http://covers.openlibrary.org/b/id/' +
+										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
 											'-M.jpg?default=false'}
+										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+									{book.covers} +
+									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
+									<a data-sveltekit-preload-data href="/books/{book.bookId}">
+										<!-- <button class="material-symbols-rounded">open_in_new</button> -->
+									</a>
 								</div>
 
 								<div class="imageContainer">
 									<img
-										src={'http://covers.openlibrary.org/b/id/' +
+										src={'https://covers.openlibrary.org/b/olid/' +
 											book.covers +
 											'-M.jpg?default=false'}
+										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+									{book.covers} +
+									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
-
 									<button
 										class="material-symbols-rounded"
 										on:click|preventDefault={() => toggleForm(index)}>open_in_new</button
@@ -72,7 +120,7 @@
 						> -->
 
 						<div class="contentWrapper">
-							<div class="score"><span>{book.rating}</span></div>
+							<div class="score">{book.rating !== '0' ? book.rating : '-'}</div>
 							<div class="progress">
 								<div class="progressHeader">
 									<span>Chapters</span>
@@ -91,9 +139,9 @@
 									<span>Days</span>
 								</div>
 								<div class="dateEnd">
-									<div>{book.createdAt ? book.createdAt.toISOString().split('T')[0] : '-'}</div>
+									<div>{book.createdAt ? book.createdAt : '-'}</div>
 									<div>
-										{book.completedAt ? book.completedAt.toISOString().split('T')[0] : '-'}
+										{book.completedAt ? book.completedAt : '-'}
 									</div>
 									<div>
 										{book.completedAt && book.createdAt
@@ -121,10 +169,13 @@
 												<div class="editor-cover">
 													{#if book.covers}
 														<img
-															src={'http://covers.openlibrary.org/b/id/' +
+															src={'https://covers.openlibrary.org/b/olid/' +
 																book.covers +
 																'-M.jpg?default=false'}
-															alt={'book.title'}
+															onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+														{book.covers} +
+														'-M.jpg?default=false';"
+															alt={book.title}
 														/>
 													{:else}
 														<span>No cover available</span>
@@ -142,7 +193,7 @@
 									<div class="editor-container">
 										<div class="e-userStatus">
 											<div class="e-1">
-												<select id="status" name="status" bind:value={book.bookCategory}>
+												<select id="status" name="status" bind:value={book.bookCategory[1]}>
 													<option value={2}>Reading</option>
 													<option value={3} id="defaultOption">Plan to Read</option>
 													<option value={4}>Paused</option>
@@ -221,6 +272,7 @@
 </div>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Istok+Web&family=Poppins:wght@300&display=swap%27');
 	* {
 		font-family: 'Overpass', sans-serif;
 		text-decoration: none;
@@ -265,6 +317,46 @@
 		padding: 1rem 0rem;
 	}
 
+	.list-head {
+		color: #5c728a;
+		font-weight: 700;
+		font-size: 14px;
+		display: flex;
+		justify-content: space-between;
+		margin: 0.3rem 0;
+		border-radius: 3px;
+		background-color: #fafafa;
+		align-items: center;
+		padding: 0.4rem 0.5rem;
+	}
+
+	.list-cover {
+		width: 80px;
+	}
+
+	.contentWrapperHead {
+		display: flex;
+		align-items: start;
+		width: 40%;
+		justify-content: space-between;
+	}
+
+	.list-score {
+		width: 20%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.list-date {
+		padding-left: 0.4em;
+		width: 40%;
+	}
+
+	.list-progress {
+		padding-left: 0.4rem;
+		width: 40%;
+	}
+
 	.bookCard:hover .bookHoverCover img {
 		opacity: 1;
 		visibility: visible;
@@ -304,6 +396,10 @@
 		position: relative;
 	}
 
+	.titleCover {
+		width: 60%;
+	}
+
 	.imageContainer {
 		position: relative;
 		padding: 0;
@@ -341,7 +437,7 @@
 
 	.title {
 		color: #5c728a;
-		padding-left: 1rem;
+		padding-left: 16px;
 		font-weight: 700;
 		font-size: 14px;
 		transition: all 0.3s ease-in-out;
@@ -352,12 +448,14 @@
 	}
 
 	.score {
+		font-family: 'Istok Web', sans-serif;
 		display: flex;
 		justify-content: center;
-		background-color: #cfcece;
-		color: #fafafa;
+		color: #5c7289;
 		border-radius: 13px;
-		width: 26px;
+		font-size: 14px;
+		font-weight: 600;
+		width: 20%;
 		height: 26px;
 		line-height: 28px;
 	}
@@ -370,13 +468,14 @@
 	}
 
 	.progress {
+		width: 40%;
 		display: flex;
 		font-size: 12px;
-		justify-content: space-between;
 		align-items: center;
 	}
 
 	.dateSpan {
+		width: 40%;
 		display: flex;
 		font-size: 12px;
 		align-items: center;

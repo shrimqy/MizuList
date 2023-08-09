@@ -17,7 +17,7 @@
 			<div class="navBar">
 				<div class="nav">
 					<div class="logo">
-						<img src="/Logo.png" alt="" />
+						<img src="/logo_group.png" alt="" />
 					</div>
 
 					<nav class="navItems">
@@ -164,8 +164,7 @@
 	}
 
 	.logo img {
-		height: 100%;
-		width: 100%;
+		height: 65%;
 	}
 
 	.navItems {

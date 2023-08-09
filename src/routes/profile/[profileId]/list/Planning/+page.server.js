@@ -1,8 +1,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-let username, bookId, isbn, work;
-let fav,
-	existingBook = null;
+let username;
+let existingBook = null;
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
@@ -35,7 +34,7 @@ export const actions = {
 		}
 
 		const completedAt = data.get('finishDate');
-		const completedDateTime = undefined;
+		let completedDateTime;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
@@ -81,12 +80,12 @@ export const actions = {
 		}
 		await db.activity.create({
 			data: {
-				bookId: bookId,
+				bookId: existingBook.bookId,
 				title: existingBook.title,
 				pages: pages,
 				rating: rating,
 				userId: user.id,
-				...(existingBook.covers && { covers: existingBook.covers[0] }),
+				covers: existingBook.covers,
 				categoryId: categoryId
 			}
 		});

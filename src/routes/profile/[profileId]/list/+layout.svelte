@@ -6,7 +6,6 @@
 	let { userData } = data;
 
 	let username = $page.data.userData?.username;
-
 	let showForm = false;
 	function toggleForm() {
 		showForm = !showForm;
@@ -17,31 +16,28 @@
 <nav class="listNav">
 	<a
 		href="/profile/{username}/list/All"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + '/list/All'}>All</a
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/All'}>All</a
 	>
 	<a
 		href="/profile/{username}/list/"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + '/list'}>Reading</a
+		class:selected={$page.url.pathname === '/profile/' + username + '/list'}>Reading</a
 	>
 	<a
 		href="/profile/{username}/list/Planning"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + 'list/Planning'}
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/Planning'}
 		>Plan to Read</a
 	>
 	<a
 		href="/profile/{username}/list/Paused"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + 'list/Paused'}
-		>Paused</a
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/Paused'}>Paused</a
 	>
 	<a
 		href="/profile/{username}/list/Dropped"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + 'list/Dropped'}
-		>Dropped</a
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/Dropped'}>Dropped</a
 	>
 	<a
 		href="/profile/{username}/list/Completed"
-		class:selected={$page.url.pathname === '/profile/' + userData.username + 'list/Completed'}
-		>Completed</a
+		class:selected={$page.url.pathname === '/profile/' + username + '/list/Completed'}>Completed</a
 	>
 </nav>
 <button class="addButton" on:click|preventDefault={toggleForm}>

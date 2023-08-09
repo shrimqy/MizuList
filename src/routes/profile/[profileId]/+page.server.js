@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /** @type {import('./$types').PageServerLoad} */
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';

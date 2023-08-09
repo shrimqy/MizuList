@@ -9,7 +9,7 @@ import { db } from '$lib/server/database';
 
 /** @type {import('./$types').Actions} */
 export const actions = {
-	addBook: async ({ locals, request, params }) => {
+	addBook: async ({ locals, request }) => {
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}
@@ -37,7 +37,7 @@ export const actions = {
 		}
 
 		const completedAt = data.get('finishDate');
-		const completedDateTime = undefined;
+		let completedDateTime;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}

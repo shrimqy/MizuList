@@ -102,15 +102,29 @@ export const actions = {
 		});
 
 		//checking if the book already exists in the DB
-		const existingFav = await db.fav.findFirst({
+		const existingFav = await db.fav.findUnique({
 			where: {
 				bookId
+			},
+			include: {
+				User: true
 			}
 		});
-		//if it does, update the record with the user else create the record with bookId and connec the user.
-		if (existingFav) {
-			await db.fav.delete({
-				where: { id: existingFav.id } // Provide the unique identifier of the existing record
+		console.log(existingFav);
+		// if it does, update the record with the user else create the record with bookId and connec the user.
+		if (existingFav.User?.username == username) {
+			await db.fav.update({
+				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
+				data: {
+					User: { disconnect: { id: user.id } }
+				}
+			});
+		} else if (existingFav.User?.username == null) {
+			await db.fav.update({
+				where: { id: existingFav.id }, // Provide the unique identifier of the existing record
+				data: {
+					User: { connect: { id: user.id } }
+				}
 			});
 		} else {
 			await db.fav.create({

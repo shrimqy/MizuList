@@ -1,10 +1,24 @@
 <script>
 	import { fade, slide } from 'svelte/transition';
-
+	import { page } from '$app/stores';
 	export let data;
-	let { existingBook, fav } = data;
-
+	let { existingBook, userData } = data;
+	console.log(userData);
+	console.log($page);
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
+	filteredItems.sort((a, b) => {
+		//sort by title
+		const titleA = a.title.toLowerCase();
+		const titleB = b.title.toLowerCase();
+
+		if (titleA < titleB) {
+			return -1;
+		}
+		if (titleA > titleB) {
+			return 1;
+		}
+		return 0;
+	});
 	let progress = '?';
 	let showForm = [];
 	const convertedItems = filteredItems.map((item) => {
@@ -75,10 +89,12 @@
 									'-M.jpg?default=false';"
 										alt={book.title}
 									/>
-									<button
-										class="material-symbols-rounded"
-										on:click|preventDefault={() => toggleForm(index)}>open_in_new</button
-									>
+									{#if userData.username == $page.data.user?.name}
+										<button
+											class="material-symbols-rounded"
+											on:click|preventDefault={() => toggleForm(index)}>open_in_new</button
+										>
+									{/if}
 								</div>
 								<a href="/books/{book.bookId}">
 									<div class="title">{book.title}</div>
@@ -107,7 +123,7 @@
 						> -->
 
 						<div class="contentWrapper">
-							<div class="score">{book.rating}</div>
+							<div class="score">{book.rating !== '0' ? book.rating : '-'}</div>
 							<div class="progress">
 								<div class="progressHeader">
 									<span>Chapters</span>

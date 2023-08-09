@@ -1,8 +1,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
-let username, bookId, isbn, work;
-let fav,
-	existingBook = null;
+let username;
+let existingBook = null;
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
@@ -11,14 +10,13 @@ export async function load() {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	//Add to List Function
-	userStatus: async ({ request, params, locals }) => {
+	userStatus: async ({ request, locals }) => {
 		//redirect if mot logged in
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}
 		//getting form data
 		username = locals.user.name;
-		const bookId = await params.bookId;
 		const data = await request.formData();
 		const title = data.get('title');
 		const rating = data.get('rating');
@@ -35,7 +33,7 @@ export const actions = {
 		}
 
 		const completedAt = data.get('finishDate');
-		const completedDateTime = undefined;
+		let completedDateTime;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
@@ -53,6 +51,8 @@ export const actions = {
 				bookCategory: true
 			}
 		});
+
+		console.log(existingBook);
 
 		// Creating/updating the userStatus
 		if (existingBook) {
@@ -81,18 +81,18 @@ export const actions = {
 		}
 		await db.activity.create({
 			data: {
-				bookId: bookId,
+				bookId: existingBook.bookId,
 				title: existingBook.title,
 				pages: pages,
 				rating: rating,
 				userId: user.id,
-				...(existingBook.covers && { covers: existingBook.covers[0] }),
+				covers: existingBook.covers,
 				categoryId: categoryId
 			}
 		});
 	},
 
-	delete: async ({ request, params, locals }) => {
+	delete: async ({ request }) => {
 		const data = await request.formData();
 		const title = data.get('title');
 		existingBook = await db.book.findFirst({
