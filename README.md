@@ -6,7 +6,7 @@ Litlog is a book reading tracker that uses openlibrary api to fetch book details
 
 ## Framework
 
-Sveltekit is used to develop the app and possibly use prisma and lucia for the backend purposes.
+Sveltekit is used to develop the app and uses SQLite with prisma for backend.
 
 ## Developing
 
