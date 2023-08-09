@@ -1,6 +1,11 @@
 <script>
 	import { page, navigating } from '$app/stores';
-	let username = $page.data.user?.name;
+	import { invalidateAll, afterNavigate } from '$app/navigation';
+	import { onMount } from 'svelte';
+	$: username = $page.data.user?.name;
+	afterNavigate(() => {
+		invalidateAll(); //rerun load functions
+	});
 </script>
 
 <div class="banner">
@@ -13,7 +18,7 @@
 		<div class="navBar">
 			<div class="nav">
 				<div class="logo">
-					<img src="/Group_1650.png" alt="" />
+					<img src="/logo_group.png" alt="" />
 				</div>
 
 				<nav class="navItems">
@@ -28,8 +33,8 @@
 							</form>
 						</div>
 					{:else}
-						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-						<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
+						<a class="navLinks" href="/">Home</a>
+						<a class="navLinks" href="/browse">Browse</a>
 						<a class="navLinks" href="/profile/{username}">Profile</a>
 						<form class="navbut" action="/logout" method="POST">
 							<button type="submit">Log Out</button>
