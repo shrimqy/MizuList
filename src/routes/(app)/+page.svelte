@@ -96,29 +96,24 @@
 							<div class="bookCard">
 								<div class="titleCover">
 									<div class="imageContainer">
-										{#if book.bookId}
-											<!-- Book cover source -->
-											<!-- 'https://covers.openlibrary.org/b/olid/' +
-											book.covers +
-											'-M.jpg?default=false' 'http://covers.openlibrary.org/b/id/' +
-											book.covers +
-											'-M.jpg?default=false'-->
-											<img
-												src={'https://covers.openlibrary.org/b/olid/' +
-													book.covers +
-													'-M.jpg?default=false'}
-												onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
+										<a data-sveltekit-preload-data href="/books/{book.bookId}">
+											{#if book.bookId}
+												<img
+													src={'https://covers.openlibrary.org/b/olid/' +
+														book.covers +
+														'-M.jpg?default=false'}
+													onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
 											{book.covers} +
 											'-M.jpg?default=false';"
-												alt={book.title}
-											/>
-											<a data-sveltekit-preload-data href="/books/{book.bookId}">
+													alt={book.title}
+												/>
+
 												<!-- <button class="material-symbols-rounded">open_in_new</button> -->
-											</a>
-										{:else}
-											<span>No cover</span>
-											<!-- Show this if no cover was found from the API -->
-										{/if}
+											{:else}
+												<span>No cover</span>
+												<!-- Show this if no cover was found from the API -->
+											{/if}
+										</a>
 									</div>
 									<div class="details">
 										<div class="coverUser">
@@ -251,7 +246,6 @@
 				{#each books.slice(0, 8) as book}
 					<div class="listCard">
 						<a
-							data-sveltekit-preload-data
 							href="/books/{book.key.split('/')[2]}"
 							onerror="this.href='/books/{book.cover_edition_key}"
 						>
@@ -425,6 +419,7 @@
 	}
 
 	.userstatusavatar {
+		will-change: transform;
 		height: 48px;
 		width: 44px;
 		border-radius: 4px;
@@ -432,6 +427,7 @@
 	}
 
 	.bookCard {
+		transform-origin: center center;
 		width: 100%;
 		display: flex;
 		height: 6.5rem;
@@ -444,7 +440,7 @@
 	.bookCard:hover,
 	.statusCard:hover {
 		transform: scale(1.01);
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 	}
 
 	.titleCover {
@@ -452,19 +448,15 @@
 		display: flex;
 	}
 
-	.imageContainer {
-		position: relative;
-		padding: 0;
-		display: flex;
-		width: auto;
-		align-items: center;
-	}
-
 	.imageContainer img {
+		will-change: transform; /* Hint to the browser about upcoming change */
+		display: flex;
+		align-items: center;
 		width: 70px;
 		height: 100%;
 		border-top-left-radius: 4px;
 		border-bottom-left-radius: 4px;
+		transition: transform 0.3s ease-in-out;
 	}
 
 	.details {
@@ -483,6 +475,7 @@
 	}
 
 	.user-avatar {
+		will-change: transform; /* Hint to the browser about upcoming change */
 		height: 34px;
 		width: 34px;
 		border-radius: 50%;

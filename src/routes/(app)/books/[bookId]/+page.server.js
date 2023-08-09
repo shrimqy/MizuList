@@ -64,11 +64,7 @@ export async function load({ locals, params }) {
 				bookId
 			},
 			include: {
-				user: {
-					select: {
-						username: true
-					}
-				}
+				user: true
 			}
 		});
 

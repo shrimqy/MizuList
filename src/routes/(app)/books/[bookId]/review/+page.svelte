@@ -31,7 +31,7 @@
 <div class="wrap">
 	<SvelteToast />
 </div>
-<div class="container" transition:fade={{ duration: 300 }}>
+<div class="container" in:fade={{ duration: 300 }}>
 	<div class="rcontainer">
 		<h1>Review</h1>
 		<form method="POST" action="?/review" use:enhance={reviewUpdate}>

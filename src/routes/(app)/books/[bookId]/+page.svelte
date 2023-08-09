@@ -440,11 +440,7 @@
 
 				{#each reviews as review, reviewIndex}
 					<div class="review-container">
-						<img
-							src={`/uploads/${review.user.username}.png`}
-							alt="User Avatar"
-							class="user-avatar"
-						/>
+						<img src={`/uploads/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
 						<div class="review-body">
 							<div class="review-header">
 								<h3 class="user-name">{review.user.username}</h3>

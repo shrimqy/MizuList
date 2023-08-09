@@ -28,6 +28,18 @@
 
 <div class="container">
 	<div class="listContainer">
+		<div class="list-head">
+			<div class="titleCover">
+				<div class="list-cover" />
+				<div class="list-title">Title</div>
+			</div>
+
+			<div class="contentWrapperHead">
+				<div class="list-score">Score</div>
+				<div class="list-progress">Progress</div>
+				<div class="list-date">Dates</div>
+			</div>
+		</div>
 		<div class="listBookData">
 			{#each convertedItems as book, index}
 				<!-- since the data fetched is an array  -->
@@ -95,7 +107,7 @@
 						> -->
 
 						<div class="contentWrapper">
-							<div class="score"><span>{book.rating}</span></div>
+							<div class="score">{book.rating}</div>
 							<div class="progress">
 								<div class="progressHeader">
 									<span>Chapters</span>
@@ -247,6 +259,7 @@
 </div>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Caveat&family=Istok+Web&family=Poppins:wght@300&display=swap%27');
 	* {
 		font-family: 'Overpass', sans-serif;
 		text-decoration: none;
@@ -291,6 +304,46 @@
 		padding: 1rem 0rem;
 	}
 
+	.list-head {
+		color: #5c728a;
+		font-weight: 700;
+		font-size: 14px;
+		display: flex;
+		justify-content: space-between;
+		margin: 0.3rem 0;
+		border-radius: 3px;
+		background-color: #fafafa;
+		align-items: center;
+		padding: 0.4rem 0.5rem;
+	}
+
+	.list-cover {
+		width: 80px;
+	}
+
+	.contentWrapperHead {
+		display: flex;
+		align-items: start;
+		width: 40%;
+		justify-content: space-between;
+	}
+
+	.list-score {
+		width: 20%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.list-date {
+		padding-left: 0.4em;
+		width: 40%;
+	}
+
+	.list-progress {
+		padding-left: 0.4rem;
+		width: 40%;
+	}
+
 	.bookCard:hover .bookHoverCover img {
 		opacity: 1;
 		visibility: visible;
@@ -330,6 +383,10 @@
 		position: relative;
 	}
 
+	.titleCover {
+		width: 60%;
+	}
+
 	.imageContainer {
 		position: relative;
 		padding: 0;
@@ -367,7 +424,7 @@
 
 	.title {
 		color: #5c728a;
-		padding-left: 1rem;
+		padding-left: 16px;
 		font-weight: 700;
 		font-size: 14px;
 		transition: all 0.3s ease-in-out;
@@ -378,12 +435,14 @@
 	}
 
 	.score {
+		font-family: 'Istok Web', sans-serif;
 		display: flex;
 		justify-content: center;
-		background-color: #cfcece;
-		color: #fafafa;
+		color: #5c7289;
 		border-radius: 13px;
-		width: 26px;
+		font-size: 14px;
+		font-weight: 600;
+		width: 20%;
 		height: 26px;
 		line-height: 28px;
 	}
@@ -396,13 +455,14 @@
 	}
 
 	.progress {
+		width: 40%;
 		display: flex;
 		font-size: 12px;
-		justify-content: space-between;
 		align-items: center;
 	}
 
 	.dateSpan {
+		width: 40%;
 		display: flex;
 		font-size: 12px;
 		align-items: center;

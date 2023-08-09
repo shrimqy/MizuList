@@ -344,6 +344,7 @@
 	}
 
 	.bookCard {
+		will-change: transform; /* Hint to the browser about upcoming change */
 		display: flex;
 		justify-content: space-between;
 		margin: 0.5rem 0;
@@ -355,7 +356,7 @@
 	}
 
 	.bookCard:hover {
-		transform: scale(1.05);
+		transform: scale(1.02);
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 	}
 
@@ -393,6 +394,7 @@
 	} */
 
 	.imageContainer img {
+		will-change: transform; /* Hint to the browser about upcoming change */
 		width: 67px;
 		height: 90px;
 		border-top-left-radius: 7px;

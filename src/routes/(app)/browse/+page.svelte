@@ -92,6 +92,7 @@
 	}
 
 	.bookCard {
+		will-change: transform; /* Hint to the browser about upcoming change */
 		font-size: 15px;
 		color: #647380;
 		padding-right: 0.7rem;

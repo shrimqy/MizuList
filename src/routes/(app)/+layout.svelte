@@ -20,7 +20,7 @@
 					<!-- route protection  -->
 					{#if !username}
 						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-						<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
+						<a data-sveltekit-preload-data:viewport class="navLinks" href="/browse">Browse</a>
 						<div class="navLink-right">
 							<a class="navLinks" href="/login">Login</a>
 							<form class="navbut">
@@ -58,6 +58,7 @@
 	}
 
 	.navBar {
+		will-change: transform; /* Hint to the browser about upcoming change */
 		background: #2b2d4265;
 		width: 100%;
 		height: 3.5rem;
