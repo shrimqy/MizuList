@@ -113,13 +113,26 @@ model Like {
 
 model reviews {
   id             String   @id @default(uuid())
-  bookId         String
+  bookId         String?
   date           DateTime @updatedAt
   review         String
   recommendation String
   spoiler        String
+  rating         String?
+  title          String?
+  covers         String?
   user           User?    @relation(fields: [userId], references: [id])
   userId         String?
+}
+
+model Recommendation {
+  id      String  @id @default(uuid())
+  book1Id String?
+  title1  String?
+  cover1  String?
+  book2Id String?
+  title2  String?
+  cover2  String?
 }
 
 // Use enums when yosu change database

@@ -7,6 +7,7 @@
 	$: stats = $page.data.stats;
 	$: fav = $page.data.fav;
 	$: userData = $page.data.userData;
+	$: username = $page.data.user?.name;
 
 	$: rereads = existingBook.filter((item) => item.rereads !== null && item.rereads !== '').length;
 
@@ -53,7 +54,7 @@
 						<div class="listContainer">
 							<div class="listItem">
 								<span class="material-icons" style="color:#2DB039;"> circle </span>
-								<a href="/profile/list">Reading</a>
+								<a href="/profile/{username}/list">Reading</a>
 							</div>
 
 							<div class="listData">{stats[1].Book.length}</div>
@@ -62,7 +63,7 @@
 						<div class="listContainer">
 							<div class="listItem">
 								<span class="material-icons" style="color:#C3C3C3"> circle </span>
-								<a href="/profile/list/Planning">Plan to Read</a>
+								<a href="/profile/{username}/list/Planning">Plan to Read</a>
 							</div>
 
 							<div class="listData">{stats[2].Book.length}</div>
@@ -71,7 +72,7 @@
 						<div class="listContainer">
 							<div class="listItem">
 								<span class="material-icons" style="color:#F9D457"> circle </span>
-								<a href="/profile/list/Paused">Paused</a>
+								<a href="/profile/{username}/list/Paused">Paused</a>
 							</div>
 
 							<div class="listData">{stats[3].Book.length}</div>
@@ -80,7 +81,7 @@
 						<div class="listContainer">
 							<div class="listItem">
 								<span class="material-icons" style="color:#A12F31"> circle </span>
-								<a href="/profile/list/Dropped">Dropped</a>
+								<a href="/profile/{username}/list/Dropped">Dropped</a>
 							</div>
 
 							<div class="listData">{stats[4].Book.length}</div>
@@ -89,7 +90,7 @@
 						<div class="listContainer">
 							<div class="listItem">
 								<span class="material-icons" style="color:#26448F"> circle </span>
-								<a href="/profile/list/Completed">Completed</a>
+								<a href="/profile/{username}/list/Completed">Completed</a>
 							</div>
 
 							<div class="listData">{stats[5].Book.length}</div>

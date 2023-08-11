@@ -23,34 +23,7 @@ export async function load({ locals, params, parent }) {
 		}
 	});
 
-	stats = await db.BookCategory.findMany({
-		where: {
-			User: {
-				some: {
-					username: username
-				}
-			}
-		},
-		include: {
-			Book: {
-				where: {
-					User: {
-						some: {
-							username: username
-						}
-					}
-				}
-			}
-		}
-	});
-
-	stats = stats.map((category) => ({
-		...category,
-		Book: category.Book.map((book) => book.id)
-	}));
-
 	return {
-		lastActivity,
-		stats
+		lastActivity
 	};
 }

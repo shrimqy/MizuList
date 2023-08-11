@@ -1,8 +1,18 @@
-let username, bookId;
+let username, bookId, existingBook;
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 /** @type {import('./$types').PageServerLoad} */
-export async function load() {
+export async function load({ params, locals }) {
+	username = locals.user.name;
+	bookId = params.bookId;
+	existingBook = await db.book.findFirst({
+		where: {
+			bookId,
+			User: {
+				some: { username }
+			}
+		}
+	});
 	return {};
 }
 /** @type {import('./$types').Actions} */
@@ -15,7 +25,6 @@ export const actions = {
 		const review = data.get('review');
 		const recommendation = data.get('recommendation');
 		const spoiler = data.get('spoiler');
-		bookId = params.bookId;
 		username = locals.user.name;
 		const user = await db.user.findUnique({
 			where: { username }
@@ -34,7 +43,10 @@ export const actions = {
 				data: {
 					review: review,
 					recommendation: recommendation,
-					spoiler: spoiler
+					spoiler: spoiler,
+					title: existingBook.title,
+					rating: existingBook?.rating,
+					covers: existingBook?.covers
 				}
 			});
 		} else {
@@ -44,7 +56,10 @@ export const actions = {
 					recommendation: recommendation,
 					spoiler: spoiler,
 					bookId: bookId,
-					userId: user.id
+					userId: user.id,
+					title: existingBook.title,
+					rating: existingBook?.rating,
+					covers: existingBook?.covers
 				}
 			});
 		}

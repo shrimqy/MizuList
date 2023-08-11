@@ -12,8 +12,12 @@
 		showSave = true;
 	}
 	let showPassword = false;
+
+	let newPassword = '';
+	let confirmPassword = '';
+
 	function togglePassword() {
-		showPassword = true;
+		showPassword = newPassword === confirmPassword && newPassword.length > 0;
 	}
 </script>
 
@@ -21,10 +25,10 @@
 	<Navbar />
 	<div class="content" in:fade={{ duration: 300 }}>
 		<div class="listInput">
-			<div class="section">
-				<h3>User Name</h3>
+			<form method="post" action="?/updateUsername">
+				<div class="section">
+					<h3>User Name</h3>
 
-				<form method="post" action="?/updateUsername">
 					<input
 						type="text"
 						class="input"
@@ -35,24 +39,31 @@
 					{#if showSave}
 						<button formaction="?/updateUsername" type="submit">Save Username</button>
 					{/if}
-				</form>
-			</div>
-
-			<div class="section">
-				<h3>Change Password</h3>
-				<form method="post" action="?/updatePassword">
+				</div>
+			</form>
+			<form method="post" action="?/updatePassword">
+				<div class="section">
+					<h3>Change Password</h3>
 					<input
 						type="password"
 						class="input"
 						placeholder="New Password"
+						bind:value={newPassword}
+						on:input={togglePassword}
+					/>
+					<input
+						type="password"
+						class="input"
+						placeholder="Confirm Password"
 						name="password"
+						bind:value={confirmPassword}
 						on:input={togglePassword}
 					/>
 					{#if showPassword}
 						<button formaction="?/updatePassword" type="submit">Save Password</button>
 					{/if}
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>
@@ -107,14 +118,14 @@
 		gap: 10px;
 	}
 
-	.listInput button {
-		margin-top: 1rem;
+	button {
+		width: 120px;
 		background-color: #3db4f2;
 		outline: none;
 		color: #fafafa;
 		cursor: pointer;
+		padding: 7px;
 		border: none;
-		padding: 9px 10px;
 		border-radius: 4px;
 		transition: box-shadow 0.3s;
 	}
@@ -135,7 +146,7 @@
 		color: #9eb1c9;
 	}
 
-	.listInput button:hover {
+	button:hover {
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 	}
 </style>

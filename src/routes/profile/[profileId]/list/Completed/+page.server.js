@@ -52,8 +52,6 @@ export const actions = {
 			}
 		});
 
-		console.log(existingBook);
-
 		// Creating/updating the userStatus
 		if (existingBook) {
 			await db.Book.update({

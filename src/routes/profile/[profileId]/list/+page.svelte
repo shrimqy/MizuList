@@ -3,8 +3,6 @@
 	import { page } from '$app/stores';
 	export let data;
 	let { existingBook, userData } = data;
-	console.log(userData);
-	console.log($page);
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(2));
 	filteredItems.sort((a, b) => {
 		//sort by title
@@ -56,9 +54,6 @@
 		</div>
 		<div class="listBookData">
 			{#each convertedItems as book, index}
-				<!-- since the data fetched is an array  -->
-
-				<!-- Link to the book page -->
 				<form>
 					<div class="bookCard" in:slide={{ x: 0, y: 100, duration: 500 }}>
 						<div class="titleCover">
@@ -529,11 +524,18 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		background-color: #fafafa;
-		box-shadow: 0 2px 5px rgb(0, 0, 0, 0.1);
 		border-radius: 8px;
 		z-index: 999;
 		transition: opacity 0.3s ease-in;
+	}
+
+	.editor-container {
+		height: inherit;
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+		padding: 4rem 2rem;
+		background-color: #fafafa;
+		box-shadow: 0 2px 5px rgb(0, 0, 0, 0.1);
 	}
 
 	.editor-banner {
@@ -569,7 +571,6 @@
 	}
 
 	.editor-cover img {
-		/* position: fixed; */
 		height: 100%;
 		width: 5rem;
 		border-style: none;
@@ -630,12 +631,6 @@
 
 	.editor-popout form {
 		display: flex;
-	}
-	.editor-container {
-		height: inherit;
-		/* border-radius: 15px; */
-		padding: 4rem 2rem;
-		/* background-color: rgb(250, 250, 250, 0.96); */
 	}
 
 	.e-userStatus {

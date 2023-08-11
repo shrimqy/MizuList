@@ -1,11 +1,19 @@
 <script>
 	import { page, navigating } from '$app/stores';
 	import { invalidateAll, afterNavigate } from '$app/navigation';
+	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	$: username = $page.data.user?.name;
 	afterNavigate(() => {
 		invalidateAll(); //rerun load functions
 	});
+	let showdrop = false;
+	function Dropdown() {
+		showdrop = true;
+	}
+	function Dropdownhide() {
+		showdrop = false;
+	}
 </script>
 
 <div class="banner">
@@ -34,13 +42,44 @@
 						</div>
 					{:else}
 						<a class="navLinks" href="/">Home</a>
-						<a class="navLinks" href="/browse">Browse</a>
 						<a class="navLinks" href="/profile/{username}">Profile</a>
-						<form class="navbut" action="/logout" method="POST">
-							<button type="submit">Log Out</button>
-						</form>
+						<a class="navLinks" href="/profile/{username}/list">List</a>
+						<a class="navLinks" href="/browse">Browse</a>
 					{/if}
 				</nav>
+				{#if username}
+					<div
+						class="profile"
+						on:mouseover={Dropdown}
+						on:mouseleave={Dropdownhide}
+						on:focus={Dropdown}
+					>
+						<img
+							src={`/uploads/${$page.data.user?.id}.png`}
+							alt="User Avatar"
+							class="user-avatar"
+						/><span class="material-icons"> expand_more </span>
+						{#if showdrop}
+							<div class="dropdown" in:fade={{ duration: 200 }}>
+								<div class="dropLink">
+									<span class="material-icons"> person </span><a href="/profile/{username}"
+										>Profile</a
+									>
+								</div>
+								<div class="dropLink">
+									<span class="material-icons"> settings </span><a href="/settings">Settings</a>
+								</div>
+								<form action="/logout" method="POST">
+									<div class="dropLink">
+										<span class="material-icons"> logout </span><button type="submit"
+											>Log Out</button
+										>
+									</div>
+								</form>
+							</div>
+						{/if}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -52,6 +91,10 @@
 		margin: 0;
 		text-decoration: none;
 		font-family: 'Overpass', sans-serif;
+	}
+
+	.material-icons {
+		font-family: 'Material Icons';
 	}
 
 	.header {
@@ -86,6 +129,7 @@
 		width: 45%;
 		max-width: 1050px;
 	}
+
 	.logo {
 		display: flex;
 		align-items: center;
@@ -112,7 +156,7 @@
 		padding-right: 2rem;
 	}
 
-	.navBar a {
+	.navLinks {
 		color: #d3d5f3d8;
 		font-weight: 600;
 		font-size: 14px;
@@ -120,8 +164,74 @@
 		transition: all 0.3s ease;
 	}
 
+	.user-avatar {
+		will-change: transform; /* Hint to the browser about upcoming change */
+		height: 40px;
+		width: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		cursor: pointer;
+	}
+
+	.profile {
+		position: relative;
+		padding: 1rem;
+	}
+
+	.dropdown {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		position: absolute;
+		top: 100%;
+		width: 8rem;
+		padding: 1rem;
+		right: -50px;
+		z-index: 999;
+		cursor: pointer;
+		background-color: #fbfbfb;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border-radius: 7px;
+	}
+
+	.dropLink {
+		display: flex;
+		justify-content: start;
+		align-items: center;
+	}
+
+	.dropdown span {
+		font-size: 17px;
+		color: #8092a0;
+		font-weight: 600;
+		transition: all 0.5s ease-in-out;
+	}
+
+	.dropdown a,
+	.dropdown button {
+		border: none;
+		font-size: 15px;
+		padding: 7px 15px;
+		font-weight: 700;
+		background-color: #fbfbfb;
+		color: #8092a0;
+		transition: background-color 0.3s;
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+	}
+
+	.dropLink:hover span,
+	.dropLink:hover a,
+	.dropLink:hover button {
+		color: #6b7d8a;
+	}
+
 	.navbut button,
 	.navbut a {
+		color: #fff;
+	}
+
+	.navbut button {
 		font-size: 16px;
 		font-weight: 600;
 		border: 1px;
@@ -134,11 +244,6 @@
 		transition: all 0.3s ease-in-out;
 	}
 
-	.navbut button,
-	.navbut a {
-		color: #fff;
-	}
-
 	.navbut button:hover {
 		box-shadow: 0 2px 10px rgba(8, 150, 230, 0.6);
 		color: #fff;
@@ -149,6 +254,12 @@
 	.navLinks:hover {
 		color: #d3d5f3;
 		transform: scale(1.03);
+	}
+
+	.profile {
+		display: flex;
+		align-items: center;
+		float: right;
 	}
 
 	/* Responsive Styles */

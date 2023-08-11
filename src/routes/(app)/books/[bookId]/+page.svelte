@@ -244,7 +244,7 @@
 
 					<!-- List-Editor -->
 					{#if showForm}
-						<div class="editor-popout" transition:fade={{ duration: 300 }}>
+						<div class="editor-popout" in:fade={{ duration: 500 }}>
 							<form method="POST" action="?/userStatus">
 								<div class="editor">
 									<div class="editor-banner">
@@ -468,6 +468,7 @@
 								{#if review.spoiler == 'true'}
 									<div class="rtag" style="border: 1px solid #ff2c55; color: #ff2c55">Spoiler</div>
 								{/if}
+								<div class="review-rating">Reviewer's rating: {review.rating}</div>
 							</div>
 
 							<div class="review-content">
@@ -697,7 +698,7 @@
 		margin-bottom: 10px;
 		line-height: 20px;
 		font-size: 12px;
-		word-spacing: px;
+		word-spacing: 1px;
 		white-space: pre-wrap;
 		overflow: hidden;
 		transition: max-height 0.5s ease-in-out;
@@ -1087,6 +1088,7 @@
 		display: flex;
 		gap: 2%;
 		font-size: 13px;
+		align-items: center;
 		margin-bottom: 1rem;
 	}
 

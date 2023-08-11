@@ -20,5 +20,19 @@ export const actions = {
 			}
 		});
 		throw redirect(302, '/settings/account');
+	},
+	updatePassword: async ({ request, locals }) => {
+		const username = locals.user.name;
+		const data = await request.formData();
+		const newpassword = data.get('password');
+		if (typeof newpassword !== 'string') {
+			return fail(400, { invalid: true });
+		}
+		await db.user.update({
+			where: { username: username },
+			data: {
+				passwordHash: await bcrypt.hash(newpassword, 10)
+			}
+		});
 	}
 };
