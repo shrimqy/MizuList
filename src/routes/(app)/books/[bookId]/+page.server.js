@@ -164,13 +164,35 @@ export const actions = {
 		}
 
 		const completedAt = data.get('finishDate');
-		const completedDateTime = undefined;
+		let completedDateTime = undefined;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
 		const user = await db.user.findUnique({
 			where: { username }
 		});
+
+		//Creating activity
+		//only updating when there is any change in the data in condition
+		if (
+			existingBook.rating !== rating ||
+			existingBook.pages !== pages ||
+			existingBook.chapters !== chapters ||
+			existingBook.bookCategory[1].id !== categoryId ||
+			existingBook.rereads !== rereads
+		) {
+			await db.activity.create({
+				data: {
+					bookId: bookId,
+					title: work.title,
+					pages: pages,
+					rating: rating,
+					userId: user.id,
+					covers: coverEditionKey,
+					categoryId: categoryId
+				}
+			});
+		}
 
 		// Creating/updating the userStatus
 		if (existingBook) {
@@ -223,17 +245,7 @@ export const actions = {
 				}
 			});
 		}
-		await db.activity.create({
-			data: {
-				bookId: bookId,
-				title: work.title,
-				pages: pages,
-				rating: rating,
-				userId: user.id,
-				covers: coverEditionKey,
-				categoryId: categoryId
-			}
-		});
+
 		return { success: true };
 	}
 };

@@ -8,11 +8,19 @@
 		invalidateAll(); //rerun load functions
 	});
 	let showdrop = false;
+	let showrdrop = false;
 	function Dropdown() {
 		showdrop = true;
 	}
 	function Dropdownhide() {
 		showdrop = false;
+	}
+
+	function rDropdown() {
+		showrdrop = true;
+	}
+	function rDropdownhide() {
+		showrdrop = false;
 	}
 </script>
 
@@ -44,7 +52,26 @@
 						<a class="navLinks" href="/">Home</a>
 						<a class="navLinks" href="/profile/{username}">Profile</a>
 						<a class="navLinks" href="/profile/{username}/list">List</a>
-						<a class="navLinks" href="/browse">Browse</a>
+						<div
+							class="browse"
+							on:mouseover={rDropdown}
+							on:mouseleave={rDropdownhide}
+							on:focus={rDropdown}
+						>
+							<a class="navLinks" href="/browse">Browse</a>
+							{#if showrdrop}
+								<div class="rdropdown" in:fade={{ duration: 200 }}>
+									<div class="rdropLink">
+										<span class="material-icons"> recommend </span><a href="/recommendations"
+											>Recommendations</a
+										>
+									</div>
+									<div class="rdropLink">
+										<span class="material-icons"> star </span><a href="/recommendations">Reviews</a>
+									</div>
+								</div>
+							{/if}
+						</div>
 					{/if}
 				</nav>
 				{#if username}
@@ -126,7 +153,7 @@
 		display: flex;
 		align-items: center;
 		height: 100%;
-		width: 45%;
+		width: 44.5%;
 		max-width: 1050px;
 	}
 
@@ -175,7 +202,12 @@
 
 	.profile {
 		position: relative;
-		padding: 1rem;
+		padding: 1rem 0;
+	}
+
+	.browse {
+		position: relative;
+		padding: 1.5rem 0;
 	}
 
 	.dropdown {
@@ -183,20 +215,31 @@
 		flex-direction: column;
 		align-items: start;
 		position: absolute;
-		top: 100%;
-		width: 8rem;
+		top: 95%;
+		width: 9rem;
 		padding: 1rem;
-		right: -50px;
+		left: -100%;
 		z-index: 999;
 		cursor: pointer;
 		background-color: #fbfbfb;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
 		border-radius: 7px;
+	}
+
+	/* Add the arrow shape to the dropdown */
+	.dropdown::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 50%; /* Position it in the middle of the container */
+		transform: translateX(-50%); /* Center the arrow horizontally */
+		border-width: 7px;
+		border-style: solid;
+		border-color: transparent transparent #fbfbfb transparent;
 	}
 
 	.dropLink {
 		display: flex;
-		justify-content: start;
 		align-items: center;
 	}
 
@@ -212,7 +255,65 @@
 		border: none;
 		font-size: 15px;
 		padding: 7px 15px;
-		font-weight: 700;
+		font-weight: 600;
+		background-color: #fbfbfb;
+		color: #8092a0;
+		transition: background-color 0.3s;
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+	}
+
+	.dropLink:hover span,
+	.dropLink:hover a,
+	.dropLink:hover button {
+		color: #5e6d79;
+	}
+
+	.rdropdown {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		position: absolute;
+		top: 95%;
+		width: 10rem;
+		padding: 0.8rem;
+		left: 0;
+		z-index: 999;
+		cursor: pointer;
+		background-color: #fbfbfb;
+		box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
+		border-radius: 7px;
+	}
+
+	.rdropdown::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 25%; /* Position it in the middle of the container */
+		transform: translateX(-50%); /* Center the arrow horizontally */
+		border-width: 7px;
+		border-style: solid;
+		border-color: transparent transparent #fbfbfb transparent;
+	}
+
+	.rdropLink {
+		display: flex;
+		justify-content: start;
+		align-items: center;
+	}
+
+	.rdropdown span {
+		font-size: 17px;
+		color: #8092a0;
+		font-weight: 600;
+		transition: all 0.5s ease-in-out;
+	}
+
+	.rdropdown a {
+		border: none;
+		font-size: 14px;
+		padding: 10px 10px;
+		font-weight: 500;
 		background-color: #fbfbfb;
 		color: #8092a0;
 		transition: background-color 0.3s;
@@ -220,10 +321,9 @@
 		transition: all 0.3s ease-in-out;
 	}
 
-	.dropLink:hover span,
-	.dropLink:hover a,
-	.dropLink:hover button {
-		color: #6b7d8a;
+	.rdropLink:hover span,
+	.rdropLink:hover a {
+		color: #5e6d79;
 	}
 
 	.navbut button,

@@ -30,6 +30,7 @@ model User {
   reviews       reviews[]
   status        status[]
   likes         Like[]         @relation("userLikes")
+  dislike       disLike[]      @relation("userdisLikes")
 }
 
 model BookCategory {
@@ -111,6 +112,13 @@ model Like {
   activityId String?
 }
 
+model disLike {
+  id               String          @id @default(uuid())
+  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
+  recommendationId String?
+  User             User[]          @relation("userdisLikes")
+}
+
 model reviews {
   id             String   @id @default(uuid())
   bookId         String?
@@ -126,13 +134,14 @@ model reviews {
 }
 
 model Recommendation {
-  id      String  @id @default(uuid())
+  id      String    @id @default(uuid())
   book1Id String?
   title1  String?
   cover1  String?
   book2Id String?
   title2  String?
   cover2  String?
+  disLike disLike[]
 }
 
 // Use enums when yosu change database
