@@ -13,24 +13,25 @@ datasource db {
 //schema
 
 model User {
-  id            String         @id @default(uuid())
-  username      String         @unique
-  passwordHash  String
-  userAuthToken String         @unique
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  role          Roles          @relation(fields: [roleId], references: [id])
-  roleId        Int
-  favorites     Fav[]          @relation("UserFavorites")
-  bookCategory  BookCategory[] @relation("UserBookCategory")
-  Book          Book[]         @relation("UserBook")
-  activity      activity[]
-  avatar        String?
-  bio           String?
-  reviews       reviews[]
-  status        status[]
-  likes         Like[]         @relation("userLikes")
-  dislike       disLike[]      @relation("userdisLikes")
+  id             String           @id @default(uuid())
+  username       String           @unique
+  passwordHash   String
+  userAuthToken  String           @unique
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  role           Roles            @relation(fields: [roleId], references: [id])
+  roleId         Int
+  favorites      Fav[]            @relation("UserFavorites")
+  bookCategory   BookCategory[]   @relation("UserBookCategory")
+  Book           Book[]           @relation("UserBook")
+  activity       activity[]
+  avatar         String?
+  bio            String?
+  reviews        reviews[]
+  status         status[]
+  likes          Like[]           @relation("userLikes")
+  dislike        disLike[]        @relation("userdisLikes")
+  Recommendation Recommendation[]
 }
 
 model BookCategory {
@@ -104,12 +105,14 @@ model status {
 }
 
 model Like {
-  id         String    @id @default(uuid())
-  status     status?   @relation(fields: [statusId], references: [id])
-  statusId   String?
-  User       User[]    @relation("userLikes")
-  activity   activity? @relation(fields: [activityId], references: [id])
-  activityId String?
+  id               String          @id @default(uuid())
+  status           status?         @relation(fields: [statusId], references: [id])
+  statusId         String?
+  User             User[]          @relation("userLikes")
+  activity         activity?       @relation(fields: [activityId], references: [id])
+  activityId       String?
+  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
+  recommendationId String?
 }
 
 model disLike {
@@ -141,7 +144,10 @@ model Recommendation {
   book2Id String?
   title2  String?
   cover2  String?
+  user    User?     @relation(fields: [userId], references: [id])
+  userId  String?
   disLike disLike[]
+  Like    Like[]
 }
 
 // Use enums when yosu change database

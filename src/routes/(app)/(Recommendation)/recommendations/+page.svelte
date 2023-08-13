@@ -1,7 +1,11 @@
 <script>
 	/** @type {import('./$types').PageData} */
+	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
 	export let data;
 	let { recommendations } = data;
+	console.log($page.data.user.id);
+	console.log(recommendations);
 </script>
 
 <div class="container">
@@ -13,11 +17,47 @@
 	<div class="content">
 		{#each recommendations as recommendations}
 			<div class="card">
-				<div class="votes">
-					<span class="material-icons"> arrow_upward </span>
-					<span>2</span>
-					<span class="material-icons"> arrow_downward </span>
-				</div>
+				<form method="post">
+					<input type="hidden" name="id" bind:value={recommendations.id} />
+					<div class="votes">
+						{#if recommendations.Like[0]?.User?.some((user) => user?.id === $page.data?.user?.id)}
+							<button formaction="?/like" style="color:#ff4500">
+								<span class="material-icons"> arrow_upward </span>
+							</button>
+						{:else}
+							<button formaction="?/like">
+								<span class="material-icons"> arrow_upward </span>
+							</button>
+						{/if}
+						{#if recommendations.Like.length && recommendations.disLike.length != 0}
+							{#if recommendations.Like[0]?.User?.length - recommendations.disLike[0]?.User?.length != 0}
+								<div class="voteCount">
+									{recommendations.Like[0]?.User?.length -
+										recommendations.disLike[0]?.User?.length >
+									0
+										? recommendations.Like[0]?.User?.length -
+										  recommendations.disLike[0]?.User?.length
+										: '-' +
+										  recommendations.Like[0]?.User?.length -
+										  recommendations.disLike[0]?.User?.length}
+								</div>
+							{/if}
+						{:else if recommendations.Like.length == 0 && recommendations.disLike[0]?.User?.length > 0}
+							{recommendations.disLike[0]?.User?.length}
+						{:else if recommendations.disLike.length == 0 && recommendations.Like[0]?.User?.length > 0}
+							{recommendations.Like[0]?.User?.length}
+						{/if}
+						{#if recommendations.disLike[0]?.User?.some((user) => user?.id === $page.data?.user?.id)}
+							<button formaction="?/dislike" style="color:#7193ff">
+								<span class="material-icons"> arrow_downward </span>
+							</button>
+						{:else}
+							<button formaction="?/dislike">
+								<span class="material-icons"> arrow_downward </span>
+							</button>
+						{/if}
+					</div>
+				</form>
 				<div class="titleCover">
 					<!-- Book cover source -->
 					<div class="imageContainer">
@@ -105,6 +145,17 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	.votes span {
+		font-weight: 600;
+		cursor: pointer;
+	}
+
+	.votes button {
+		border: none;
+		background-color: #fafafa;
+		color: #647380;
 	}
 
 	.head {
