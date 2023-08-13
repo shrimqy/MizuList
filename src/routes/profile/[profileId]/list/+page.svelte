@@ -154,7 +154,7 @@
 						</div>
 					</div>
 					{#if showForm[index]}
-						<div class="editor-popout" transition:fade={{ duration: 300 }}>
+						<div class="editor-popout" in:fade={{ duration: 300 }}>
 							<form method="POST" action="?/userStatus">
 								<div class="editor">
 									<div class="editor-banner">
@@ -261,7 +261,7 @@
 							</form>
 						</div>
 
-						<div id="overlay" transition:fade={{ duration: 300 }} />
+						<div id="overlay" in:fade={{ duration: 300 }} />
 					{/if}
 				</form>
 			{/each}

@@ -175,11 +175,11 @@ export const actions = {
 		//Creating activity
 		//only updating when there is any change in the data in condition
 		if (
-			existingBook.rating !== rating ||
-			existingBook.pages !== pages ||
-			existingBook.chapters !== chapters ||
-			existingBook.bookCategory[1].id !== categoryId ||
-			existingBook.rereads !== rereads
+			existingBook?.rating !== rating ||
+			existingBook?.pages !== pages ||
+			existingBook?.chapters !== chapters ||
+			existingBook?.bookCategory[1].id !== categoryId ||
+			existingBook?.rereads !== rereads
 		) {
 			await db.activity.create({
 				data: {

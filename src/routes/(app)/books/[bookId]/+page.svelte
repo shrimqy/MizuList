@@ -358,7 +358,7 @@
 							</form>
 						</div>
 
-						<div id="overlay" transition:fade={{ duration: 300 }} />
+						<div id="overlay" in:fade={{ duration: 300 }} />
 					{/if}
 				</form>
 			</div>

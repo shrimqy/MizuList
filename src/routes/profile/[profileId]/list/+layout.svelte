@@ -46,7 +46,7 @@
 </button>
 
 {#if showForm}
-	<div class="editor-popout" transition:fade={{ duration: 300 }}>
+	<div class="editor-popout" in:fade={{ duration: 300 }}>
 		<form method="POST" action="/profile/{username}/list/addBook?/addBook">
 			<div class="editor">
 				<div class="ebutton">
@@ -98,7 +98,7 @@
 		</form>
 	</div>
 
-	<div id="overlay" transition:fade={{ duration: 300 }} />
+	<div id="overlay" in:fade={{ duration: 300 }} />
 {/if}
 
 <slot />

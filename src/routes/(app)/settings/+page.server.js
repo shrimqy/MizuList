@@ -63,9 +63,8 @@ export const actions = {
 		await fs.promises.writeFile(filePath, buffer);
 
 		// Now you can store the filePath in the database or use it as needed
-
 		await db.User.update({
-			where: { username },
+			where: { id },
 			data: { avatar: filePath }
 		});
 	},
