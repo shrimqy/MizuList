@@ -237,21 +237,31 @@
 												<textarea bind:value={book.notes} name="notes" placeholder="Enter Note" />
 											</div>
 											<div class="e-3">
-												<input
-													type="number"
-													id="chapters"
-													name="chapters"
-													min="0"
-													bind:value={book.chapters}
-													placeholder="Chapter"
-												/>
+												<label for="pages" class="input-label">Pages</label>
 												<input
 													type="number"
 													id="pages"
 													name="pages"
 													min="0"
 													bind:value={book.pages}
-													placeholder="Pages"
+												/>
+												<label for="chapters" class="input-label">Chapters</label>
+												<input
+													type="number"
+													id="chapters"
+													name="chapters"
+													min="0"
+													bind:value={book.chapters}
+												/>
+											</div>
+											<div class="e-4">
+												<label for="tpages" class="input-label">Total Pages</label>
+												<input
+													type="number"
+													id="tpages"
+													name="tpages"
+													min="0"
+													bind:value={book.tPages}
 												/>
 											</div>
 										</div>
@@ -636,8 +646,8 @@
 	.e-userStatus {
 		display: flex;
 		justify-content: space-between;
-		width: 40rem;
-		/* gap: 1rem; */
+		width: 45rem;
+		gap: 1rem;
 	}
 
 	.e-userStatus select,
@@ -654,7 +664,8 @@
 	}
 
 	.e-userStatus textarea {
-		width: 160%;
+		width: 90%;
+		resize: vertical;
 	}
 
 	#overlay {

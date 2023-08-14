@@ -1,9 +1,26 @@
 <script>
 	import { page, navigating } from '$app/stores';
 	$: username = $page.data.user?.name;
+	import { fade } from 'svelte/transition';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 	$: userData = $page.data.userData;
+
+	let showdrop = false;
+	let showrdrop = false;
+	function Dropdown() {
+		showdrop = true;
+	}
+	function Dropdownhide() {
+		showdrop = false;
+	}
+
+	function rDropdown() {
+		showrdrop = true;
+	}
+	function rDropdownhide() {
+		showrdrop = false;
+	}
 </script>
 
 {#if $page.url.pathname.startsWith(`/profile/`)}
@@ -31,14 +48,64 @@
 								</form>
 							</div>
 						{:else}
-							<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-							<a data-sveltekit-preload-data class="navLinks" href="/browse">Browse</a>
+							<a class="navLinks" href="/">Home</a>
 							<a class="navLinks" href="/profile/{username}">Profile</a>
-							<form class="navbut" action="/logout" method="POST">
-								<button type="submit">Log Out</button>
-							</form>
+							<a class="navLinks" href="/profile/{username}/list">List</a>
+							<div
+								class="browse"
+								on:mouseover={rDropdown}
+								on:mouseleave={rDropdownhide}
+								on:focus={rDropdown}
+							>
+								<a class="navLinks" href="/browse">Browse</a>
+								{#if showrdrop}
+									<div class="rdropdown" in:fade={{ duration: 200 }}>
+										<div class="rdropLink">
+											<span class="material-icons"> recommend </span><a href="/recommendations"
+												>Recommendations</a
+											>
+										</div>
+										<div class="rdropLink">
+											<span class="material-icons"> star </span><a href="/reviews">Reviews</a>
+										</div>
+									</div>
+								{/if}
+							</div>
 						{/if}
 					</nav>
+					{#if username}
+						<div
+							class="profile"
+							on:mouseover={Dropdown}
+							on:mouseleave={Dropdownhide}
+							on:focus={Dropdown}
+						>
+							<img
+								src={`/uploads/${$page.data.user?.id}.png`}
+								alt="User Avatar"
+								class="navavatar"
+							/><span class="material-icons"> expand_more </span>
+							{#if showdrop}
+								<div class="dropdown" in:fade={{ duration: 200 }}>
+									<div class="dropLink">
+										<span class="material-icons"> person </span><a href="/profile/{username}"
+											>Profile</a
+										>
+									</div>
+									<div class="dropLink">
+										<span class="material-icons"> settings </span><a href="/settings">Settings</a>
+									</div>
+									<form action="/logout" method="POST">
+										<div class="dropLink">
+											<span class="material-icons"> logout </span><button type="submit"
+												>Log Out</button
+											>
+										</div>
+									</form>
+								</div>
+							{/if}
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -175,6 +242,147 @@
 
 	.logo img {
 		height: 65%;
+	}
+
+	.material-icons {
+		font-family: 'Material Icons';
+	}
+
+	.profile {
+		position: relative;
+		padding: 1rem 0;
+		display: flex;
+		align-items: center;
+		color: #5e6d79;
+	}
+
+	.navavatar {
+		height: 40px;
+		width: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		cursor: pointer;
+	}
+
+	.browse {
+		position: relative;
+		padding: 1.5rem 0;
+		color: #5e6d79;
+	}
+
+	.dropdown {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		position: absolute;
+		top: 95%;
+		width: 9rem;
+		padding: 1rem;
+		left: -100%;
+		z-index: 999;
+		cursor: pointer;
+		background-color: #fbfbfb;
+		box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
+		border-radius: 7px;
+	}
+
+	/* Add the arrow shape to the dropdown */
+	.dropdown::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 50%; /* Position it in the middle of the container */
+		transform: translateX(-50%); /* Center the arrow horizontally */
+		border-width: 7px;
+		border-style: solid;
+		border-color: transparent transparent #fbfbfb transparent;
+	}
+
+	.dropLink {
+		display: flex;
+		align-items: center;
+	}
+
+	.dropdown span {
+		font-size: 17px;
+		color: #5e6d79;
+		font-weight: 600;
+		transition: all 0.5s ease-in-out;
+	}
+
+	.dropdown a,
+	.dropdown button {
+		border: none;
+		font-size: 15px;
+		padding: 7px 15px;
+		font-weight: 600;
+		background-color: #fbfbfb;
+		color: #5e6d79;
+		transition: background-color 0.3s;
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+	}
+
+	.dropLink:hover span,
+	.dropLink:hover a,
+	.dropLink:hover button {
+		color: #343c42;
+	}
+
+	.rdropdown {
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		position: absolute;
+		top: 95%;
+		width: 10rem;
+		padding: 0.8rem;
+		left: 0;
+		z-index: 999;
+		cursor: pointer;
+		background-color: #fbfbfb;
+		box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
+		border-radius: 7px;
+	}
+
+	.rdropdown::before {
+		content: '';
+		position: absolute;
+		bottom: 100%;
+		left: 25%; /* Position it in the middle of the container */
+		transform: translateX(-50%); /* Center the arrow horizontally */
+		border-width: 7px;
+		border-style: solid;
+		border-color: transparent transparent #fbfbfb transparent;
+	}
+
+	.rdropLink {
+		display: flex;
+		justify-content: start;
+		align-items: center;
+	}
+
+	.rdropLink span {
+		font-size: 17px;
+		color: #8092a0;
+		font-weight: 600;
+		transition: all 0.5s ease-in-out;
+	}
+
+	.rdropLink a {
+		border: none;
+		font-size: 14px;
+		padding: 10px 10px;
+		font-weight: 500;
+		color: #8092a0;
+		transition: background-color 0.3s;
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+	}
+
+	.rdropLink:hover span,
+	.rdropLink:hover a {
+		color: #5e6d79;
 	}
 
 	.navItems {
@@ -331,7 +539,7 @@
 		box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.1); /* Adjusted */
 	}
 
-	nav a {
+	.profileNav a {
 		color: #768ca3;
 		font-weight: 600;
 		font-size: 14px;
@@ -339,17 +547,17 @@
 		transition: all 0.3s ease;
 	}
 
-	nav a:hover {
+	.profileNav a:hover {
 		color: #1faafa;
 	}
 
-	nav a.selected {
+	.profileNav a.selected {
 		color: #1faafa; /* Change this to the desired color for the active page */
 	}
 
 	/* Responsive Styles */
 	@media screen and (max-width: 768px) {
-		nav a {
+		.profileNav a {
 			padding: 0.5rem 1rem; /* Adjusted */
 		}
 	}

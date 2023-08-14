@@ -67,7 +67,7 @@
 										>
 									</div>
 									<div class="rdropLink">
-										<span class="material-icons"> star </span><a href="/recommendations">Reviews</a>
+										<span class="material-icons"> star </span><a href="/reviews">Reviews</a>
 									</div>
 								</div>
 							{/if}
@@ -192,7 +192,6 @@
 	}
 
 	.user-avatar {
-		will-change: transform; /* Hint to the browser about upcoming change */
 		height: 40px;
 		width: 40px;
 		border-radius: 50%;

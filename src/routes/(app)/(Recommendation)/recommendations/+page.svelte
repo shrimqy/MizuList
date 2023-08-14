@@ -4,8 +4,6 @@
 	import { page } from '$app/stores';
 	export let data;
 	let { recommendations } = data;
-	console.log($page.data.user.id);
-	console.log(recommendations);
 </script>
 
 <div class="container">
@@ -43,7 +41,7 @@
 								</div>
 							{/if}
 						{:else if recommendations.Like.length == 0 && recommendations.disLike[0]?.User?.length > 0}
-							{recommendations.disLike[0]?.User?.length}
+							-{recommendations.disLike[0]?.User?.length}
 						{:else if recommendations.disLike.length == 0 && recommendations.Like[0]?.User?.length > 0}
 							{recommendations.Like[0]?.User?.length}
 						{/if}

@@ -2,6 +2,7 @@
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 let username;
+let existinglike, existingdislike;
 export async function load() {
 	const recommendations = await db.Recommendation.findMany({
 		include: {
@@ -44,7 +45,6 @@ export const actions = {
 		const recommendations = await db.Recommendation.findUnique({
 			where: { id }
 		});
-		let existinglike;
 
 		if (recommendations !== null) {
 			existinglike = await db.Like.findFirst({
@@ -88,6 +88,23 @@ export const actions = {
 					}
 				});
 			}
+			existingdislike = await db.disLike.findFirst({
+				where: { recommendationId: recommendations.id },
+				include: { User: true }
+			});
+			if (existingdislike) {
+				if (existingdislike.User.some((u) => u.username === username)) {
+					await db.disLike.update({
+						where: { id: existingdislike.id },
+						data: {
+							User: {
+								// Disconnect the User record using the id
+								disconnect: { id: user.id }
+							}
+						}
+					});
+				}
+			}
 		}
 	},
 
@@ -105,7 +122,6 @@ export const actions = {
 		const recommendations = await db.Recommendation.findUnique({
 			where: { id }
 		});
-		let existingdislike;
 
 		if (recommendations !== null) {
 			existingdislike = await db.disLike.findFirst({
@@ -148,6 +164,23 @@ export const actions = {
 						recommendationId: recommendations.id
 					}
 				});
+			}
+			existinglike = await db.Like.findFirst({
+				where: { recommendationId: recommendations.id },
+				include: { User: true }
+			});
+			if (existinglike && existingdislike) {
+				if (existinglike.User.some((u) => u.username === username)) {
+					await db.Like.update({
+						where: { id: existinglike.id },
+						data: {
+							User: {
+								// Disconnect the User record using the id
+								disconnect: { id: user.id }
+							}
+						}
+					});
+				}
 			}
 		}
 	}

@@ -89,7 +89,7 @@
 							<textarea name="notes" placeholder="Enter Note" />
 						</div>
 						<div class="e-3">
-							<input type="number" id="chapters" name="tpages" min="0" placeholder="Total Pages" />
+							<input type="number" id="tpages" name="tpages" min="0" placeholder="Total Pages" />
 							<input type="number" id="pages" name="pages" min="0" placeholder="Pages" />
 						</div>
 					</div>

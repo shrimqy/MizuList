@@ -5,7 +5,6 @@
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
 	let inputValue = '';
-
 	function submitSearch() {
 		goto('browse/' + inputValue); //search page url
 	}
@@ -87,7 +86,7 @@
 	.book-container {
 		padding: 1rem 0rem;
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 		color: #647380;
 	}
 
@@ -104,8 +103,8 @@
 	}
 
 	.bookCover {
-		height: 80%;
-		width: 90%;
+		width: 150px;
+		height: 220px;
 		background-color: rgb(202, 202, 202);
 		border-radius: 6px;
 		text-align: center;

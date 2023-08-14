@@ -24,6 +24,7 @@ export const actions = {
 		const categoryId = parseInt(status, 10); //to convert the status to Int, shit doesn't work otherwise for somereason
 		const chapters = data.get('chapters');
 		const pages = data.get('pages');
+		const tpages = data.get('tpages');
 		const rereads = data.get('rereads');
 		const startedAt = data.get('startDate');
 		const notes = data.get('notes');
@@ -60,6 +61,7 @@ export const actions = {
 					pages: pages,
 					chapters: chapters,
 					rating: rating,
+					tPages: tpages,
 					rereads: rereads,
 					completedAt: completedDateTime,
 					createdAt: startedDateTime,
@@ -83,6 +85,7 @@ export const actions = {
 				title: existingBook.title,
 				pages: pages,
 				rating: rating,
+				tPages: tpages,
 				userId: user.id,
 				covers: existingBook.covers,
 				categoryId: categoryId
