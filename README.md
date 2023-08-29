@@ -24,6 +24,7 @@ Litlog is a project born out of a passion for literature and a drive to enhance 
 1. Clone this repository to your local machine.
 2. Install project dependencies using `npm install`.
 3. Start the development server with `npm run dev`.
+4. Generate Prisma Clien with `npx prisma generate`
 
 ## Building and Previewing
 
