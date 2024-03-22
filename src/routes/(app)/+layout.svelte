@@ -40,8 +40,8 @@
 				<nav class="navItems">
 					<!-- route protection  -->
 					{#if !username}
-						<a data-sveltekit-preload-code:viewport class="navLinks" href="/">Home</a>
-						<a data-sveltekit-preload-data:viewport class="navLinks" href="/browse">Browse</a>
+						<a class="navLinks" href="/">Home</a>
+						<a class="navLinks" href="/browse">Browse</a>
 						<div class="navLink-right">
 							<a class="navLinks" href="/login">Login</a>
 							<form class="navbut">
@@ -52,6 +52,7 @@
 						<a class="navLinks" href="/">Home</a>
 						<a class="navLinks" href="/profile/{username}">Profile</a>
 						<a class="navLinks" href="/profile/{username}/list">List</a>
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
 						<div
 							class="browse"
 							on:mouseover={rDropdown}
@@ -75,6 +76,7 @@
 					{/if}
 				</nav>
 				{#if username}
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div
 						class="profile"
 						on:mouseover={Dropdown}
