@@ -88,6 +88,7 @@
 			>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="upload">
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div id="drop-zone" class="drop-zone" on:click={openFileInput}>
 						{#if uploadedImage}
 							<div>
@@ -118,7 +119,7 @@
 
 				{#if userData && userData.avatar}
 					<div class="avatarsaved">
-						<img src={`/uploads/${userData.id}.png`} alt="User Avatar" class="user-avatar" />
+						<img src={`/uploads/userAvatars/${userData.id}.png`} alt="User Avatar" class="user-avatar" />
 					</div>
 				{/if}
 			</form>

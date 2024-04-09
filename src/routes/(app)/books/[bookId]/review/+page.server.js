@@ -1,16 +1,20 @@
-let username, bookId, existingBook;
+let username, bookId, userBook;
 import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, locals }) {
-	username = locals.user.name;
-	bookId = params.bookId;
-	existingBook = await db.book.findFirst({
+	bookId = await params.bookId;
+	
+	userBook = await db.UserBook.findUnique({
 		where: {
-			bookId,
-			User: {
-				some: { username }
+			userID_bookID: {
+				userID: locals.user.id,
+				bookID: bookId
 			}
+		},
+		include: { 
+			bookCategory: true,
+			book: true
 		}
 	});
 	return {};
@@ -30,36 +34,33 @@ export const actions = {
 			where: { username }
 		});
 
-		const existing = await db.reviews.findFirst({
+		const existing = await db.review.findFirst({
 			where: {
-				bookId: bookId,
-				userId: user.id
+				bookID: bookId,
+				userID: user.id
 			}
 		});
 
 		if (existing) {
-			await db.reviews.update({
+			await db.review.update({
 				where: { id: existing.id },
 				data: {
 					review: review,
 					recommendation: recommendation,
 					spoiler: spoiler,
-					title: existingBook.title,
-					rating: existingBook?.rating,
-					covers: existingBook?.covers
+					rating: userBook.rating,
 				}
 			});
 		} else {
-			await db.reviews.create({
+			await db.review.create({
 				data: {
 					review: review,
 					recommendation: recommendation,
 					spoiler: spoiler,
-					bookId: bookId,
-					userId: user.id,
-					title: existingBook.title,
-					rating: existingBook?.rating,
-					covers: existingBook?.covers
+					bookID: bookId,
+					userID: user.id,
+					rating: userBook.rating,
+
 				}
 			});
 		}

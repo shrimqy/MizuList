@@ -4,6 +4,8 @@
 
 	export let data; //data fetch from the API
 	let book = data.book.works; //assigning the data to book
+	let dbBook = data.dbBook
+	console.log(dbBook);
 	let inputValue = '';
 	function submitSearch() {
 		goto('browse/' + inputValue); //search page url
@@ -19,29 +21,26 @@
 	</form>
 	<h1>Trending Weekly Now</h1>
 	<div class="book-container">
-		{#each book as book}
+		{#each dbBook as book}
 			<!-- since the data fetched is an array  -->
 			<a
 				data-sveltekit-preload-data
-				href="/books/{book.key.split('/')[2]}"
-				onerror="this.href='/books/{book.cover_edition_key}"
+				href="/books/{book.id}"
 			>
 				<!-- Link to the book page -->
 				<div class="bookCard">
 					<div class="bookCover" in:scale={{ duration: 300 }}>
-						{#if book.cover_edition_key}
+						{#if book.coverUrl}
 							<!-- Book cover source -->
 							<img
-								src={'http://covers.openlibrary.org/b/olid/' +
-									book.cover_edition_key +
-									'-M.jpg?default=false'}
-								alt={book.title}
+								src={book?.coverUrl}
+								alt={book?.englishTitle}
 							/>
 						{:else}
 							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
 						{/if}
 					</div>
-					<div class="title">{book.title}</div>
+					<div class="title">{book.englishTitle}</div>
 				</div>
 			</a>
 		{/each}

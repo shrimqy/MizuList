@@ -4,7 +4,7 @@ import { db } from '$lib/server/database';
 
 var Roles; //defining enum
 (function (Roles) {
-	Roles['ADMIN'] = 'ADMIN';
+	Roles['MOD'] = 'MOD';
 	Roles['USER'] = 'USER';
 })(Roles || (Roles = {})); //ensuring the object is defined
 

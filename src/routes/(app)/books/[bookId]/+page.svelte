@@ -6,30 +6,29 @@
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import { page } from '$app/stores';
 
 	export let data;
-	let { work, bookData, isbn, existingBook, reviews } = data;
-	$: favTag = data.favTag;
-	import { page } from '$app/stores';
+	let { book, userBook, userFavorite, favorite } = data;
+	$: favTag = $page.data.userFavoriteKEY
+
+	console.log(book.review);
+	
+	console.log(userBook);
 
 	let startDate = null;
 	let finishDate = null;
 
 	let status = 'planToRead';
-	let selectedCategoryId = existingBook ? existingBook.bookCategory[1].id : status;
-	let selectedRating = existingBook ? existingBook.rating : '0';
-	let pageCount = existingBook ? existingBook.pages : null;
-	let chapterCount = existingBook ? existingBook.chapters : null;
-	let rereads = existingBook ? existingBook.rereads : null;
-	let notes = existingBook ? existingBook.notes : null;
-	const createdAt = existingBook ? existingBook.createdAt : null;
-	const completedAt = existingBook ? existingBook.completedAt : null;
-	if (createdAt !== null) {
-		startDate = createdAt.toISOString().split('T')[0];
-	}
-	if (completedAt !== null) {
-		finishDate = completedAt.toISOString().split('T')[0];
-	}
+	let selectedCategoryId = userBook ? userBook?.bookCategory[1]?.id : status;
+	let selectedRating = userBook?.rating ? userBook?.rating : '0';
+	console.log(selectedRating);
+	let pageCount = userBook ? userBook?.pages : null;
+	let chapterCount = userBook ? userBook?.chapters : null;
+	let rereads = userBook ? userBook?.rereads : null;
+	let notes = userBook ? userBook?.notes : null;
+	startDate = userBook?.startedDate?.toISOString().split('T')[0];
+	finishDate = userBook?.completedAt?.toISOString().split('T')[0];
 
 	let showForm = false;
 
@@ -96,7 +95,7 @@
 	};
 </script>
 
-<title>{work.title}</title>
+<title>{book.englishTitle}</title>
 
 <!-- Toast Component -->
 <div class="wrap">
@@ -108,30 +107,13 @@
 	<div class="bcontainer">
 		<div class="dataCover">
 			<div class="cover">
-				{#if work.covers && work.covers.length > 0}
+				{#if book.coverUrl}
 					<img
-						src={'http://covers.openlibrary.org/b/id/' + work.covers[0] + '-M.jpg?default=false'}
-						alt={'work.title'}
+						src={book.coverUrl}
+						alt={book.englishTitle}
 					/>
-				{:else if bookData.cover_edition_key && bookData.cover_edition_key.length > 0}
-					<img
-						src={'https://covers.openlibrary.org/b/olid/' +
-							bookData.cover_edition_key +
-							'-M.jpg?default=false'}
-						alt={'work.title'}
-					/>
-				{:else if isbn.isbn_10 || isbn.isbn_13.length > 0}
-					<img
-						src={'https://covers.openlibrary.org/b/isbn/' +
-							isbn.isbn_13[0] +
-							'-M.jpg?default=false'}
-						alt={'work.title'}
-					/>
-				{:else}
-					<span>No cover available</span>
 				{/if}
 			</div>
-
 			<div class="userFav">
 				{#key (favTag, $page.data.user)}
 					{#if !favTag || !$page.data.user}
@@ -154,29 +136,29 @@
 		</div>
 
 		<div class="content">
-			<div class="title">{work.title}</div>
+			<div class="title">{ book?.englishTitle ? book?.romanizedTitle: book?.nativeTitle }</div>
 
 			<div class="bookStats-header">
 				<div class="rating-header">
 					<div class="score">
 						<h2>Score</h2>
-						<h3>{(bookData.ratings_average * 2).toFixed(2)}</h3>
-						<span class="r-count">{bookData.ratings_count} users</span>
+						<h3>{book.publicRating !=null ? book.publicRating : "0" }</h3>
+						<span class="r-count">{book.ratingCount !=null ? book.ratingCount : "0" } users</span>
 					</div>
 					<div class="detail-header">
 						<div class="member" style="padding: 1rem 0rem;">
 							Member: <span style="font-weight: 700; padding-left: 0.3rem"
-								>{bookData.readinglog_count}</span
+								>{book?.userBooks?.length}</span
 							>
 						</div>
 						<div class="author" style="font-size: 13px">
-							Author: <span class="a-tag">{bookData.author_name}</span>
+							Author: <span class="a-tag">{book?.authors}</span>
 						</div>
 					</div>
 				</div>
 				<form method="POST" action="?/userStatus" class="userStatus" use:enhance={statusUpdate}>
-					{#if existingBook == null}
-						<button class="fbutton" id="addToListButton" on:click|preventDefault={setDefaultStatus}
+					{#if book == null}
+						<button class="fbutton" id="addToListButton" 
 							>Add to List</button
 						>
 					{/if}
@@ -186,7 +168,7 @@
 						id="status"
 						name="status"
 						bind:value={selectedCategoryId}
-						style={existingBook ? 'display: inline' : 'display: none'}
+						style={book ? 'display: inline' : 'display: none'}
 					>
 						<option value={2}>Reading</option>
 						<option value={3} id="defaultOption">Plan to Read</option>
@@ -242,7 +224,6 @@
 						</div>
 					</div>
 
-					<!-- List-Editor -->
 					{#if showForm}
 						<div class="editor-popout" in:fade={{ duration: 500 }}>
 							<form method="POST" action="?/userStatus">
@@ -362,7 +343,7 @@
 					{/if}
 				</form>
 			</div>
-			<div class="desc">{work.description?.value || work.description || ''}</div>
+			<div class="desc">{book.Description?.value || book.Description || ''}</div>
 		</div>
 	</div>
 
@@ -370,23 +351,29 @@
 		<div class="sidebar">
 			<div class="book-details">
 				<h2>First publish Date</h2>
-				<h3>{bookData.first_publish_year || 'N/A'}</h3>
-				<h2>Publishers</h2>
-				<h3>{bookData.publisher ? bookData.publisher.slice(0, 10).join(', ') : 'N/A'}</h3>
+				<h3>{book.firstPublished.toISOString().slice(0, 10) || 'N/A'}</h3>
+				<h2>Publisher</h2>
+				<h3>{book.publisher ? book.publisher : 'N/A'}</h3>
 				<h2>No of Pages</h2>
 				<h3>
-					{bookData.number_of_pages_median ? bookData.number_of_pages_median + ' (Average)' : 'N/A'}
+					{book.pages ? book.pages + ' (Average)' : 'N/A'}
 				</h3>
-				<h2>Languages</h2>
+				<h2>Genres</h2>
+				{#each book.genres as item}
+					<h3 class="genre-item">{item.label}</h3>
+				{/each}
+				
+				<!-- <h2>Languages</h2>
 				<h3>{bookData.language ? bookData.language.join(', ') : 'N/A'}</h3>
 				<h2>Edition Count</h2>
-				<h3>{bookData.edition_count || 'N/A'}</h3>
-				<a class="amazonLink" href="https://www.amazon.in/s?k={bookData.title}" target="_blank">
+				<h3>{bookData.edition_count || 'N/A'}</h3> -->
+				<a class="amazonLink" href="{book.amazonUrl}">
 					<h2>Amazon</h2>
 					<span class="material-icons-outlined"> open_in_new </span>
 				</a>
 			</div>
-			<div class="tag-container">
+			
+			<!-- <div class="tag-container">
 				{#if bookData.subject && bookData.subject.length > 0}
 					<h3>Tags</h3>
 					{#each filterTags(bookData.subject.slice(0, 15)) as subject}
@@ -404,10 +391,10 @@
 						{/if}
 					{/if}
 				{/if}
-			</div>
+			</div> -->
 		</div>
 		<div class="overview">
-			<div class="edition-container" style="margin-bottom: 1rem;">
+			<!-- <div class="edition-container" style="margin-bottom: 1rem;">
 				<h3 style="color: #61778f">Edition Details</h3>
 				<div class="edition-details">
 					{#if isbn}
@@ -423,12 +410,12 @@
 						<div class="ed">No Edition Details Available</div>
 					{/if}
 				</div>
-			</div>
+			</div> -->
 			<div class="review">
 				<div class="review-head">
 					<h3 style="color: #61778f">Reviews</h3>
-					{#if existingBook && existingBook.bookId && existingBook.bookId.length > 0}
-						<a data-sveltekit-preload-data href="/books/{existingBook.bookId}/review"
+					{#if userBook}
+						<a data-sveltekit-preload-data href="/books/{userBook.bookID}/review"
 							>Write a review</a
 						>
 					{:else if $page.data.user}
@@ -438,12 +425,12 @@
 					{/if}
 				</div>
 
-				{#each reviews as review, reviewIndex}
+				{#each book.review as review, reviewIndex}
 					<div class="review-container">
-						<img src={`/uploads/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
+						<img src={`/uploads/userAvatars/${review?.user?.id}.png`} alt="User Avatar" class="user-avatar" />
 						<div class="review-body">
 							<div class="review-header">
-								<h3 class="user-name">{review.user.username}</h3>
+								<h3 class="user-name">{review?.user?.username}</h3>
 								<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
 							</div>
 
@@ -471,10 +458,9 @@
 								<div class="review-rating">Reviewer's rating: {review.rating}</div>
 							</div>
 
-							<div class="review-content">
-								<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
+							 <div class="review-content">
 								<p class="review-text">
-									{#if isExpanded[reviewIndex]}
+									{#if isExpanded[reviewIndex]} <!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
 										{review.review}
 									{:else}
 										{review.review.slice(0, characterLimit) + '...'}
@@ -496,9 +482,9 @@
 					</div>
 				{/each}
 			</div>
-		</div>
+		</div> 
 	</div>
-</div>
+</div> 
 
 <style>
 	* {
@@ -563,7 +549,7 @@
 	}
 
 	.book-details h3 {
-		margin: 0.3rem 0rem;
+		margin: 1px 0rem;
 		font-size: 12px;
 		font-weight: 400;
 		color: #9299a1;

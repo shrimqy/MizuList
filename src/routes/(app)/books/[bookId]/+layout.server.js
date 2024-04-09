@@ -1,21 +1,22 @@
 /** @type {import('./$types').LayoutLoad} */
 import { db } from '$lib/server/database';
 export async function load({ locals, params }) {
-	const bookId = await params.bookId;
-	const username = locals?.user?.name;
-
-	const existingBook = await db.book.findFirst({
+	let bookId = await params.bookId;
+	
+	let userBook = await db.UserBook.findUnique({
 		where: {
-			bookId,
-			User: {
-				some: { username }
+			userID_bookID: {
+				userID: locals.user.id,
+				bookID: bookId
 			}
 		},
-		include: {
-			bookCategory: true
+		include: { 
+			bookCategory: true,
+			book: true
 		}
 	});
+
 	return {
-		existingBook: existingBook
-	};
+		userBook: userBook
+	}
 }

@@ -7,7 +7,8 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { goto } from '$app/navigation';
 	export let data;
-	let { work, bookData, isbn, existingBook } = data;
+	let { work, bookData, isbn, userBook } = data;
+	
 	let recommendation = null;
 	let spoilerWarning = false;
 	const reviewUpdate = ({ formElement, formData, action, cancel }) => {
@@ -21,7 +22,7 @@
 					}
 				});
 			}
-			goto(`/books/${existingBook.bookId}`, { invalidateAll: true });
+			goto(`/books/${userBook.bookID}`, { invalidateAll: true });
 			await invalidateAll();
 			await update({ reset: false });
 		};
@@ -37,7 +38,7 @@
 		<form method="POST" action="?/review" use:enhance={reviewUpdate}>
 			<div class="content-container">
 				<div class="left-content">
-					<div class="title">{existingBook.title}</div>
+					<div class="title">{userBook.book.englishTitle}</div>
 					<div class="review-text">
 						<label>
 							<span class="rheader">Review text:</span>

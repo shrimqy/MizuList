@@ -84,7 +84,7 @@
 						on:focus={Dropdown}
 					>
 						<img
-							src={`/uploads/${$page.data.user?.id}.png`}
+							src={`/uploads/userAvatars/${$page.data.user?.id}.png`}
 							alt="User Avatar"
 							class="user-avatar"
 						/><span class="material-icons"> expand_more </span>

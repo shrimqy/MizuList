@@ -39,7 +39,7 @@ export const actions = {
 		const imageFile = data.get('avatar');
 
 		// Path to the file
-		const uploadDirectory = path.resolve('static/uploads');
+		const uploadDirectory = path.resolve('static/uploads/userAvatars');
 		// Create the directory if it doesn't exist
 		if (!fs.existsSync(uploadDirectory)) {
 			fs.mkdirSync(uploadDirectory, { recursive: true });

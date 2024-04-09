@@ -1,3 +1,5 @@
+import { db } from '../../../lib/server/database.js';
+
 const cache = {
 	data: null,
 	timestamp: null,
@@ -6,6 +8,10 @@ const cache = {
 
 export const prerender = true;
 export const load = async ({ fetch }) => {
+	let dbBook = await db.book.findMany({
+		distinct: ['englishTitle']
+	})
+	console.log(dbBook);
 	const fetchBook = async () => {
 		const currentTime = Date.now();
 
@@ -21,12 +27,16 @@ export const load = async ({ fetch }) => {
 		cache.data = book;
 		cache.timestamp = currentTime;
 
-		return book;
+		return {
+			book,
+			dbBook
+		};
 	};
 
 	const book = await fetchBook();
 
 	return {
-		book
+		book,
+		dbBook: dbBook
 	};
 };

@@ -6,39 +6,42 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL") //database connector 
 }
 
 //schema
 
 model User {
-  id             String           @id @default(uuid())
-  username       String           @unique
-  passwordHash   String
-  userAuthToken  String           @unique
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  role           Roles            @relation(fields: [roleId], references: [id])
-  roleId         Int
-  favorites      Fav[]            @relation("UserFavorites")
-  bookCategory   BookCategory[]   @relation("UserBookCategory")
-  Book           Book[]           @relation("UserBook")
-  activity       activity[]
-  avatar         String?
-  bio            String?
-  reviews        reviews[]
-  status         status[]
-  likes          Like[]           @relation("userLikes")
-  dislike        disLike[]        @relation("userdisLikes")
-  Recommendation Recommendation[]
+  id            String   @id @default(cuid())
+  username      String   @unique
+  passwordHash  String
+  userAuthToken String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  avatar        String?
+  bio           String?
+
+  role         Roles          @relation(fields: [roleID], references: [id])
+  roleID       Int
+  followedBy   User[]         @relation("UserFollows")
+  following    User[]         @relation("UserFollows")
+  bookCategory BookCategory[] @relation("UserBookCategory")
+
+  reviews   review[]
+  userBooks UserBook[]
+  activity  activity[]
+  Like      Like[]
+  DisLike   DisLike[]
+  Comment   Comment[]
+  Favorite  Favorite[]
 }
 
 model BookCategory {
   id       Int        @id @default(autoincrement())
   name     String     @unique
+  UserBook UserBook[] @relation("BookCategory")
   User     User[]     @relation("UserBookCategory")
-  Book     Book[]     @relation("BookCategory")
   activity activity[]
 }
 
@@ -48,92 +51,146 @@ model Roles {
   users User[]
 }
 
-model Fav {
+model Favorite {
   id     String @id @default(uuid())
-  bookId String @unique
-  covers Int
-  User   User[] @relation("UserFavorites")
+  book   Book   @relation(fields: [bookID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookID String
+  user   User[]
 }
 
 model Book {
-  id       String  @id @default(uuid())
-  UserId   String?
-  bookId   String?
-  title    String?
-  pages    String?
-  chapters String?
-  rating   String?
-  rereads  String?
-  author   String?
-  notes    String?
-  tPages   String?
-  covers   String?
+  id             String    @id
+  bookID         String?
+  romanizedTitle String?
+  englishTitle   String?
+  nativeTitle    String?
+  authors        String?
+  Description    String?
+  format         String?
+  isbn           String?
+  pages          String?
+  chapters       String?
+  views          Int?
+  amazonUrl      String?
+  coverUrl       String?
+  publicRating   Float?
+  ratingCount    Int?
+  firstPublished DateTime?
+  publisher      String?
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  completedAt DateTime?
+  tag        Tag[]
+  genres     Genres[]
+  userBooks  UserBook[]
+  SeriesBook SeriesBook[]
+  Favorite   Favorite[]
+  review     review[]
+  activity   activity[]
+}
 
+model Series {
+  id          String       @id
+  name        String       @unique
+  description String?
+  SeriesBook  SeriesBook[]
+}
+
+model SeriesBook {
+  series   Series  @relation(fields: [seriesID], references: [id], onUpdate: Cascade)
+  seriesID String
+  book     Book    @relation(fields: [bookID], references: [id], onDelete: Cascade)
+  bookID   String
+  order    String? // New field to track the order of the book within the series
+
+  @@id([bookID, seriesID])
+}
+
+model Genres {
+  id    Int    @id @default(autoincrement())
+  label String
+  book  Book[]
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  Tag  String
+  book Book[]
+}
+
+model UserBook {
+  id           String         @id @default(uuid())
+  user         User           @relation(fields: [userID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userID       String
+  book         Book           @relation(fields: [bookID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookID       String
   bookCategory BookCategory[] @relation("BookCategory")
-  User         User[]         @relation("UserBook")
+
+  pagesRead    String?
+  chaptersRead String?
+  rating       String?
+  rereads      Int?
+  notes        String?
+  startedDate  DateTime?
+  lastUpdated  DateTime? @updatedAt
+  completedAt  DateTime?
+
+  @@unique([userID, bookID]) // Ensures a user has only one entry per book
 }
 
-model activity {
-  id         String        @id @default(uuid())
-  bookId     String?
-  timestamp  DateTime      @default(now())
-  pages      String?
-  rating     String?
-  title      String?
-  tPages     String?
-  covers     String?
-  user       User?         @relation(fields: [userId], references: [id])
-  userId     String?
-  category   BookCategory? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
-  Like       Like[]
-
-  @@index([bookId])
-}
-
-model status {
-  id           String   @id @default(uuid())
-  timestamp    DateTime @default(now())
-  activityText String?
-  user         User?    @relation(fields: [userId], references: [id])
-  userId       String?
-  Like         Like[]
-}
-
-model Like {
-  id               String          @id @default(uuid())
-  status           status?         @relation(fields: [statusId], references: [id])
-  statusId         String?
-  User             User[]          @relation("userLikes")
-  activity         activity?       @relation(fields: [activityId], references: [id])
-  activityId       String?
-  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
-  recommendationId String?
-}
-
-model disLike {
-  id               String          @id @default(uuid())
-  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
-  recommendationId String?
-  User             User[]          @relation("userdisLikes")
-}
-
-model reviews {
+model review {
   id             String   @id @default(uuid())
-  bookId         String?
   date           DateTime @updatedAt
   review         String
   recommendation String
   spoiler        String
   rating         String?
   title          String?
-  covers         String?
-  user           User?    @relation(fields: [userId], references: [id])
-  userId         String?
+
+  book   Book    @relation(fields: [bookID], references: [id])
+  bookID String
+  user   User?   @relation(fields: [userID], references: [id])
+  userID String?
+}
+
+model activity {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  chapter   String?
+  rating    String?
+  title     String?
+  pages     String?
+
+  book       Book          @relation(fields: [bookID], references: [id])
+  bookID     String
+  user       User?         @relation(fields: [userID], references: [id])
+  userID     String?
+  category   BookCategory? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  like    Like[]
+  comment Comment[]
+}
+
+model status {
+  id        String   @id @default(uuid())
+  text      String?
+  timestamp DateTime @default(now())
+
+  like    Like[]
+  comment Comment[]
+}
+
+model Comment {
+  id   String @id @default(cuid())
+  text String
+
+  user       User      @relation(fields: [userID], references: [id])
+  userID     String
+  status     status?   @relation(fields: [statusId], references: [id])
+  statusId   String?
+  activity   activity? @relation(fields: [activityId], references: [id])
+  activityId String?
+
+  Like Like[]
 }
 
 model Recommendation {
@@ -144,21 +201,34 @@ model Recommendation {
   book2Id String?
   title2  String?
   cover2  String?
-  user    User?     @relation(fields: [userId], references: [id])
-  userId  String?
-  disLike disLike[]
   Like    Like[]
+  DisLike DisLike[]
+}
+
+model Like {
+  user             User            @relation(fields: [userID], references: [id])
+  userID           String
+  activity         activity?       @relation(fields: [activityId], references: [id])
+  activityId       String?
+  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
+  recommendationId String?
+  status           status?         @relation(fields: [statusId], references: [id])
+  statusId         String?
+  comment          Comment?        @relation(fields: [commentID], references: [id])
+  commentID        String?
+
+  @@id([userID])
+}
+
+model DisLike {
+  user             User            @relation(fields: [userID], references: [id])
+  userID           String
+  recommendation   Recommendation? @relation(fields: [recommendationId], references: [id])
+  recommendationId String?
+
+  @@id([userID])
 }
 
 // Use enums when yosu change database
 // because SQLite doesn't support it
 // https://www.prisma.io/docs/reference/database-reference/database-features#misc
-
-// model User {
-//   role Role @default(USER)
-// }
-
-// enum Role {
-//   USER
-//   ADMIN
-// }
