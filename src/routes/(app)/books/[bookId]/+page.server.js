@@ -2,7 +2,7 @@ import { db } from '$lib/server/database';
 import { redirect } from '@sveltejs/kit';
 import { log } from 'console';
 let username, bookId, isbn, work, matchingBooks;
-let userBook, userFavorite, favorite = null
+let userBook = null, userFavorite = null, favorite = null
 let book;
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals, params }) {
@@ -12,8 +12,9 @@ export async function load({ locals, params }) {
 	}
 	
 	if (locals && locals.user && locals.user.id) {
-		username = locals.user.name;
-		username = locals.user.name;
+		username = locals?.user?.name;
+		const userID = locals?.user?.id
+
 		userFavorite = await db.Favorite.findFirst({
 			where: {
 				bookID: bookId,
@@ -34,7 +35,7 @@ export async function load({ locals, params }) {
 		userBook = await db.UserBook.findUnique({
 			where: {
 				userID_bookID: {
-					userID: locals.user.id,
+					userID: userID,
 					bookID: bookId
 				}
 			},
@@ -42,8 +43,8 @@ export async function load({ locals, params }) {
 				bookCategory: true
 			}
 		});
-
 	}
+	
 	book = await db.book.findUnique({
 		where: {
 			id: bookId

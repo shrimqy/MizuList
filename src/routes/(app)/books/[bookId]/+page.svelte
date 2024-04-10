@@ -10,25 +10,19 @@
 
 	export let data;
 	let { book, userBook, userFavorite, favorite } = data;
-	$: favTag = $page.data.userFavoriteKEY
+	$: favTag = $page?.data?.userFavoriteKEY
 
-	console.log(book.review);
-	
-	console.log(userBook);
 
-	let startDate = null;
-	let finishDate = null;
 
 	let status = 'planToRead';
-	let selectedCategoryId = userBook ? userBook?.bookCategory[1]?.id : status;
-	let selectedRating = userBook?.rating ? userBook?.rating : '0';
-	console.log(selectedRating);
+	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
+	let selectedRating = userBook ? userBook?.rating : '0';
 	let pageCount = userBook ? userBook?.pages : null;
 	let chapterCount = userBook ? userBook?.chapters : null;
 	let rereads = userBook ? userBook?.rereads : null;
 	let notes = userBook ? userBook?.notes : null;
-	startDate = userBook?.startedDate?.toISOString().split('T')[0];
-	finishDate = userBook?.completedAt?.toISOString().split('T')[0];
+	let startDate = userBook ? userBook?.startedDate?.toISOString().split('T')[0] : null;
+	let finishDate = userBook ? userBook?.completedAt?.toISOString().split('T')[0] : null;
 
 	let showForm = false;
 
@@ -95,7 +89,7 @@
 	};
 </script>
 
-<title>{book.englishTitle}</title>
+<title>{book?.englishTitle}</title>
 
 <!-- Toast Component -->
 <div class="wrap">
@@ -107,10 +101,10 @@
 	<div class="bcontainer">
 		<div class="dataCover">
 			<div class="cover">
-				{#if book.coverUrl}
+				{#if book?.coverUrl}
 					<img
-						src={book.coverUrl}
-						alt={book.englishTitle}
+						src={book?.coverUrl}
+						alt={book?.englishTitle}
 					/>
 				{/if}
 			</div>
@@ -136,14 +130,14 @@
 		</div>
 
 		<div class="content">
-			<div class="title">{ book?.englishTitle ? book?.romanizedTitle: book?.nativeTitle }</div>
+			<div class="title">{ book? book?.englishTitle : book?.romanizedTitle} {book?.nativeTitle ? "/"+ book?.nativeTitle : ""}</div>
 
 			<div class="bookStats-header">
 				<div class="rating-header">
 					<div class="score">
 						<h2>Score</h2>
-						<h3>{book.publicRating !=null ? book.publicRating : "0" }</h3>
-						<span class="r-count">{book.ratingCount !=null ? book.ratingCount : "0" } users</span>
+						<h3>{book?.publicRating !=null ? book?.publicRating : "0" }</h3>
+						<span class="r-count">{book?.ratingCount !=null ? book?.ratingCount : "0" } users</span>
 					</div>
 					<div class="detail-header">
 						<div class="member" style="padding: 1rem 0rem;">
@@ -157,8 +151,8 @@
 					</div>
 				</div>
 				<form method="POST" action="?/userStatus" class="userStatus" use:enhance={statusUpdate}>
-					{#if book == null}
-						<button class="fbutton" id="addToListButton" 
+					{#if userBook == null}
+						<button class="fbutton" id="addToListButton" on:click|preventDefault={setDefaultStatus}
 							>Add to List</button
 						>
 					{/if}
@@ -168,7 +162,7 @@
 						id="status"
 						name="status"
 						bind:value={selectedCategoryId}
-						style={book ? 'display: inline' : 'display: none'}
+						style={userBook ? 'display: inline' : 'display: none'}
 					>
 						<option value={2}>Reading</option>
 						<option value={3} id="defaultOption">Plan to Read</option>
@@ -224,7 +218,7 @@
 						</div>
 					</div>
 
-					{#if showForm}
+					<!-- {#if showForm}
 						<div class="editor-popout" in:fade={{ duration: 500 }}>
 							<form method="POST" action="?/userStatus">
 								<div class="editor">
@@ -341,7 +335,7 @@
 
 						<div id="overlay" in:fade={{ duration: 300 }} />
 					{/if}
-				</form>
+				</form> -->
 			</div>
 			<div class="desc">{book.Description?.value || book.Description || ''}</div>
 		</div>
@@ -769,7 +763,7 @@
 	}
 
 	.title {
-		font-size: 25px;
+		font-size: 34px;
 		color: #5c7289;
 		font-weight: 600;
 		margin-bottom: 0.5rem;

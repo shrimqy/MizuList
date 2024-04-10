@@ -89,7 +89,7 @@ export const actions = {
         const name = data.get("seriesName")
         const description = data.get("description")
 
-        seriesID = nanoid()
+        const seriesID = nanoid()
         await db.Series.create({
             data: {
                 id: seriesID,
@@ -98,7 +98,7 @@ export const actions = {
             }
         })
         return {
-            success: true, seriesID: seriesID, seriesName: seriesName
+            success: true, seriesID: seriesID, seriesName: name
         }
     }
 }
