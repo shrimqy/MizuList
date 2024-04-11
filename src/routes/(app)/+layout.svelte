@@ -6,6 +6,7 @@
 	$: homeusername = $page.data.user?.name;
 	$: username = $page.data?.userData?.username;
 	$: userData = $page.data?.userData;
+	
 	let userFollow = $page.data?.userFollow?.following;
 	$: profilePage = $page.url.pathname.startsWith(`/profile/`)
 
