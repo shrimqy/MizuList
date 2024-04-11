@@ -12,7 +12,7 @@
 	let { book, userBook, userFavorite, favorite } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
 
-
+	console.log(book);
 
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
@@ -130,6 +130,9 @@
 		</div>
 
 		<div class="content">
+
+			<div class="series"><a href="/series/{book.SeriesBook[0].seriesID}">{ book.SeriesBook ? book.SeriesBook[0].series.name + ' #' + book.SeriesBook[0].order : ''}</a></div>
+			
 			<div class="title">{ book? book?.englishTitle : book?.romanizedTitle} {book?.nativeTitle ? "/"+ book?.nativeTitle : ""}</div>
 
 			<div class="bookStats-header">
@@ -762,10 +765,19 @@
 		color: #5e5e5e;
 	}
 
+	.series a {
+		font-family: Copernicus, Cochin, Georgia, Times, 'Times New Roman', serif;
+		font-size: 16px;
+		color: #7e93a7;
+		font-style: oblique;
+		font-weight: 500;
+		margin-bottom: 0.1rem;
+	}
+
 	.title {
-		font-size: 34px;
+		font-size: 38px;
 		color: #5c7289;
-		font-weight: 600;
+		font-weight: 700;
 		margin-bottom: 0.5rem;
 	}
 

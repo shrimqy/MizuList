@@ -3,9 +3,6 @@
 	import { fade, fly, scale } from 'svelte/transition'; //for transitions
 
 	export let data; //data fetch from the API
-	let book = data.book.works; //assigning the data to book
-	let dbBook = data.dbBook
-	console.log(dbBook);
 	let inputValue = '';
 	function submitSearch() {
 		goto('browse/' + inputValue); //search page url
@@ -21,7 +18,7 @@
 	</form>
 	<h1>Trending Weekly Now</h1>
 	<div class="book-container">
-		{#each dbBook as book}
+		{#each data.weeklyPopularBooks as book}
 			<!-- since the data fetched is an array  -->
 			<a
 				data-sveltekit-preload-data
@@ -45,6 +42,85 @@
 			</a>
 		{/each}
 	</div>
+	<h1>Top Rated</h1>
+	<div class="book-container">
+		{#each data.topRatedBooks as book}
+			<!-- since the data fetched is an array  -->
+			<a
+				data-sveltekit-preload-data
+				href="/books/{book.id}"
+			>
+				<!-- Link to the book page -->
+				<div class="bookCard">
+					<div class="bookCover" in:scale={{ duration: 300 }}>
+						{#if book.coverUrl}
+							<!-- Book cover source -->
+							<img
+								src={book?.coverUrl}
+								alt={book?.englishTitle}
+							/>
+						{:else}
+							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+						{/if}
+					</div>
+					<div class="title">{book.englishTitle}</div>
+				</div>
+			</a>
+		{/each}
+	</div>
+	<h1>All Time Popular</h1>
+	<div class="book-container">
+		{#each data.allTimePopularBooks as book}
+			<!-- since the data fetched is an array  -->
+			<a
+				data-sveltekit-preload-data
+				href="/books/{book.id}"
+			>
+				<!-- Link to the book page -->
+				<div class="bookCard">
+					<div class="bookCover" in:scale={{ duration: 300 }}>
+						{#if book.coverUrl}
+							<!-- Book cover source -->
+							<img
+								src={book?.coverUrl}
+								alt={book?.englishTitle}
+							/>
+						{:else}
+							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+						{/if}
+					</div>
+					<div class="title">{book.englishTitle}</div>
+				</div>
+			</a>
+		{/each}
+	</div>
+	<h1>New Entries</h1>
+	<div class="book-container">
+		{#each data.allTimePopularBooks as book}
+			<!-- since the data fetched is an array  -->
+			<a
+				data-sveltekit-preload-data
+				href="/books/{book.id}"
+			>
+				<!-- Link to the book page -->
+				<div class="bookCard">
+					<div class="bookCover" in:scale={{ duration: 300 }}>
+						{#if book.coverUrl}
+							<!-- Book cover source -->
+							<img
+								src={book?.coverUrl}
+								alt={book?.englishTitle}
+							/>
+						{:else}
+							<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+						{/if}
+					</div>
+					<div class="title">{book.englishTitle}</div>
+				</div>
+			</a>
+		{/each}
+	</div>
+	
 </div>
 
 <style>

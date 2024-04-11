@@ -8,10 +8,46 @@ const cache = {
 
 export const prerender = true;
 export const load = async ({ fetch }) => {
-	let dbBook = await db.book.findMany({
-		distinct: ['englishTitle']
+	let allTimePopularBooks = await db.book.findMany({
+		distinct: ['englishTitle'],
+		orderBy: {
+			userBooks: {
+				_count: 'desc'
+			}
+		}
 	})
-	console.log(dbBook);
+
+	let topRatedBooks = await db.book.findMany({
+		where: {
+			publicRating: {
+				not: null
+			}
+		},
+		orderBy: {
+			publicRating: 'desc'
+		}
+	});
+
+
+	// Construct the Prisma query to find books updated in the last week
+	const weeklyPopularBooks = await db.book.findMany({
+		where: {
+			userBooks: {
+				some: {
+					lastUpdated: {
+						gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+					}
+				}
+			}
+		},
+		orderBy: {
+			userBooks: {
+				_count: 'desc'
+			}
+		}
+	});	
+
+	console.log(weeklyPopularBooks);
 	const fetchBook = async () => {
 		const currentTime = Date.now();
 
@@ -29,7 +65,6 @@ export const load = async ({ fetch }) => {
 
 		return {
 			book,
-			dbBook
 		};
 	};
 
@@ -37,6 +72,8 @@ export const load = async ({ fetch }) => {
 
 	return {
 		book,
-		dbBook: dbBook
+		allTimePopularBooks,
+		topRatedBooks,
+		weeklyPopularBooks
 	};
 };

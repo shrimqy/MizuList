@@ -35,6 +35,7 @@ model User {
   DisLike   DisLike[]
   Comment   Comment[]
   Favorite  Favorite[]
+  status    status[]
 }
 
 model BookCategory {
@@ -59,7 +60,7 @@ model Favorite {
 }
 
 model Book {
-  id             String    @id
+  id             String  @id
   bookID         String?
   romanizedTitle String?
   englishTitle   String?
@@ -71,12 +72,14 @@ model Book {
   pages          String?
   chapters       String?
   views          Int?
+
   amazonUrl      String?
   coverUrl       String?
   publicRating   Float?
   ratingCount    Int?
   firstPublished DateTime?
   publisher      String?
+  createdAt      DateTime  @default(now())
 
   tag        Tag[]
   genres     Genres[]
@@ -175,6 +178,8 @@ model status {
   text      String?
   timestamp DateTime @default(now())
 
+  user    User?     @relation(fields: [userID], references: [id])
+  userID  String?
   like    Like[]
   comment Comment[]
 }
@@ -190,7 +195,9 @@ model Comment {
   activity   activity? @relation(fields: [activityId], references: [id])
   activityId String?
 
-  Like Like[]
+  Like          Like[]
+  ForumThread   ForumThread? @relation(fields: [forumThreadId], references: [id])
+  forumThreadId String?
 }
 
 model Recommendation {
@@ -227,6 +234,20 @@ model DisLike {
   recommendationId String?
 
   @@id([userID])
+}
+
+model ForumThread {
+  id       String           @id
+  title    String
+  views    Int?
+  category ThreadCategory[]
+  comment  Comment[]
+}
+
+model ThreadCategory {
+  id     Int           @id @default(autoincrement())
+  name   String
+  thread ForumThread[]
 }
 
 // Use enums when yosu change database

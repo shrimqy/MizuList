@@ -50,7 +50,11 @@ export async function load({ locals, params }) {
 			id: bookId
 		},
 		include: {
-			SeriesBook: true,
+			SeriesBook: {
+				include: {
+					series: true
+				}
+			},
 			genres: true,
 			tag: true,
 			userBooks: {
@@ -142,7 +146,6 @@ export const actions = {
 			rating = null;
 		}
 		const status = data.get('status');
-		console.log("rating:", rating);
 		const categoryId = parseInt(status, 10); //to convert the status to Int, shit doesn't work otherwise for somereason
 		const chapters = data.get('chapters');
 		const pages = data.get('pages');
@@ -150,8 +153,9 @@ export const actions = {
 		const startedAt = data.get('startDate');
 		const notes = data.get('notes');
 
+
 		const completedAt = data.get('finishDate');
-		let completedDateTime = undefined;
+		let completedDateTime = null;
 		if (completedAt) {
 			completedDateTime = new Date(completedAt).toISOString();
 		}
@@ -160,7 +164,10 @@ export const actions = {
 		});
 
 		const existingBook = await db.userBook.findFirst({
-			where: { user: user}
+			where: { 
+				userID: user.id,
+				bookID: bookId
+			}
 		})
 
 		//Creating activity
@@ -198,7 +205,7 @@ export const actions = {
 		});
 		const ratingCount = ratings.length
 		const sumOfRatings = ratings.reduce((total, userBook) => total + parseInt(userBook.rating), 0);
-		console.log(sumOfRatings);
+		console.log(existingBook);
 		const avgRating = ratingCount > 0 ? sumOfRatings / ratingCount : 0;
 
 		// Creating/updating the userStatus

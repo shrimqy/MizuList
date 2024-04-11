@@ -10,21 +10,35 @@ const cache = {
 
 let lastActivity, userData, existingBook, username, status;
 export async function load(locals) {
-	username = locals.locals.user?.name;
+	username = locals.locals?.user?.name;
 
 	//finding books from the user
 	if (username) {
 		userData = await db.user.findUnique({
 			where: { username }
 		});
-		existingBook = await db.book.findMany({
+		existingBook = await db.UserBook.findMany({
 			where: {
-				User: {
-					some: { username }
+				user: {
+					is: { username }
 				}
 			},
 			include: {
-				bookCategory: true
+				bookCategory: {
+					select: {
+						id: true,
+					},
+				},
+				book: {
+					select: {
+						romanizedTitle: true,
+						englishTitle: true,
+						nativeTitle: true,
+						authors: true,
+						coverUrl: true,
+						chapters: true,
+					}
+				}
 			}
 		});
 
@@ -43,15 +57,16 @@ export async function load(locals) {
 		include: {
 			category: true,
 			user: true,
-			Like: {
+			like: {
 				include: {
-					User: {
+					user: {
 						select: {
 							id: true
 						}
 					}
 				}
-			}
+			},
+			book: true
 		}
 	});
 
@@ -62,9 +77,9 @@ export async function load(locals) {
 		},
 		include: {
 			user: true,
-			Like: {
+			like: {
 				include: {
-					User: {
+					user: {
 						select: {
 							id: true
 						}
@@ -74,32 +89,37 @@ export async function load(locals) {
 		}
 	});
 
+
 	const fetchBook = async () => {
-		const currentTime = Date.now();
+		// Construct the Prisma query to find books updated in the last week
+		const weeklyPopularBooks = await db.book.findMany({
+			where: {
+				userBooks: {
+					some: {
+						lastUpdated: {
+							gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+						}
+					}
+				}
+			},
+			orderBy: {
+				userBooks: {
+					_count: 'desc'
+				}
+			}
+		});	
 
-		// Check if cache exists and has not expired
-		if (cache.data && cache.timestamp && currentTime - cache.timestamp < cache.expirationTime) {
-			return cache.data;
-		}
-
-		const res = await fetch(`https://openlibrary.org/trending/weekly.json?&limit=8`);
-		const book = await res.json();
-
-		// Update cache with fetched data and current timestamp
-		cache.data = book;
-		cache.timestamp = currentTime;
-
-		return book;
+		return weeklyPopularBooks;
 	};
 
-	const book = await fetchBook();
+	const weeklyPopularBooks = await fetchBook();
 
 	return {
 		lastActivity: lastActivity.slice(0, 20),
 		userData: userData,
 		existingBook,
 		status,
-		book
+		weeklyPopularBooks
 	};
 }
 /** @type {import('./$types').Actions} */

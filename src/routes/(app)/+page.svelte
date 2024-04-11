@@ -12,7 +12,7 @@
 	export let data;
 	let { lastActivity, existingBook, user, book } = data;
 
-	let books = data.book.works;
+	let books = data.weeklyPopularBooks;
 
 	//toggling status publish form
 	let showPublish = false;
@@ -27,11 +27,11 @@
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
 	//filter function to uniquely identify each books
-	$: uniqueLastActivity = $page.data.lastActivity?.filter(
+	let uniqueLastActivity = $page.data.lastActivity?.filter(
 		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
 	);
-	$: combinedArray = $page.data.status.concat(uniqueLastActivity);
-	$: sortedCombinedArray = combinedArray.sort(
+	let combinedArray = $page.data.status.concat(uniqueLastActivity);
+	let sortedCombinedArray = combinedArray.sort(
 		(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 	);
 
@@ -96,29 +96,23 @@
 							<div class="bookCard">
 								<div class="titleCover">
 									<div class="imageContainer">
-										<a data-sveltekit-preload-data href="/books/{book.bookId}">
-											{#if book.bookId}
+										<a
+											href="/books/{book.id}"
+										>
+											{#if book.book?.coverUrl}
 												<img
-													src={'https://covers.openlibrary.org/b/olid/' +
-														book.covers +
-														'-M.jpg?default=false'}
-													onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-											{book.covers} +
-											'-M.jpg?default=false';"
-													alt={book.title}
+													src={book.book?.coverUrl}
+													alt={book.book?.englishTitle}
 												/>
-
-												<!-- <button class="material-symbols-rounded">open_in_new</button> -->
 											{:else}
-												<span>No cover</span>
-												<!-- Show this if no cover was found from the API -->
+												<span>No cover available</span> <!-- Show this if no cover was found from the API -->
 											{/if}
 										</a>
 									</div>
 									<div class="details">
 										<div class="coverUser">
 											<img
-												src={`/uploads/${book.user?.id}.png`}
+												src={`/uploads/userAvatars/${book.user?.id}.png`}
 												alt="User Avatar"
 												class="user-avatar"
 											/>
@@ -147,9 +141,9 @@
 									</div>
 
 									<div class="likes">
-										{#if book.Like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
+										{#if book.like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
 											<button formaction="?/like" class="like">
-												<div class="likeCount">{book.Like[0].User.length}</div>
+												<div class="likeCount">{book.like[0].User.length}</div>
 												<span
 													class="material-icons-round"
 													style="font-weight: 800; color: #b93850;"
@@ -159,8 +153,8 @@
 											>
 										{:else}
 											<button formaction="?/like" class="like">
-												{#if book.Like.length > 0}
-													<div class="likeCount">{book.Like[0].User.length}</div>
+												{#if book.like.length > 0}
+													<div class="likeCount">{book.like[0].User.length}</div>
 												{/if}<span class="material-icons-round"> favorite_border </span></button
 											>
 										{/if}
@@ -216,27 +210,23 @@
 			</div>
 		</div>
 		<div class="list-preview">
-			{#if user?.name && filteredItems.length > 0}
+			{#if user?.name && filteredItems?.length > 0}
 				<h1>Books in Progress</h1>
 				<div class="list-container">
 					{#each filteredItems as book}
 						<div class="listCard">
-							{#if book.bookId}
-								<a data-sveltekit-preload-data href="/books/{book.bookId}">
+							<a
+								href="/books/{book.id}"
+							>
+								{#if book.book.coverUrl}
 									<img
-										src={'https://covers.openlibrary.org/b/olid/' +
-											book.covers +
-											'-M.jpg?default=false'}
-										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-											{book.covers} +
-											'-M.jpg?default=false';"
-										alt={book.title}
+										src={book.book?.coverUrl}
+										alt={book.book?.englishTitle}
 									/>
-								</a>
-							{:else}
-								<span>{book.title}</span>
-								<!-- Show this if no cover was found from the API -->
-							{/if}
+								{:else}
+									<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+								{/if}
+							</a>
 						</div>
 					{/each}
 				</div>
@@ -246,20 +236,15 @@
 				{#each books.slice(0, 8) as book}
 					<div class="listCard">
 						<a
-							href="/books/{book.key.split('/')[2]}"
-							onerror="this.href='/books/{book.cover_edition_key}"
+							href="/books/{book.id}"
 						>
-							{#if book.cover_edition_key}
-								<!-- Book cover source -->
+							{#if book.coverUrl}
 								<img
-									src={'http://covers.openlibrary.org/b/olid/' +
-										book.cover_edition_key +
-										'-M.jpg?default=false'}
-									alt={book.title}
+									src={book?.coverUrl}
+									alt={book?.englishTitle}
 								/>
 							{:else}
-								<span>No cover available</span>
-								<!-- Show this if no cover was found from the API -->
+								<span>No cover available</span> <!-- Show this if no cover was found from the API -->
 							{/if}
 						</a>
 					</div>
