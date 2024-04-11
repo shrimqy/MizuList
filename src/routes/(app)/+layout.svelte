@@ -7,8 +7,6 @@
 	$: username = $page.data?.userData?.username;
 	$: userData = $page.data?.userData;
 	let userFollow = $page.data?.userFollow?.following;
-	console.log(userFollow);
-
 	$: profilePage = $page.url.pathname.startsWith(`/profile/`)
 
 	afterNavigate(() => {
