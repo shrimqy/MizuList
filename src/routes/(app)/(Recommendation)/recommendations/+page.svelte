@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	export let data;
 	let { recommendations } = data;
+
 </script>
 
 <div class="container">
@@ -13,41 +14,28 @@
 	</div>
 
 	<div class="content">
-		{#each recommendations as recommendations}
+		{#each recommendations as recommendation}
 			<div class="card">
 				<form method="post">
-					<input type="hidden" name="id" bind:value={recommendations.id} />
+					<input type="hidden" name="id" bind:value={recommendation.id} />
 					<div class="votes">
-						{#if recommendations.Like[0]?.User?.some((user) => user?.id === $page.data?.user?.id)}
-							<button formaction="?/like" style="color:#ff4500">
-								<span class="material-icons"> arrow_upward </span>
+						{#if recommendation.Like.some(user => user.User.id === $page.data.user.id)}
+							<button formaction="?/like" >
+								<span class="material-icons" style="color:#ff4500;"> arrow_upward </span>
 							</button>
 						{:else}
 							<button formaction="?/like">
 								<span class="material-icons"> arrow_upward </span>
 							</button>
 						{/if}
-						{#if recommendations.Like.length && recommendations.disLike.length != 0}
-							{#if recommendations.Like[0]?.User?.length - recommendations.disLike[0]?.User?.length != 0}
-								<div class="voteCount">
-									{recommendations.Like[0]?.User?.length -
-										recommendations.disLike[0]?.User?.length >
-									0
-										? recommendations.Like[0]?.User?.length -
-										  recommendations.disLike[0]?.User?.length
-										: '-' +
-										  recommendations.Like[0]?.User?.length -
-										  recommendations.disLike[0]?.User?.length}
-								</div>
-							{/if}
-						{:else if recommendations.Like.length == 0 && recommendations.disLike[0]?.User?.length > 0}
-							-{recommendations.disLike[0]?.User?.length}
-						{:else if recommendations.disLike.length == 0 && recommendations.Like[0]?.User?.length > 0}
-							{recommendations.Like[0]?.User?.length}
+						{#if recommendation.Like.length - recommendation.DisLike.length !== 0}
+							<div class="voteCount">
+								{recommendation.Like.length - recommendation.DisLike.length}
+							</div>
 						{/if}
-						{#if recommendations.disLike[0]?.User?.some((user) => user?.id === $page.data?.user?.id)}
-							<button formaction="?/dislike" style="color:#7193ff">
-								<span class="material-icons"> arrow_downward </span>
+						{#if recommendation.DisLike.some(user => user.User.id === $page.data.user.id)}
+							<button formaction="?/dislike">
+								<span class="material-icons" style="color:#7193ff;"> arrow_downward </span>
 							</button>
 						{:else}
 							<button formaction="?/dislike">
@@ -57,37 +45,21 @@
 					</div>
 				</form>
 				<div class="titleCover">
-					<!-- Book cover source -->
+					<!-- Book 1 -->
 					<div class="imageContainer">
-						<img
-							src={'https://covers.openlibrary.org/b/olid/' +
-								recommendations.cover1 +
-								'-M.jpg?default=false'}
-							onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-						{recommendations.cover1} +
-						'-M.jpg?default=false';"
-							alt={recommendations.title1}
-						/>
+						<img src={recommendation.book1.coverUrl} alt={recommendation.book1.englishTitle} />
 					</div>
-					<a href="/books/{recommendations.book1Id}">
-						<div class="title">{recommendations.title1}</div>
+					<a href="/books/{recommendation.book1Id}">
+						<div class="title">{recommendation.book1.englishTitle}</div>
 					</a>
 				</div>
 				<div class="titleCover">
-					<!-- Book cover source -->
+					<!-- Book 2 -->
 					<div class="imageContainer">
-						<img
-							src={'https://covers.openlibrary.org/b/olid/' +
-								recommendations.cover2 +
-								'-M.jpg?default=false'}
-							onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-					{recommendations.cover2} +
-					'-M.jpg?default=false';"
-							alt={recommendations.title2}
-						/>
+						<img src={recommendation.book2.coverUrl} alt={recommendation.book2.englishTitle} />
 					</div>
-					<a href="/books/{recommendations.book2Id}">
-						<div class="title">{recommendations.title2}</div>
+					<a href="/books/{recommendation.book2Id}">
+						<div class="title">{recommendation.book2.englishTitle}</div>
 					</a>
 				</div>
 			</div>
@@ -101,15 +73,17 @@
 		font-family: 'Overpass', sans-serif;
 		text-decoration: none;
 		outline: none;
+		color: #5c728a;
 	}
+	
 
 	.material-icons {
 		font-family: 'Material Icons';
+		
 	}
 
 	:root {
 		background-color: #edf1f5;
-		color: #5c728a;
 		overflow-y: scroll; /* Always show the vertical scroll bar */
 	}
 

@@ -26,14 +26,16 @@
 	//filter the list of user by reading category
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
-	//filter function to uniquely identify each books
+	// // filter function to uniquely identify each books
 	let uniqueLastActivity = $page.data.lastActivity?.filter(
-		(activity, index, self) => index === self.findIndex((a) => a.bookId === activity.bookId)
+		(activity, index, self) => index === self.findIndex((a) => a.bookID === activity.bookID)
 	);
-	let combinedArray = $page.data.status.concat(uniqueLastActivity);
+	let combinedArray = $page.data.status.concat(lastActivity);
 	let sortedCombinedArray = combinedArray.sort(
 		(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 	);
+
+	console.log(sortedCombinedArray);
 
 	//use function definition for 'like' action
 	const like = () => {
@@ -92,90 +94,90 @@
 				{#each sortedCombinedArray.slice(0, 30) as book}
 					<form action="?/like" method="post" use:enhance={like}>
 						<input type="hidden" name="id" bind:value={book.id} />
-						{#if book.title}
-							<div class="bookCard">
-								<div class="titleCover">
-									<div class="imageContainer">
-										<a
-											href="/books/{book.id}"
-										>
-											{#if book.book?.coverUrl}
-												<img
-													src={book.book?.coverUrl}
-													alt={book.book?.englishTitle}
-												/>
-											{:else}
-												<span>No cover available</span> <!-- Show this if no cover was found from the API -->
-											{/if}
+						{#if book.bookID}
+						<div class="bookCard">
+							<div class="titleCover">
+								<div class="imageContainer">
+									<a
+										href="/books/{book.book.id}"
+									>
+										{#if book.book?.coverUrl}
+											<img
+												src={book.book?.coverUrl}
+												alt={book.book?.englishTitle}
+											/>
+										{:else}
+											<span>No cover available</span> <!-- Show this if no cover was found from the API -->
+										{/if}
+									</a>
+								</div>
+								<div class="details">
+									<div class="coverUser">
+										<img
+											src={`/uploads/userAvatars/${book.user?.id}.png`}
+											alt="User Avatar"
+											class="user-avatar"
+										/>
+										<a href="/profile/{book.user?.username}/">
+											<div class="username">{book.user?.username}</div>
 										</a>
 									</div>
-									<div class="details">
-										<div class="coverUser">
-											<img
-												src={`/uploads/userAvatars/${book.user?.id}.png`}
-												alt="User Avatar"
-												class="user-avatar"
-											/>
-											<a data-sveltekit-preload-code href="/profile/{book.user?.username}/">
-												<div class="username">{book.user?.username}</div>
-											</a>
-										</div>
 
-										<div class="status">
-											{book.category?.name}
-											<div class="bookTitle">{book.title}</div>
-											<div>{book.pages ? book.pages : '-'}/{book.tPages ? book.tPages : '?'}</div>
-											<div>
-												Scored
-												<span
-													>{book.rating !== null && book.rating !== '0' ? book.rating : '-'}</span
-												>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="A-Right">
-									<div class="timeStamp">
-										{formatDate(book.timestamp)}
-									</div>
-
-									<div class="likes">
-										{#if book.like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
-											<button formaction="?/like" class="like">
-												<div class="likeCount">{book.like[0].User.length}</div>
-												<span
-													class="material-icons-round"
-													style="font-weight: 800; color: #b93850;"
-												>
-													favorite
-												</span></button
+									<div class="status">
+										{book.category?.name}
+										<div class="bookTitle">{book.title}</div>
+										<div>{book.chapter ? book.chapter : '-'}/{book.book.chapters ? book.book.chapters : '?'}</div>
+										<div>
+											Scored
+											<span
+												>{book.rating !== null && book.rating !== '0' ? book.rating : '-'}</span
 											>
-										{:else}
-											<button formaction="?/like" class="like">
-												{#if book.like.length > 0}
-													<div class="likeCount">{book.like[0].User.length}</div>
-												{/if}<span class="material-icons-round"> favorite_border </span></button
-											>
-										{/if}
+										</div>
 									</div>
 								</div>
 							</div>
+
+							<div class="A-Right">
+								<div class="timeStamp">
+									{formatDate(book.timestamp)}
+								</div>
+
+								<div class="likes">
+									{#if book.like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
+										<button formaction="?/like" class="like">
+											<div class="likeCount">{book.like[0]?.User.length}</div>
+											<span
+												class="material-icons-round"
+												style="font-weight: 800; color: #b93850;"
+											>
+												favorite
+											</span></button
+										>
+									{:else}
+										<button formaction="?/like" class="like">
+											{#if book.like.length > 0}
+												<div class="likeCount">{book.like[0]?.User?.length}</div>
+											{/if}<span class="material-icons-round"> favorite_border </span></button
+										>
+									{/if}
+								</div>
+							</div>
+						</div>
 						{:else}
 							<div class="statusCard">
 								<div class="statusContent">
 									<div class="statusHeader">
 										<img
-											src={`/uploads/${book.user?.id}.png`}
+											src={`/uploads/userAvatars/${book.user?.id}.png`}
 											alt="User Avatar"
 											class="userstatusavatar"
 										/>
-										<a data-sveltekit-preload-code href="/profile/{book.user.username}/"
-											><span class="username" style="margin: 0 1rem;">{book.user.username}</span></a
+										<a data-sveltekit-preload-code href="/profile/{book.user?.username}/"
+											><span class="username" style="margin: 0 1rem;">{book.user?.username}</span></a
 										>
 									</div>
 									<div class="content">
-										<p>{book.activityText}</p>
+										<p>{book.text}</p>
 									</div>
 								</div>
 
@@ -184,9 +186,9 @@
 										{formatDate(book.timestamp)}
 									</div>
 									<div class="likes">
-										{#if book.Like[0]?.User.some((user) => user?.id === $page.data?.userData?.id)}
+										{#if book.like[0]?.User.some((user) => user?.id === $page.data?.userData?.id)}
 											<button formaction="?/like" class="like">
-												<div class="likeCount">{book.Like[0].User.length}</div>
+												<div class="likeCount">{book.Like[0]?.User?.length}</div>
 												<span
 													class="material-icons-round"
 													style="font-weight: 800; color: #b93850;"
@@ -196,8 +198,8 @@
 											>
 										{:else}
 											<button formaction="?/like" class="like">
-												{#if book.Like.length > 0}
-													<div class="likeCount">{book.Like[0].User.length}</div>
+												{#if book.like?.length > 0}
+													<div class="likeCount">{book.like[0]?.User?.length}</div>
 												{/if}<span class="material-icons-round"> favorite_border </span></button
 											>
 										{/if}

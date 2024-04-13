@@ -1,13 +1,14 @@
 <script>
 	/** @type {import('./$types').PageData} */
+	import { fade, fly, scale } from 'svelte/transition'; //for transitions
 	export let data;
 	let { existingBook } = data;
 
 	const filteredItems = existingBook.filter((item) => item.bookCategory.includes(1));
 	filteredItems.sort((a, b) => {
 		// Assuming 'a' and 'b' are objects with a 'title' property
-		const titleA = a.title.toLowerCase();
-		const titleB = b.title.toLowerCase();
+		const titleA = a.book.englishTitle.toLowerCase();
+		const titleB = b.book.englishTitle.toLowerCase();
 
 		if (titleA < titleB) {
 			return -1;
@@ -27,38 +28,36 @@
 	<form method="POST" action="?/recommendation" class="content">
 		<div class="listContainer">
 			<div class="listBookData">
-				{#each filteredItems as book, index}
+				{#each filteredItems as item, index}
 					<div class="bookCard">
 						<input
 							type="checkbox"
 							bind:group={selectedBooks}
 							class="checkboxInput"
 							name="selections"
-							value={book.bookId}
+							value={item.bookID}
 							id="book{index}"
-							disabled={selectedBooks.length === 2 && !selectedBooks.includes(book.bookId)}
+							disabled={selectedBooks.length === 2 && !selectedBooks.includes(item.bookID)}
 						/>
-
 						<div class="titleCover">
-							{#if book.bookId}
-								<!-- Book cover source -->
-								<div class="imageContainer">
-									<img
-										src={'https://covers.openlibrary.org/b/olid/' +
-											book.covers +
-											'-M.jpg?default=false'}
-										onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-									{book.covers} +
-									'-M.jpg?default=false';"
-										alt={book.title}
-									/>
+							<a
+								data-sveltekit-preload-data
+								href="/books/{item.bookID}"
+							>
+								<div class="bookCard">
+									<div class="imageContainer">
+										{#if item.book.coverUrl}
+											<img
+												src={item.book?.coverUrl}
+												alt={item.book?.englishTitle}
+											/>
+										{:else}
+											<span>No cover available</span>
+										{/if}
+									</div>
+									<div class="title">{item.book.englishTitle}</div>
 								</div>
-								<a href="/books/{book.bookId}">
-									<div class="title">{book.title}</div>
-								</a>
-							{:else}
-								<div class="title">{book.title}</div>
-							{/if}
+							</a>
 						</div>
 					</div>
 				{/each}

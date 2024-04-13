@@ -48,7 +48,7 @@ export const actions = {
                 firstPublished: firstPublished,
                 publisher: publisher,
                 genres: {
-                    connect:genres.map(genres => ({ id: genres.id, label: genres.label}))
+                    connect: genres.map(genres => ({ id: genres.id, label: genres.label}))
                 },
                 SeriesBook: {
                     create: 

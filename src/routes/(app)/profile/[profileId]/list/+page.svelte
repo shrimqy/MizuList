@@ -58,7 +58,6 @@
 					<div class="bookCard" in:slide={{ x: 0, y: 100, duration: 500 }}>
 						<div class="titleCover">
 							{#if book.bookId}
-								<!-- Book cover source -->
 								<div class="bookHoverCover">
 									<img
 										src={'https://covers.openlibrary.org/b/olid/' +

@@ -55,14 +55,11 @@
 		</div>
 		<div class="listBookData">
 			{#each convertedItems as listItem, index}
-				<!-- since the data fetched is an array  -->
-
-				<!-- Link to the book page -->
 				<form>
 					<div class="bookCard" in:slide={{ x: 0, y: 100, duration: 500 }}>
 						<div class="titleCover">
 							{#if listItem.book.coverUrl}
-								<!-- Book cover source -->
+
 								<div class="bookHoverCover">
 									<img
 										src={listItem.book.coverUrl}

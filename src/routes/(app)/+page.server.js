@@ -59,7 +59,7 @@ export async function load(locals) {
 			user: true,
 			like: {
 				include: {
-					user: {
+					User: {
 						select: {
 							id: true
 						}
@@ -79,7 +79,7 @@ export async function load(locals) {
 			user: true,
 			like: {
 				include: {
-					user: {
+					User: {
 						select: {
 							id: true
 						}
@@ -141,8 +141,8 @@ export const actions = {
 		//creates a new status
 		await db.status.create({
 			data: {
-				userId: user.id,
-				activityText: textData
+				userID: user.id,
+				text: textData
 			}
 		});
 		return { success: true };

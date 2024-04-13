@@ -6,13 +6,14 @@
 	$: homeusername = $page.data.user?.name;
 	$: username = $page.data?.userData?.username;
 	$: userData = $page.data?.userData;
-	
+
 	let userFollow = $page.data?.userFollow?.following;
 	$: profilePage = $page.url.pathname.startsWith(`/profile/`)
 
 	afterNavigate(() => {
 		invalidateAll(); //rerun load functions
 	});
+	
 	let showdrop = false;
 	let showrdrop = false;
 	function Dropdown() {
@@ -47,7 +48,28 @@
 				<!-- route protection  -->
 				{#if !homeusername}
 					<a class="navLinks" href="/">Home</a>
-					<a class="navLinks" href="/browse">Browse</a>
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
+					<div
+						class="browse"
+						on:mouseover={rDropdown}
+						on:mouseleave={rDropdownhide}
+						on:focus={rDropdown}
+					>
+						<a class="navLinks" href="/browse">Browse</a>
+						{#if showrdrop}
+							<div class="rdropdown" in:fade={{ duration: 200 }}>
+								<div class="rdropLink">
+									<span class="material-icons"> recommend </span><a href="/recommendations"
+										>Recommendations</a
+									>
+								</div>
+								<div class="rdropLink">
+									<span class="material-icons"> star </span><a href="/reviews">Reviews</a>
+								</div>
+							</div>
+						{/if}
+					</div>
+					<a class="navLinks" href="/browse">Forum</a>
 					<div class="navLink-right">
 						<a class="navLinks" href="/login">Login</a>
 						<form class="navbut">
@@ -79,6 +101,7 @@
 							</div>
 						{/if}
 					</div>
+					<a class="navLinks" href="/browse">Forum</a>
 				{/if}
 			</nav>
 			{#if homeusername}
@@ -406,13 +429,13 @@
 	.navbut button:hover {
 		box-shadow: 0 2px 10px rgba(8, 150, 230, 0.6);
 		color: #fff;
-		transform: scale(1.03);
+		/* transform: scale(1.03); */
 		transform-origin: center;
 	}
 
 	.navLinks:hover {
-		color: #d3d5f3;
-		transform: scale(1.03);
+		color: #daddff;
+		/* transform: scale(1.03); */
 	}
 
 	.profile {
@@ -481,13 +504,7 @@
 		z-index: 999;
 	}
 
-	.navBar-nologin {
-		/* background: #2b2d42; */
-		width: 100%;
-		height: 3.5rem;
-		display: flex;
-		justify-content: center;
-	}
+
 
 	.nav {
 		display: flex;
@@ -558,13 +575,13 @@
 	.navbut button:hover {
 		box-shadow: 0 2px 10px rgba(8, 150, 230, 0.6);
 		color: #fff;
-		transform: scale(1.03);
+		/* transform: scale(1.03); */
 		transform-origin: center;
 	}
 
 	.navLinks:hover {
 		color: #d3d5f3;
-		transform: scale(1.03);
+		/* transform: scale(1.03); */
 	}
 
 	/* Responsive Styles */

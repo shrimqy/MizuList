@@ -10,24 +10,6 @@
     export let form;
 
     $: searchRes = null
-	// let recommendation = null;
-	// let spoilerWarning = false;
-	// const reviewUpdate = ({ formElement, formData, action, cancel }) => {
-	// 	return async ({ result, update }) => {
-	// 		if (result.data.success) {
-	// 			toast.push('Review Updated!', {
-	// 				theme: {
-	// 					'--toastColor': 'mintcream',
-	// 					'--toastBackground': 'rgba(72,187,120,0.9)',
-	// 					'--toastBarBackground': '#2F855A'
-	// 				}
-	// 			});
-	// 		}
-	// 		goto(`/books/${existingBook.bookId}`, { invalidateAll: true });
-	// 		await invalidateAll();
-	// 		await update({ reset: false });
-	// 	};
-	// };
 
     const searchGenre = () => {
 		return async ({ result, update }) => {
@@ -258,9 +240,7 @@
                         {#each searchRes as item}
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
                             <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-                            <li class="searchResult" on:click={saveSeries(item.id, item.name)}> {item.name} </li>
-
-                            
+                            <li class="searchResult" on:click={saveSeries(item.id, item.name)}> {item.name} </li>    
                         {/each}
                     </div>
                 {/if}

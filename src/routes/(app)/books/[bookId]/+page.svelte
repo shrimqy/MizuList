@@ -12,13 +12,13 @@
 	let { book, userBook, userFavorite, favorite } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
 
-	console.log(book);
+	console.log(userBook);
 
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
-	let selectedRating = userBook ? userBook?.rating : '0';
-	let pageCount = userBook ? userBook?.pages : null;
-	let chapterCount = userBook ? userBook?.chapters : null;
+	let selectedRating = userBook?.rating ? userBook?.rating : '0';
+	let pageCount = userBook ? userBook?.pagesRead : null;
+	let chapterCount = userBook ? userBook?.chaptersRead : null;
 	let rereads = userBook ? userBook?.rereads : null;
 	let notes = userBook ? userBook?.notes : null;
 	let startDate = userBook ? userBook?.startedDate?.toISOString().split('T')[0] : null;
@@ -131,9 +131,9 @@
 
 		<div class="content">
 
-			<div class="series"><a href="/series/{book.SeriesBook[0].seriesID}">{ book.SeriesBook ? book.SeriesBook[0].series.name + ' #' + book.SeriesBook[0].order : ''}</a></div>
+			<div class="series"><a href="/series/{book?.SeriesBook[0]?.seriesID}">{ book.SeriesBook[0] ? book.SeriesBook[0]?.series?.name + ' #' + book?.SeriesBook[0]?.order : ''}</a></div>
 			
-			<div class="title">{ book? book?.englishTitle : book?.romanizedTitle} {book?.nativeTitle ? "/"+ book?.nativeTitle : ""}</div>
+			<div class="title">{ book? book?.englishTitle : book?.romanizedTitle} {book?.nativeTitle ? " / "+ book?.nativeTitle : ""}</div>
 
 			<div class="bookStats-header">
 				<div class="rating-header">
@@ -775,7 +775,7 @@
 	}
 
 	.title {
-		font-size: 38px;
+		font-size: 28px;
 		color: #5c7289;
 		font-weight: 700;
 		margin-bottom: 0.5rem;
