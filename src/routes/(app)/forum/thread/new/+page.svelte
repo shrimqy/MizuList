@@ -16,8 +16,12 @@
 			await invalidateAll()
 		};
 	};
+	
+	console.log(data.categories);
 
 	$: selected = []
+
+	$: isCategory1Selected = selected.includes('1');
 	$: books = []
 </script>
 
@@ -42,7 +46,7 @@
 			<div class="category-section">
 				{#each data.categories as item, i}
 					<div class="checkbox-wrapper">
-						<input type="checkbox" bind:group={selected} name="category" value={item.id} id="category{i}" disabled={selected.length === 1 && !selected.includes(item.id)}>
+						<input type="checkbox" bind:group={selected} name="category" value={item.id} id="category{i}" disabled={selected.length === 3 && !selected.includes(item.id)}>
 						<label for="category{i}">{item.name}</label>
 					</div>
 				{/each}

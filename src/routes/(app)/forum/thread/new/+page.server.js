@@ -4,10 +4,7 @@ const nanoid = customAlphabet('1234567890', 10)
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
-    const categories = await db.threadCategory.findMany()
-    return {
-        categories: categories
-    };
+    
 };
 
 export const actions = {
@@ -25,7 +22,7 @@ export const actions = {
 		return { searchRes: search}
 	},
 
-	newEntry: async ({request}) => {
+	newEntry: async ({request, locals}) => {
 		const data = await request.formData()
 		const books = data.getAll("book")
 		const text = data.get("message")
@@ -44,7 +41,8 @@ export const actions = {
 					connect: { 
 						id: category
 					}
-				}
+				},
+				userID: locals.user.id,
 			}
 		});
 	}

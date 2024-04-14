@@ -17,7 +17,9 @@ export async function load({ params, locals }) {
 			book: true
 		}
 	});
-	return {};
+	return {
+		userBook
+	};
 }
 /** @type {import('./$types').Actions} */
 export const actions = {

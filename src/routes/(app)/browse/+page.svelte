@@ -32,7 +32,7 @@
 					href="/books/{book.id}"
 				>
 					<div class="bookCard">
-						<div class="bookCover" in:scale={{ duration: 300 }}>
+						<div class="bookCover" in:fade={{ duration: 500 }}>
 							{#if book.coverUrl}
 								<img
 									src={book?.coverUrl}
@@ -55,7 +55,7 @@
 					href="/books/{book.id}"
 				>
 					<div class="bookCard">
-						<div class="bookCover" in:scale={{ duration: 300 }}>
+						<div class="bookCover" in:fade={{ duration: 300 }}>
 							{#if book.coverUrl}
 								<img
 									src={book?.coverUrl}
@@ -79,7 +79,7 @@
 				>
 	
 					<div class="bookCard">
-						<div class="bookCover" in:scale={{ duration: 300 }}>
+						<div class="bookCover" in:fade={{ duration: 300 }}>
 							{#if book.coverUrl}
 								<img
 									src={book?.coverUrl}
@@ -103,7 +103,7 @@
 					href="/books/{book.id}"
 				>
 					<div class="bookCard">
-						<div class="bookCover" in:scale={{ duration: 300 }}>
+						<div class="bookCover" in:fade={{ duration: 300 }}>
 							{#if book.coverUrl}
 								
 								<img
@@ -128,7 +128,7 @@
 						href="/books/{book.id}"
 					>
 						<div class="bookCard">
-							<div class="bookCover" in:scale={{ duration: 300 }}>
+							<div class="bookCover" in:fade={{ duration: 500 }}>
 								{#if book.coverUrl}
 									<img
 										src={book?.coverUrl}

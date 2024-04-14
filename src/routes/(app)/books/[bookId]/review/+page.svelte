@@ -42,7 +42,7 @@
 					<div class="review-text">
 						<label>
 							<span class="rheader">Review text:</span>
-							<textarea name="review" rows="20" />
+							<textarea name="review" rows="20" style="resize: vertical"/>
 						</label>
 					</div>
 				</div>
@@ -52,7 +52,6 @@
 							>Publish <span class="material-symbols-outlined"> send </span></button
 						>
 					</div>
-
 					<div class="recommend">
 						<p>Would you recommend this?</p>
 						<label>

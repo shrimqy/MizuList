@@ -69,7 +69,7 @@
 							</div>
 						{/if}
 					</div>
-					<a class="navLinks" href="/browse">Forum</a>
+					<a class="navLinks" href="/forum">Forum</a>
 					<div class="navLink-right">
 						<a class="navLinks" href="/login">Login</a>
 						<form class="navbut">
@@ -101,7 +101,7 @@
 							</div>
 						{/if}
 					</div>
-					<a class="navLinks" href="/browse">Forum</a>
+					<a class="navLinks" href="/forum">Forum</a>
 				{/if}
 			</nav>
 			{#if homeusername}
@@ -429,13 +429,11 @@
 	.navbut button:hover {
 		box-shadow: 0 2px 10px rgba(8, 150, 230, 0.6);
 		color: #fff;
-		/* transform: scale(1.03); */
 		transform-origin: center;
 	}
 
 	.navLinks:hover {
 		color: #daddff;
-		/* transform: scale(1.03); */
 	}
 
 	.profile {

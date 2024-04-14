@@ -36,6 +36,7 @@ model User {
   Comment   Comment[]
   Favorite  Favorite[]
   status    status[]
+  Thread    Thread[]
 }
 
 model BookCategory {
@@ -188,8 +189,9 @@ model status {
 }
 
 model Comment {
-  id   String @id @default(cuid())
-  text String
+  id        String    @id @default(cuid())
+  text      String
+  createdAt DateTime?
 
   user       User      @relation(fields: [userID], references: [id])
   userID     String
@@ -197,10 +199,9 @@ model Comment {
   statusId   String?
   activity   activity? @relation(fields: [activityId], references: [id])
   activityId String?
-
-  Like          Like[]
-  ForumThread   Thread? @relation(fields: [forumThreadId], references: [id])
-  forumThreadId String?
+  Like       Like[]
+  Thread     Thread?   @relation(fields: [threadId], references: [id])
+  threadId   String?
 }
 
 model Recommendation {
@@ -236,13 +237,20 @@ model DisLike {
 }
 
 model Thread {
-  id         String           @id
-  title      String
-  views      Int?
-  threadBody String?
-  category   ThreadCategory[]
-  comment    Comment[]
-  book       Book[]           @relation("bookThread")
+  id          String    @id
+  title       String
+  views       Int?      @default(0)
+  threadBody  String?
+  isPinned    Boolean?  @default(false)
+  isLocked    Boolean?  @default(false)
+  createdAt   DateTime? @default(now())
+  lastUpdated DateTime? @updatedAt
+
+  category ThreadCategory[]
+  book     Book[]           @relation("bookThread")
+  Comment  Comment[]
+  user     User?            @relation(fields: [userID], references: [id])
+  userID   String?
 }
 
 model ThreadCategory {
