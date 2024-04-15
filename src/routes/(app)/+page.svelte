@@ -388,7 +388,6 @@
 
 	.statusRight {
 		width: max-content;
-
 		display: flex;
 		flex-direction: column;
 		text-align: right;

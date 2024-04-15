@@ -86,7 +86,7 @@
                     <div class="statusContent">
                         <div class="statusHeader">
                             <span class="material-symbols-outlined">keep</span>
-                            <a href="">
+                            <a href="/forum/thread/{thread.id}">
                                 <div class="title">{thread.title}</div>
                             </a>
                         </div>
@@ -117,7 +117,7 @@
             <div class="statusCard">
                 <div class="statusContent">
                     <div class="statusHeader">
-                        <a href="">
+                        <a href="/forum/thread/{thread.id}">
                             <div class="title">{thread?.title}</div>
                         </a>
                     </div>
