@@ -2,7 +2,6 @@
     /** @type {import('./$types').LayoutData} */
     import { page } from '$app/stores';
     export let foo;
-	const feed = [ 'Ov']
 </script>
 
 <div class="sidebar-container">
@@ -10,7 +9,7 @@
         <h3>Categories</h3>
 		<a href="/forum" class:selected={$page.url.pathname === '/forum'}>All</a>
 		{#each foo as item}
-			<a href="" class:selected={$page.url.pathname === '/forum/' + item.name}>{item.name}</a>
+			<a data-sveltekit-preload-data="hover" href="/forum/{item.name}" class:selected={$page.url.pathname === '/forum/' + item.name}>{item.name}</a>
 		{/each}
 	</div>
 </div>
@@ -44,8 +43,8 @@
 		display: flex;
 		float: left;
 		justify-content: right;
-		margin: 2rem 0;
-		margin-right: 2rem;
+		padding: 2rem;
+		margin-right: 2.4rem;
 	}
 
 	.sidebar {
