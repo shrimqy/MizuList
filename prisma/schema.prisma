@@ -37,6 +37,7 @@ model User {
   Favorite  Favorite[]
   status    status[]
   Thread    Thread[]
+  viewedThreads Thread[] @relation("ViewedThreads")
 }
 
 model BookCategory {
@@ -251,6 +252,7 @@ model Thread {
   Comment  Comment[]
   user     User?            @relation(fields: [userID], references: [id])
   userID   String?
+  viewedBy User[] @relation("ViewedThreads")
 }
 
 model ThreadCategory {

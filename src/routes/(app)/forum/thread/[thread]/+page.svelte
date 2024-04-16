@@ -4,7 +4,7 @@
     /** @type {import('./$types').PageData} */
     export let data;
     let thread = data.thread
-    console.log(data.thread);
+    // console.log(thread);
 </script>
 
 <div class="container">

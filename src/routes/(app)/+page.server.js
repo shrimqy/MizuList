@@ -149,7 +149,7 @@ export const actions = {
 	},
 
 	//to keep track of the likes
-	like: async ({ request, locals, params }) => {
+	like: async ({ request, locals }) => {
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}

@@ -7,14 +7,12 @@
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
     import ThreadNavBar from '../threadNavBar.svelte';
+	import { onMount } from 'svelte';
 
     export let data;
-
     let form;
     $: threads = data.threads.filter(thread => !thread.isPinned);
     $: pinnedThreads = data.threads.filter(thread => thread.isPinned);
-
-    console.log(threads);
     $: inputValue = '';
 
     $: selectedFeed = 'Recent';
@@ -39,6 +37,7 @@
     function threadCreation () {
         goto('/forum/thread/new')
     }
+
     const feedSelection = (formElement) => {
         selectFeed(formElement.formData.get('feedSelection'))
 		return async ({ result, update }) => {

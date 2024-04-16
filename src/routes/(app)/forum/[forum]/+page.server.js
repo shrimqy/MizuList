@@ -2,7 +2,8 @@ import { db } from '../../../../lib/server/database';
 
 let threads = null
 /** @type {import('./$types').PageServerLoad} */
-export async function load({params, local}) {
+
+export async function load({ params }) {
     const forum = params.forum
     threads = await db.thread.findMany({
         take: 10,
@@ -19,8 +20,6 @@ export async function load({params, local}) {
             category: true
         }
     })
-    console.log(forum);
-    console.log(threads);
     return {
         threads: threads
     };

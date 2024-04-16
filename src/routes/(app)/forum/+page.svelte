@@ -45,7 +45,6 @@
 			await invalidateAll()
 		};
 	};
-    
 </script>
 
 <title>Forum</title>
