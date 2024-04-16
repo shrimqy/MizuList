@@ -36,12 +36,17 @@ export const actions = {
     });
 
     cookies.set('session', authenticatedUser.userAuthToken, {
+      // send cookie for every page
       path: '/',
+      // server side only cookie so you can't use `document.cookie` (for security)
       httpOnly: true,
+      // only requests from same site can send cookies (also for security)
       sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
+      // only sent over HTTPS in production 
+      secure: process.env.NODE_ENV == 'production', 
+      // setting cookie to expire after a month
       maxAge: 60 * 24 * 30,
-    });
+  })
 
     locals.user = {
       userId: user.id,
