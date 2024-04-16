@@ -4,45 +4,46 @@ import { db } from '../../../../../lib/server/database';
 export async function load({ params, locals }) {
   const threadId = params.thread;
 
-  const userId = locals.user.id;
+  const userId = locals?.user?.id;
 
-  const user = await db.user.findUnique({
-    where: {
-      id: userId,
-    },
-    include: {
-      viewedThreads: {
-        where: {
-          id: threadId,
-        },
-      },
-    },
-  });
-
-  if (user.viewedThreads.length === 0) {
-    await db.thread.update({
-      where: {
-        id: threadId,
-      },
-      data: {
-        views: {
-          increment: 1,
-        },
-      },
-    });
-
-    await db.user.update({
+  if (userId) {
+    const user = await db.user.findUnique({
       where: {
         id: userId,
       },
-      data: {
+      include: {
         viewedThreads: {
-          connect: {
+          where: {
             id: threadId,
           },
         },
       },
     });
+    if (user?.viewedThreads?.length === 0) {
+      await db.thread.update({
+        where: {
+          id: threadId,
+        },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+  
+      await db.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          viewedThreads: {
+            connect: {
+              id: threadId,
+            },
+          },
+        },
+      });
+    }
   }
 
   const thread = await db.thread.findUnique({
