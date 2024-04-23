@@ -36,21 +36,19 @@
 
 		{#each reviews as review, reviewIndex}
 			<div class="review-container">
-				<img
-					src={'https://covers.openlibrary.org/b/olid/' + review.covers + '-M.jpg?default=false'}
-					onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-											{review.covers} +
-											'-M.jpg?default=false';"
-					alt={review.title}
-					class="avatar"
-				/>
 				<div class="review-body">
 					<div class="review-header">
-						<h3 class="user-name">{review.title}</h3>
+						<h3 class="title">{review.book.englishTitle}</h3>
 						<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
 					</div>
+					
 					<div class="user">
-						<img src={`/uploads/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
+						<img
+							src={review.book.coverUrl}
+							alt={review.book.englishTitle}
+							class="avatar"
+						/>
+						<img src={`/uploads/userAvatars/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
 						<h3 class="user-name">{review.user.username}</h3>
 					</div>
 
@@ -215,6 +213,11 @@
 		border-radius: 50%;
 		margin-right: 1rem;
 		object-fit: cover;
+	}
+
+	.title {
+		font-size: 28px;
+		font-weight: bold;
 	}
 
 	.user-name {

@@ -4,10 +4,13 @@ import { redirect } from '@sveltejs/kit';
 export async function load({ params, parent }) {
 	await parent;
 	const username = params.profileId;
-	const reviews = await db.reviews.findMany({
-		where: {},
+	const reviews = await db.review.findMany({
+		where: {
+
+		},
 		include: {
-			user: true
+			user: true,
+			book: true
 		}
 	});
 	const fetchPromises = reviews.map(async (review) => {

@@ -7,12 +7,11 @@
 	import { enhance } from '$app/forms';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { page } from '$app/stores';
-
 	export let data;
-	let { book, userBook, userFavorite, favorite } = data;
+	let { book, userBook, userFavorite, favorite, recommendations } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
 
-	console.log(userBook);
+	console.log(recommendations);
 
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
@@ -221,7 +220,7 @@
 						</div>
 					</div>
 
-					<!-- {#if showForm}
+					{#if showForm}
 						<div class="editor-popout" in:fade={{ duration: 500 }}>
 							<form method="POST" action="?/userStatus">
 								<div class="editor">
@@ -233,25 +232,14 @@
 										<div class="editor-header">
 											<div class="bookdd">
 												<div class="editor-cover">
-													{#if work.covers && work.covers.length > 0}
+													{#if book?.coverUrl}
 														<img
-															src={'http://covers.openlibrary.org/b/id/' +
-																work.covers[0] +
-																'-M.jpg?default=false'}
-															alt={'work.title'}
+															src={book?.coverUrl}
+															alt={book?.englishTitle}
 														/>
-													{:else if bookData.cover_edition_key && bookData.cover_edition_key.length > 0}
-														<img
-															src={'https://covers.openlibrary.org/b/olid/' +
-																bookData.cover_edition_key +
-																'-M.jpg?default=false'}
-															alt={'work.title'}
-														/>
-													{:else}
-														<span>No cover available</span>
 													{/if}
 												</div>
-												<div class="editor-title">{work.title}</div>
+												<div class="editor-title">{book.englishTitle}</div>
 											</div>
 
 											<div class="ebutton">
@@ -338,7 +326,7 @@
 
 						<div id="overlay" in:fade={{ duration: 300 }} />
 					{/if}
-				</form> -->
+				</form> 
 			</div>
 			<div class="desc">{book.Description?.value || book.Description || ''}</div>
 		</div>
@@ -479,6 +467,50 @@
 					</div>
 				{/each}
 			</div>
+			<div class="recommendations">
+				<h3 style="color: #61778f">Recommendations</h3>
+				<div class="book-container">
+					{#each recommendations as book}
+						{#if book.book1 === $page.params.bookId}
+						<a
+							data-sveltekit-preload-data
+							href="/books/{book.book2.id}"
+						>
+							<div class="bookCard">
+								<div class="bookCover" in:fade={{ duration: 500 }}>
+									{#if book.book2.coverUrl}
+										<img
+											src={book.book2?.coverUrl}
+											alt={book.book2?.englishTitle}
+										/>
+									{:else}
+										<span>No cover available</span>
+									{/if}
+								</div>
+							</div>
+						</a>
+						{:else}
+						<a
+							data-sveltekit-preload-data
+							href="/books/{book.book1.id}"
+						>
+						<div class="bookCard">
+							<div class="bookCover" in:fade={{ duration: 500 }}>
+								{#if book.book1.coverUrl}
+									<img
+										src={book.book1?.coverUrl}
+										alt={book.book1?.englishTitle}
+									/>
+								{:else}
+									<span>No cover available</span>
+								{/if}
+							</div>
+						</div>
+						</a>
+						{/if}
+					{/each}
+				</div>
+			</div>
 		</div> 
 	</div>
 </div> 
@@ -589,6 +621,52 @@
 		margin-bottom: 0.9rem;
 		border-radius: 3px;
 		box-sizing: border-box;
+	}
+
+	.book-container {
+		padding: 1rem 0rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		color: #647380;
+	}
+
+	.bookCard {
+		will-change: transform; /* Hint to the browser about upcoming change */
+		font-size: 15px;
+		color: #647380;
+		padding-right: 0.7rem;
+		font-weight: 600;
+		display: flex;
+		flex-direction: column;
+		height: 100%; /* Added height */
+		transition: all 0.3s ease-in-out;
+	}
+
+	.bookCover {
+		width: 150px;
+		height: 220px;
+		background-color: rgb(202, 202, 202);
+		border-radius: 6px;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		color: #fff;
+	}
+
+	.bookCover img {
+		width: 100%;
+		height: 100%;
+		border-style: none;
+		object-fit: cover;
+		border-radius: 6px;
+		box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+		transition: transform 0.3s, box-shadow 0.3s;
+	}
+
+	.bookCard img:hover {
+		transform: scale(1.01);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 	}
 
 	.overview {

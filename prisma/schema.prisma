@@ -135,7 +135,7 @@ model UserBook {
   pagesRead    String?
   chaptersRead String?
   rating       String?
-  rereads      Int?
+  rereads      String?
   notes        String?
   startedDate  DateTime?
   lastUpdated  DateTime? @updatedAt

@@ -70,6 +70,37 @@ export async function load({ locals, params }) {
 		}
 	});
 
+	let recommendations = await db.recommendation.findMany({
+        where: {
+            OR: [
+                { book1Id: bookId },
+                { book2Id: bookId }
+            ]
+        },
+        include: {
+            Like: true,
+			book1: {
+				select: {
+					id: true,
+					coverUrl: true,
+					englishTitle: true
+				}
+			},
+			book2: {
+				select: {
+					id: true,
+					coverUrl: true,
+					englishTitle: true
+				}
+			}
+        },
+        orderBy: {
+            Like: {
+                _count: 'desc'
+            }
+        }
+    });
+
 	await db.book.update({
 		where: {
 			id: bookId
@@ -81,13 +112,16 @@ export async function load({ locals, params }) {
 
 	const userFavoriteKEY =  userFavorite!== null
 
+
+
 	return {
 		book: book,
 		userBook: userBook,
 		favorite: favorite,
 		userFavorite: userFavorite,
 		favorite: favorite,
-		userFavoriteKEY: userFavoriteKEY
+		userFavoriteKEY: userFavoriteKEY,
+		recommendations: recommendations
 	};
 }
 /** @type {import('./$types').Actions} */
@@ -150,10 +184,13 @@ export const actions = {
 		const chapters = data.get('chapters');
 		const pages = data.get('pages');
 		const rereads = data.get('rereads');
-		const startedAt = data.get('startDate');
 		const notes = data.get('notes');
 
-
+		const startedAt = data.get('startDate');
+		let startedDateTime = null
+		if (startedAt) {
+			startedDateTime = new Date(startedAt).toISOString()
+		}
 		const completedAt = data.get('finishDate');
 		let completedDateTime = null;
 		if (completedAt) {
@@ -229,7 +266,7 @@ export const actions = {
 									chaptersRead: chapters,
 									rating: rating,
 									rereads: rereads,
-									startedDate: startedAt,
+									startedDate: startedDateTime,
 									notes: notes,
 									completedAt: completedDateTime,
 									bookCategory: {
@@ -248,6 +285,8 @@ export const actions = {
 			await db.Book.update({
 				where: { id: bookId },
 				data: {
+					publicRating: avgRating,
+					ratingCount: ratingCount,
 					userBooks: {
 						create: [
 							{
@@ -258,7 +297,7 @@ export const actions = {
 								chaptersRead: chapters,
 								rating: rating,
 								rereads: rereads,
-								startedDate: startedAt,
+								startedDate: startedDateTime,
 								completedAt: completedDateTime,
 								bookCategory: {
 									// Connecting the new category and the "All" category to the book
