@@ -28,16 +28,16 @@ model User {
   following    User[]         @relation("UserFollows")
   bookCategory BookCategory[] @relation("UserBookCategory")
 
-  reviews   review[]
-  userBooks UserBook[]
-  activity  activity[]
-  likes     Like[]
-  dislike   DisLike[]
-  Comment   Comment[]
-  Favorite  Favorite[]
-  status    status[]
-  Thread    Thread[]
-  viewedThreads Thread[] @relation("ViewedThreads")
+  reviews       review[]
+  userBooks     UserBook[]
+  activity      activity[]
+  likes         Like[]
+  dislike       DisLike[]
+  Comment       Comment[]
+  Favorite      Favorite[]
+  status        status[]
+  Thread        Thread[]
+  viewedThreads Thread[]   @relation("ViewedThreads")
 }
 
 model BookCategory {
@@ -190,9 +190,13 @@ model status {
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  text      String
-  createdAt DateTime?
+  id        Int       @id @default(autoincrement())
+  comment   String
+  createdAt DateTime? @default(now())
+
+  Children  Comment[] @relation("Comment_Children")
+  parent    Comment?  @relation("Comment_Children", fields: [parent_id], references: [id])
+  parent_id Int?
 
   user       User      @relation(fields: [userID], references: [id])
   userID     String
@@ -224,7 +228,7 @@ model Like {
   status           status?         @relation(fields: [statusId], references: [id])
   statusId         String?
   comment          Comment?        @relation(fields: [commentID], references: [id])
-  commentID        String?
+  commentID        Int?
   User             User?           @relation(fields: [userId], references: [id])
   userId           String?
 }
@@ -252,7 +256,7 @@ model Thread {
   Comment  Comment[]
   user     User?            @relation(fields: [userID], references: [id])
   userID   String?
-  viewedBy User[] @relation("ViewedThreads")
+  viewedBy User[]           @relation("ViewedThreads")
 }
 
 model ThreadCategory {

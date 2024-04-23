@@ -23,6 +23,7 @@
 			showPublish = false;
 		}
 	}
+	
 	//filter the list of user by reading category
 	const filteredItems = existingBook?.filter((item) => item.bookCategory.includes(2));
 
