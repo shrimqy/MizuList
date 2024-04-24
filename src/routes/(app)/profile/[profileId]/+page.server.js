@@ -12,21 +12,7 @@ export async function load({ locals, params, parent }) {
 		where: { username }
 	});
 
-	userFollow = await db.User.findUnique ({
-		where: {
-			username: locals.user.name
-		},
-		select: {
-			following: {
-				where: {
-					username: username
-				},
-				select: {
-					username: true
-				}
-			}
-		}
-	})
+	
 
 	lastActivity = await db.activity.findMany({
 		where: {
@@ -73,7 +59,7 @@ export async function load({ locals, params, parent }) {
 	return {
 		lastActivity,
 		stats,
-		userFollow
+
 	};
 }
 

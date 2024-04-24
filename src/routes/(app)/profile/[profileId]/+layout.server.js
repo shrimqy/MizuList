@@ -4,12 +4,28 @@ import { redirect } from '@sveltejs/kit';
 let username, bookId, userData;
 let fav,
 	existingBook = null;
-
+let userFollow;
 export async function load({ locals, params }) {
 	username = params.profileId;
 	userData = await db.User.findUnique({
 		where: { username }
 	});
+
+	userFollow = await db.User.findUnique ({
+		where: {
+			username: locals.user.name
+		},
+		select: {
+			following: {
+				where: {
+					username: username
+				},
+				select: {
+					username: true
+				}
+			}
+		}
+	})
 
 	fav = await db.Favorite.findMany({
 		where: {
@@ -58,6 +74,7 @@ export async function load({ locals, params }) {
 		existingBook,
 		fav,
 		userData,
-		username
+		username,
+		userFollow
 	};
 }

@@ -21,7 +21,7 @@
 
 	// Review
 	let isExpanded = [];
-	const characterLimit = 1000;
+	const characterLimit = 600;
 
 	function toggleExpansion(reviewIndex) {
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
@@ -29,77 +29,85 @@
 </script>
 
 <div class="container" in:fade={{ duration: 300 }}>
-	<div class="review">
+	<div class="review" >
 		<div class="review-head">
 			<h1 style="color: #61778f">Recent Reviews</h1>
 		</div>
-
-		{#each reviews as review, reviewIndex}
-			<div class="review-container">
+		<div class="reviews">
+			{#each reviews as review, reviewIndex}		
+		<div class="review-container" >
+		
+				<div class="review-header">
+					<h3 class="title">{review.book.englishTitle}</h3>
+					<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
+				</div>
 				<div class="review-body">
-					<div class="review-header">
-						<h3 class="title">{review.book.englishTitle}</h3>
-						<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
-					</div>
-					
-					<div class="user">
+					<div class="left" style="margin-right: 1rem;">
 						<img
 							src={review.book.coverUrl}
 							alt={review.book.englishTitle}
 							class="avatar"
 						/>
-						<img src={`/uploads/userAvatars/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
-						<h3 class="user-name">{review.user.username}</h3>
 					</div>
-
-					<div class="review-tags">
-						{#if review.recommendation == 'Mixed Feelings'}
-							<div class="rtag" style="border: 1px solid #787878; color: #787878">
-								<span class="material-icons-outlined">star_half</span>
-								{review.recommendation}
-							</div>
-						{:else if review.recommendation == 'Recommended'}
-							<div class="rtag" style="border: 1px solid #26448f; color: #26448f">
-								<span class="material-icons-outlined">star</span>
-								{review.recommendation}
-							</div>
-						{:else}
-							<div class="rtag" style="border: 1px solid #a12f31; color: #a12f31">
-								<span class="material-icons-outlined">star_outline</span>
-								{review.recommendation}
-							</div>
-						{/if}
-
-						{#if review.spoiler == 'true'}
-							<div class="rtag" style="border: 1px solid #ff2c55; color: #ff2c55">Spoiler</div>
-						{/if}
-						<div class="review-rating">Rating: {review.rating}</div>
-					</div>
-
-					<div class="review-content">
-						<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
-						<p class="review-text">
-							{#if isExpanded[reviewIndex]}
-								{review.review}
+					<div class="right">
+						<div class="user">
+						
+							<img src={`/uploads/userAvatars/${review.user.id}.png`} alt="User Avatar" class="user-avatar" />
+							<h3 class="user-name">{review.user.username}</h3>
+						</div>
+	
+						<div class="review-tags">
+							{#if review.recommendation == 'Mixed Feelings'}
+								<div class="rtag" style="border: 1px solid #787878; color: #787878">
+									<span class="material-icons-outlined">star_half</span>
+									{review.recommendation}
+								</div>
+							{:else if review.recommendation == 'Recommended'}
+								<div class="rtag" style="border: 1px solid #26448f; color: #26448f">
+									<span class="material-icons-outlined">star</span>
+									{review.recommendation}
+								</div>
 							{:else}
-								{review.review.slice(0, characterLimit) + '...'}
+								<div class="rtag" style="border: 1px solid #a12f31; color: #a12f31">
+									<span class="material-icons-outlined">star_outline</span>
+									{review.recommendation}
+								</div>
 							{/if}
-						</p>
+	
+							{#if review.spoiler == 'true'}
+								<div class="rtag" style="border: 1px solid #ff2c55; color: #ff2c55">Spoiler</div>
+							{/if}
+							<div class="review-rating">Rating: {review.rating}</div>
+						</div>
+	
+						<div class="review-content">
+							<!-- conditionally display either reviewText or truncatedReviewText based on the isExpanded variable -->
+							<p class="review-text">
+								{#if isExpanded[reviewIndex]}
+									{review.review}
+								{:else}
+									{review.review.slice(0, characterLimit) + '...'}
+								{/if}
+							</p>
+						</div>
+	
+						{#if review.review.length > characterLimit}
+							<button class="see-more-btn" on:click={() => toggleExpansion(reviewIndex)}>
+								{#if isExpanded[reviewIndex]}
+									<span class="material-icons">expand_less</span>
+								{:else}
+									<span class="material-icons">expand_more</span>
+								{/if}
+								{isExpanded[reviewIndex] ? 'Read Less' : 'Read More'}
+							</button>
+						{/if}
 					</div>
-
-					{#if review.review.length > characterLimit}
-						<button class="see-more-btn" on:click={() => toggleExpansion(reviewIndex)}>
-							{#if isExpanded[reviewIndex]}
-								<span class="material-icons">expand_less</span>
-							{:else}
-								<span class="material-icons">expand_more</span>
-							{/if}
-							{isExpanded[reviewIndex] ? 'Read Less' : 'Read More'}
-						</button>
-					{/if}
 				</div>
-			</div>
+		
+		</div>
 		{/each}
+		</div>
+		
 	</div>
 </div>
 
@@ -175,29 +183,45 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: end;
+		margin-top: 2rem;
 		margin-bottom: 1rem;
+	}
+
+	.reviews {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.review .review-container {
 		display: flex;
+		flex-direction: column;
 		background-color: #fafafa;
 		border-radius: 7px;
 		padding: 1rem;
-		margin: 1rem 0;
 	}
+	
 
 	.review-header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: 1rem;
+		margin-bottom: 0.2rem;
+	}
+
+	.review-body {
+		display: flex;	
+	}
+
+	.left, .right {
+		display: flex;
+		flex-direction: column;
 	}
 
 	.avatar {
-		height: 130px;
-		width: 100px;
-		border-radius: 3px;
-		margin-right: 2rem;
+		height: 90px;
+		width: 60px;
+		border-radius: 4px;
 		object-fit: cover;
 	}
 
@@ -208,8 +232,8 @@
 	}
 
 	.user-avatar {
-		height: 54px;
-		width: 54px;
+		height: 44px;
+		width: 44px;
 		border-radius: 50%;
 		margin-right: 1rem;
 		object-fit: cover;
@@ -235,7 +259,7 @@
 		color: #1e1915;
 		margin-bottom: 10px;
 		line-height: 20px;
-		font-size: 12px;
+		font-size: 11px;
 		word-spacing: px;
 		white-space: pre-wrap;
 		overflow: hidden;

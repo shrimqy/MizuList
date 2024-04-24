@@ -4,6 +4,7 @@
 	import { formatDate, filterTags } from '$lib/utils';
 	export let data;
 	let { reviews, work } = data;
+	console.log(reviews);
 	function toggleForm() {
 		showForm = !showForm;
 	}
@@ -34,16 +35,13 @@
 		{#each reviews as review, reviewIndex}
 			<div class="review-container">
 				<img
-					src={'https://covers.openlibrary.org/b/olid/' + review.covers + '-M.jpg?default=false'}
-					onerror="this.onerror=null;this.src='http://covers.openlibrary.org/b/id/' +
-											{review.covers} +
-											'-M.jpg?default=false';"
-					alt={review.title}
+					src={review.book.coverUrl}
+					alt={review.book.englishTitle}
 					class="avatar"
 				/>
 				<div class="review-body">
 					<div class="review-header">
-						<h3 class="user-name">{review.title}</h3>
+						<h3 class="user-name">{review.book.englishTitle}</h3>
 						<span class="review-date">{formatDate(review.date, 'reviewDate')}</span>
 					</div>
 
