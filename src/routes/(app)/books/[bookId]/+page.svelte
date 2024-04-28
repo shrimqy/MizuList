@@ -11,8 +11,6 @@
 	let { book, userBook, userFavorite, favorite, recommendations } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
 
-	console.log(recommendations);
-
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
 	let selectedRating = userBook?.rating ? userBook?.rating : '0';
@@ -471,7 +469,7 @@
 				<h3 style="color: #61778f">Recommendations</h3>
 				<div class="book-container">
 					{#each recommendations as book}
-						{#if book.book1 === $page.params.bookId}
+						{#if book.book1.id === $page.params.bookId}
 						<a
 							data-sveltekit-preload-data
 							href="/books/{book.book2.id}"
@@ -487,6 +485,7 @@
 										<span>No cover available</span>
 									{/if}
 								</div>
+								<div class="title">{book.book1?.englishTitle}</div>
 							</div>
 						</a>
 						{:else}
@@ -505,6 +504,7 @@
 									<span>No cover available</span>
 								{/if}
 							</div>
+							<div class="recommendationtitle">{book.book1?.englishTitle}</div>
 						</div>
 						</a>
 						{/if}
@@ -631,20 +631,19 @@
 	}
 
 	.bookCard {
-		will-change: transform; /* Hint to the browser about upcoming change */
 		font-size: 15px;
 		color: #647380;
 		padding-right: 0.7rem;
 		font-weight: 600;
 		display: flex;
 		flex-direction: column;
-		height: 100%; /* Added height */
+		height: 100%; 
 		transition: all 0.3s ease-in-out;
 	}
 
 	.bookCover {
-		width: 150px;
-		height: 220px;
+		width: 130px;
+		height: 190px;
 		background-color: rgb(202, 202, 202);
 		border-radius: 6px;
 		text-align: center;
@@ -664,9 +663,13 @@
 		transition: transform 0.3s, box-shadow 0.3s;
 	}
 
+	.bookCard:hover {
+		color: #1faafa;
+	}
+
 	.bookCard img:hover {
-		transform: scale(1.01);
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+		
 	}
 
 	.overview {
@@ -1166,6 +1169,11 @@
 		display: flex;
 		border-radius: 5px;
 		padding: 0.2rem 0.5rem;
+	}
+
+	.recommendationtitle {
+		padding: 7px 0;
+		font-size: 15px;
 	}
 
 	#overlay {

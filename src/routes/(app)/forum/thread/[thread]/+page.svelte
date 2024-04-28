@@ -1,10 +1,11 @@
 <script>
   import ThreadNavBar from '../../threadNavBar.svelte';
   import { formatDate, filterDataLastDay } from '$lib/utils';
+  import Comment from './Comment.svelte';
     /** @type {import('./$types').PageData} */
     export let data;
-    let thread = data.thread
-    
+    let {thread, comments } = data
+    // console.log(comments);
     let commentText = '';
     let showComment = false;
 
@@ -39,7 +40,7 @@
                         class="userstatusavatar"
                     />
                     <a data-sveltekit-preload-code href="/profile/{thread.user?.username}/"
-                        ><span class="username" style="margin: 0 1rem;">{thread.user?.username}</span></a
+                        ><span class="username" style="margin: 0 0.5rem;">{thread.user?.username}</span></a
                     >
                 </div>
                 <div class="statusHeader">
@@ -97,67 +98,12 @@
                 {/if}
             </div>
         </form>
-    
-        {#each thread.Comment as item, index}
-        <div class="comments">
-            <div class="commentContent">
-                <div class="userHeader">
-                    <img
-                        src={`/uploads/userAvatars/${item.user?.id}.png`}
-                        alt="User Avatar"
-                        class="userstatusavatar"
-                    />
-                    <a data-sveltekit-preload-code href="/profile/{item.user?.username}/"
-                        ><span class="username" style="margin: 0 1rem;">{item.user?.username}</span></a
-                    >
-                </div>
-                <div class="content">
-                    <p>{item.comment}</p>
-                </div>
-                <div class="statusFooter">
-                    <button on:click={() => toggleReply(index, true)}>
-                        <div class="commentContainer">
-                            <span class="material-symbols-outlined" style="font-size: 17px;">forum</span>  
-                            <div>Reply</div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-            <div class="statusRight">
-                <!-- {formatDate(thread.createdAt)} -->
-            </div>
-            {#if showReply[index]}
-            <form method="post" action="?/replyComment">
-                <div class="activityStatus">
-                    <input
-                        type="text"
-                        placeholder="Add Reply"
-                        name="text"
-                        bind:value={replyText[index]}
-                        autocomplete="off"
-                        on:input={() => toggleReply(index, true)}
-                    />
-                    <!-- Invisible input field with thread.id -->
-                    <input
-                        type="hidden"
-                        name="commentId"
-                        value={item.id}
-                    />
-                    {#if showReply[index]}
-                        <div class="actions">
-                            <button
-                                class="publish"
-                                type="button"
-                                style="background-color:#fafafa; color:#9299b5"
-                                on:click={() => toggleReply(index, false)}>Cancel</button>
-                            <button class="publish" formaction="?/replyComment">Comment</button>
-                        </div>
-                    {/if}
-                </div>
-            </form>
-        {/if}
-        </div>
+        <div class="comments-container">
+        {#each comments as item, index}
+            <Comment item={item} expanded />
         {/each}
+        </div>
+        
     </div>
      
 </div>
@@ -202,7 +148,7 @@
     .thread-container {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 0px;
     }
 
     .statusCard {
@@ -242,6 +188,25 @@
 		font-weight: 500;
 		color: #5e5e5e;
         transition: all 0.2s ease-in-out;
+    }
+
+    .nester {
+        display: flex;
+        position: absolute;
+    }
+
+    .nest {
+        margin: 0 17px;
+    }
+
+    .threadline {
+        width: 2px;
+        background-color: #b4aa9d;
+        position: absolute;
+        top: 0;
+        left: 20px; 
+        bottom: 0;
+        z-index: -1;
     }
 
 	.statusContent {
@@ -335,7 +300,6 @@
 
 	.activityStatus p {
 		text-align: right;
-		margin-top: 1rem;
 		font-size: 12px;
 		font-weight: 400;
 	}
@@ -374,20 +338,11 @@
 		margin-top: 0.5rem;
 	}
 
-    .comments {
+    .comments-container {
         display: flex;
         flex-direction: column;
+        gap: 10px;
     }
 
-    .comments p {
-        color: #5e5e5e;
-        font-weight: 500;
-    }
-
-    .commentContent {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
 
 </style>

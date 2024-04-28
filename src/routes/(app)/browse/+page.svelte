@@ -77,7 +77,6 @@
 					data-sveltekit-preload-data
 					href="/books/{book.id}"
 				>
-	
 					<div class="bookCard">
 						<div class="bookCover" in:fade={{ duration: 300 }}>
 							{#if book.coverUrl}
@@ -97,7 +96,6 @@
 		<h1>New Entries</h1>
 		<div class="book-container">
 			{#each data.allTimePopularBooks as book}
-			
 				<a
 					data-sveltekit-preload-data
 					href="/books/{book.id}"
@@ -201,7 +199,7 @@
 		font-weight: 600;
 		display: flex;
 		flex-direction: column;
-		height: 100%; /* Added height */
+		height: 100%; 
 		transition: all 0.3s ease-in-out;
 	}
 

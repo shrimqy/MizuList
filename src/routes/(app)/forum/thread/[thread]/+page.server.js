@@ -65,7 +65,24 @@ export async function load({ params, locals }) {
     },
   });
 
-  return { thread };
+  let comments = await db.comment.findMany({
+    where: {
+      parent_id: null,
+    },
+    include: {
+      Children: {
+        include: {
+          Children: true,
+          user: true
+        },
+      },
+      user: true
+    },
+  });
+
+
+
+  return { thread: thread, comments: comments };
 }
 
 export const actions = {
