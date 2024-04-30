@@ -10,6 +10,7 @@
 	const search = () => {
 		return async ({ result, update }) => {
 			book = result.data.search
+			console.log(book);
 			await invalidateAll()
 		};
 	};

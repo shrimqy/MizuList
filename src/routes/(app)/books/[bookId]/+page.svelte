@@ -485,7 +485,7 @@
 										<span>No cover available</span>
 									{/if}
 								</div>
-								<div class="title">{book.book1?.englishTitle}</div>
+								<div class="recommendationtitle">{book.book2?.englishTitle}</div>
 							</div>
 						</a>
 						{:else}

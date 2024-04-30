@@ -52,25 +52,16 @@ export const actions = {
 		const data = await request.formData();
 		const id = data.get('id');
 		
-		const currentUserRecommendation = await db.recommendation.findFirst({
+		const existingRecommendation = await db.recommendation.findUnique({
 			where: {
 				id: id
 			},
 			include: {
-				Like: {
-					where: {
-						User: {
-							is: { id: locals.user.id}
-						}
-					},
-					select: {
-						id: true,
-					}
-				},
+				Like: true,
 				DisLike: {
 					where: {
 						User: {
-							is: { id: locals.user.id}
+							some: { id: locals.user.id}
 						}
 					},
 					select: {
@@ -78,9 +69,51 @@ export const actions = {
 					}
 				}
 			}
-		})
 
-		if (!currentUserRecommendation.Like[0]) {
+		})
+		let existingUserLike
+		if (existingRecommendation.Like) {
+			existingUserLike = await db.recommendation.findFirst({
+				where: {
+					id: id
+				},
+				include: {
+					Like: {
+						where: {
+							User: {
+								some: { id: locals.user.id}
+							}
+						},
+						select: {
+							id: true,
+						}
+					},
+				}
+			})
+			if (existingUserLike.Like) {
+				await db.Like.update({
+					where: {
+						id: existingRecommendation.Like.id
+					},
+					data: {
+						User: {
+							disconnect: { id: locals.user.id }
+						}
+					}
+				})
+			} else {
+				await db.Like.update({
+					where: {
+						id: existingRecommendation.Like.id
+					},
+					data: {
+						User: {
+							connect: { id: locals.user.id }
+						}
+					}
+				})
+			}
+		} else {
 			await db.Like.create({
 				data: {
 					recommendation: {
@@ -92,20 +125,19 @@ export const actions = {
 				}
 			})
 		}
-		else {
-			await db.Like.delete({
-				where: {
-					id: currentUserRecommendation.Like[0].id
+		
+		if (existingRecommendation.DisLike) {
+			await db.disLike.update({
+				where: { id: existingRecommendation.DisLike.id },
+				data: {
+					User: {
+						// Disconnect the User record using the id
+						disconnect: { id: locals.user.id }
+					}
 				}
-			})
+			});
 		}
-		if (currentUserRecommendation.DisLike[0]) {
-			await db.DisLike.delete({
-				where: {
-					id: currentUserRecommendation.DisLike[0].id
-				}
-			})
-		}
+		return { success: true };
 	},
 
 	dislike: async ({ request, locals }) => {
@@ -116,25 +148,16 @@ export const actions = {
 		const data = await request.formData();
 		const id = data.get('id');
 		
-		const currentUserRecommendation = await db.recommendation.findFirst({
+		const existingRecommendation = await db.recommendation.findUnique({
 			where: {
 				id: id
 			},
 			include: {
+				DisLike: true,
 				Like: {
 					where: {
 						User: {
-							is: { id: locals.user.id}
-						}
-					},
-					select: {
-						id: true,
-					}
-				},
-				DisLike: {
-					where: {
-						User: {
-							is: { id: locals.user.id}
+							some: { id: locals.user.id}
 						}
 					},
 					select: {
@@ -142,9 +165,51 @@ export const actions = {
 					}
 				}
 			}
-		})
 
-		if (!currentUserRecommendation.DisLike[0]) {
+		})
+		let existingUserDisLike
+		if (existingRecommendation.DisLike) {
+			existingUserDisLike = await db.recommendation.findFirst({
+				where: {
+					id: id
+				},
+				include: {
+					DisLike: {
+						where: {
+							User: {
+								some: { id: locals.user.id}
+							}
+						},
+						select: {
+							id: true,
+						}
+					},
+				}
+			})
+			if (existingUserDisLike.DisLike) {
+				await db.DisLike.update({
+					where: {
+						id: existingRecommendation.DisLike.id
+					},
+					data: {
+						User: {
+							disconnect: { id: locals.user.id }
+						}
+					}
+				})
+			} else {
+				await db.DisLike.update({
+					where: {
+						id: existingRecommendation.DisLike.id
+					},
+					data: {
+						User: {
+							connect: { id: locals.user.id }
+						}
+					}
+				})
+			}
+		} else {
 			await db.DisLike.create({
 				data: {
 					recommendation: {
@@ -156,148 +221,19 @@ export const actions = {
 				}
 			})
 		}
-		else {
-			await db.DisLike.delete({
-				where: {
-					id: currentUserRecommendation.DisLike[0].id
+		
+		if (existingRecommendation.Like) {
+			await db.Like.update({
+				where: { id: existingRecommendation.Like.id },
+				data: {
+					User: {
+						// Disconnect the User record using the id
+						disconnect: { id: locals.user.id }
+					}
 				}
-			})
+			});
 		}
-		if (currentUserRecommendation.Like[0]) {
-			await db.Like.delete({
-				where: {
-					id: currentUserRecommendation.Like[0].id
-				}
-			})
-		}
+		return { success: true };
 	}
 };
 
-
-
-// like: async ({ request, locals }) => {
-// 	if (!(locals && locals.user && locals.user.name)) {
-// 		throw redirect(302, '/login');
-// 	}
-// 	username = locals.user.name;
-// 	const data = await request.formData();
-// 	const id = data.get('id');
-// 	const user = await db.user.findUnique({
-// 		where: { username }
-// 	});
-
-// 	const recommendation = await db.Recommendation.findUnique({
-// 		where: { id },
-// 		include: {
-// 			Like: {
-// 				select: {
-// 					id: true,
-// 				}
-// 			},
-// 			DisLike: {
-// 				select: {
-// 					id: true,
-// 				}
-// 			}
-// 		}
-// 	});
-
-// 	const currentUserLike = await db.Like.findFirst({
-// 		where: {
-// 			recommendationId: id,
-// 			user: {
-// 				some: { username: username }
-// 			},
-// 		}
-// 	})
-
-// 	const currentUserRecommendation = await db.recommendation.findFirst({
-// 		where: {
-// 			id: id
-// 		},
-// 		include: {
-// 			Like: {
-// 				where: {
-// 					user: {
-// 						some: { id: user.id}
-// 					}
-// 				},
-// 				select: {
-// 					id: true,
-// 				}
-// 			},
-// 			DisLike: {
-// 				where: {
-// 					user: {
-// 						some: { id: user.id}
-// 					}
-// 				},
-// 				select: {
-// 					id: true,
-// 				}
-// 			}
-// 		}
-// 	})
-
-// 	if (recommendation.Like[0] == null) {
-// 		console.log("create");
-// 		await db.Recommendation.update({
-// 			where: { id: recommendation.id },
-// 			data: {
-// 				Like: {
-// 					create: 
-// 						{
-// 							user: { connect: { id: user.id } },
-// 						}
-// 				}
-// 			}
-// 		})
-// 	} else if(currentUserLike) {
-// 		await db.Recommendation.update({
-// 			where: { id: recommendation.id },
-// 			data: {
-// 				Like: {
-// 					update: 
-// 						{
-// 							where: { id: recommendation?.Like[0]?.id },
-// 							data: {
-// 								user: { disconnect: { id: user.id } },
-// 							}
-// 						}
-// 				}
-// 			}
-// 		})
-// 	} else {
-// 		await db.Recommendation.update({
-// 			where: { id: recommendation.id },
-// 			data: {
-// 				Like: {
-// 					update: 
-// 						{
-// 							where: { id: recommendation?.Like[0]?.id },
-// 							data: {
-// 								user: { connect: { id: user.id } },
-// 							}
-// 						}
-// 				}
-// 			}
-// 		})
-// 	}
-
-// 	if (currentUserRecommendation.DisLike[0]) {
-// 		await db.Recommendation.update({
-// 			where: { id: recommendation.id },
-// 			data: {
-// 				DisLike: {
-// 					update: 
-// 						{
-// 							where: { id: currentUserRecommendation.DisLike[0]?.id },
-// 							data: {
-// 								user: { disconnect: { id: user.id } },
-// 							}
-// 						}
-// 				}
-// 			}
-// 		})
-// 	}
-// },

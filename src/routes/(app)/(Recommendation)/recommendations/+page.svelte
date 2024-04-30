@@ -4,7 +4,6 @@
 	import { page } from '$app/stores';
 	export let data;
 	let { recommendations } = data;
-
 </script>
 
 <div class="container">
@@ -19,7 +18,7 @@
 				<form method="post">
 					<input type="hidden" name="id" bind:value={recommendation.id} />
 					<div class="votes">
-						{#if recommendation.Like.some(user => user.User.id === $page.data.user.id)}
+						{#if recommendation.Like?.User?.some((user) => user?.id === $page.data?.user?.id)}
 							<button formaction="?/like" >
 								<span class="material-icons" style="color:#ff4500;"> arrow_upward </span>
 							</button>
@@ -28,12 +27,20 @@
 								<span class="material-icons"> arrow_upward </span>
 							</button>
 						{/if}
-						{#if recommendation.Like.length - recommendation.DisLike.length !== 0}
+						{#if recommendation.Like?.User && recommendation.DisLike?.User}
 							<div class="voteCount">
-								{recommendation.Like.length - recommendation.DisLike.length}
+								{recommendation.Like?.User?.length - recommendation.DisLike?.User?.length == 0 ? "" : recommendation.Like?.User?.length - recommendation.DisLike?.User?.length}
+							</div>
+						{:else if recommendation.Like?.User != null && recommendation.Like?.User != 0}
+							<div class="voteCount">
+								{recommendation.Like.User?.length} <!-- Only Like.User is present -->
+							</div>
+						{:else if recommendation.DisLike?.User !=null && recommendation.DisLike?.User != 0}
+							<div class="voteCount">
+								{- recommendation.DisLike.User.length} <!-- Only DisLike.User is present -->
 							</div>
 						{/if}
-						{#if recommendation.DisLike.some(user => user.User.id === $page.data.user.id)}
+						{#if recommendation.DisLike?.User?.some((user) => user?.id === $page.data?.user?.id)}
 							<button formaction="?/dislike">
 								<span class="material-icons" style="color:#7193ff;"> arrow_downward </span>
 							</button>

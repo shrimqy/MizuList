@@ -51,13 +51,14 @@ export async function load(locals) {
 
 	//Fetching activity list
 	lastActivity = await db.activity.findMany({
+		take: 20,
 		orderBy: {
 			timestamp: 'desc'
 		},
 		include: {
 			category: true,
 			user: true,
-			like: {
+			Like: {
 				include: {
 					User: {
 						select: {
@@ -77,7 +78,7 @@ export async function load(locals) {
 		},
 		include: {
 			user: true,
-			like: {
+			Like: {
 				include: {
 					User: {
 						select: {
@@ -115,7 +116,7 @@ export async function load(locals) {
 	const weeklyPopularBooks = await fetchBook();
 
 	return {
-		lastActivity: lastActivity.slice(0, 20),
+		lastActivity: lastActivity,
 		userData: userData,
 		existingBook,
 		status,
@@ -148,106 +149,151 @@ export const actions = {
 		return { success: true };
 	},
 
-	//to keep track of the likes
-	like: async ({ request, locals }) => {
+	activityLike: async ({ request, locals }) => {
 		if (!(locals && locals.user && locals.user.name)) {
 			throw redirect(302, '/login');
 		}
+
+		username = locals.user.name;
 		const data = await request.formData();
 		const id = data.get('id');
-		const user = await db.user.findUnique({
-			where: { username }
-		});
-
 		const existingActivity = await db.activity.findUnique({
-			where: { id }
-		});
+			where: {
+				id: id
+			},
+			include: {
+				Like: true
+			}
+
+		})
+		let existingUserLike
+		if (existingActivity.Like) {
+			existingUserLike = await db.activity.findFirst({
+				where: {
+					id: id
+				},
+				include: {
+					Like: {
+						where: {
+							User: {
+								some: { id: locals.user.id}
+							}
+						},
+						select: {
+							id: true,
+						}
+					},
+				}
+			})
+			if (existingUserLike.Like) {
+				await db.Like.update({
+					where: {
+						id: existingActivity.Like.id
+					},
+					data: {
+						User: {
+							disconnect: { id: locals.user.id }
+						}
+					}
+				})
+			} else {
+				await db.Like.update({
+					where: {
+						id: existingActivity.Like.id
+					},
+					data: {
+						User: {
+							connect: { id: locals.user.id }
+						}
+					}
+				})
+			}
+		} else {
+			await db.Like.create({
+				data: {
+					activity: {
+						connect: { id: id }
+					},
+					User: {
+						connect: { id: locals.user.id}
+					}
+				}
+			})
+		}
+		return { success: true };
+	},
+
+	statusLike: async ({ request, locals }) => {
+		if (!(locals && locals.user && locals.user.name)) {
+			throw redirect(302, '/login');
+		}
+
+		username = locals.user.name;
+		const data = await request.formData();
+		const id = data.get('id');
 
 		const existingStatus = await db.status.findUnique({
-			where: { id }
-		});
-		let existinglike;
-		if (existingActivity !== null) {
-			existinglike = await db.Like.findFirst({
-				where: { activityId: existingActivity.id },
-				include: { User: true }
-			});
+			where: {
+				id: id
+			},
+			include: {
+				Like: true
+			}
 
-			if (existinglike) {
-				if (existinglike.User.some((u) => u.username === username)) {
-					await db.Like.update({
-						where: { id: existinglike.id },
-						data: {
+		})
+		let existingUserLike;
+		if (existingStatus.Like) {
+			existingUserLike = await db.status.findFirst({
+				where: {
+					id: id
+				},
+				include: {
+					Like: {
+						where: {
 							User: {
-								// Disconnect the User record using the id
-								disconnect: { id: user.id }
+								some: { id: locals.user.id}
 							}
+						},
+						select: {
+							id: true,
 						}
-					});
-				} else {
-					existinglike = await db.Like.findFirst({
-						where: { activityId: existingActivity.id },
-						include: { User: true }
-					});
-					await db.Like.update({
-						where: { id: existinglike.id },
-						data: {
-							User: {
-								// Connect the User record using the id
-								connect: { id: user.id }
-							}
-						}
-					});
+					},
 				}
-			} else {
-				await db.Like.create({
+			})
+			if (existingUserLike.Like) {
+				await db.Like.update({
+					where: {
+						id: existingStatus.Like.id
+					},
 					data: {
 						User: {
-							// Connect the User record using the id
-							connect: { id: user.id }
-						},
-						activityId: existingActivity.id
+							disconnect: { id: locals.user.id }
+						}
 					}
-				});
-			}
-		} else if (existingStatus) {
-			existinglike = await db.Like.findFirst({
-				where: { statusId: existingStatus.id },
-				include: { User: true }
-			});
-			if (existinglike) {
-				if (existinglike.User?.some((u) => u.username === username)) {
-					await db.Like.update({
-						where: { id: existinglike.id },
-						data: {
-							User: {
-								// Disconnect the User record using the id
-								disconnect: { id: user.id }
-							}
-						}
-					});
-				} else {
-					await db.Like.update({
-						where: { id: existinglike?.id },
-						data: {
-							User: {
-								// Connect the User record using the id
-								connect: { id: user.id }
-							}
-						}
-					});
-				}
+				})
 			} else {
-				await db.Like.create({
+				await db.Like.update({
+					where: {
+						id: existingStatus.Like.id
+					},
 					data: {
 						User: {
-							// Connect the User record using the id
-							connect: { id: user.id }
-						},
-						statusId: existingStatus.id
+							connect: { id: locals.user.id }
+						}
 					}
-				});
+				})
 			}
+		} else {
+			await db.Like.create({
+				data: {
+					status: {
+						connect: { id: id }
+					},
+					User: {
+						connect: { id: locals.user.id}
+					}
+				}
+			})
 		}
 		return { success: true };
 	}

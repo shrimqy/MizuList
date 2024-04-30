@@ -24,29 +24,41 @@
     }
   }
 
+  
+
   //filter the list of user by reading category
   const filteredItems = existingBook?.filter((item) =>
     item.bookCategory.includes(2)
   );
 
-  console.log(filteredItems);
-
   // // filter function to uniquely identify each books
-  let uniqueLastActivity = $page.data.lastActivity?.filter(
+  $: uniqueLastActivity = $page.data.lastActivity?.filter(
     (activity, index, self) =>
       index === self.findIndex((a) => a.bookID === activity.bookID)
   );
-  let combinedArray = $page.data.status.concat(lastActivity);
-  let sortedCombinedArray = combinedArray.sort(
+  $: combinedArray = $page.data.status.concat(uniqueLastActivity);
+  $: sortedCombinedArray = combinedArray.sort(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
 
-  console.log(sortedCombinedArray);
+  $: console.log(sortedCombinedArray);
 
   //use function definition for 'like' action
-  const like = () => {
+  const activityLike = () => {
     return async ({ result, update }) => {
       if (result.data.success) {
+        console.log(sortedCombinedArray)
+        await invalidateAll();
+        await update();
+      }
+    };
+  };
+  
+  //use function definition for 'like' action
+  const statusLike = () => {
+    return async ({ result, update }) => {
+      if (result.data.success) {
+        console.log(sortedCombinedArray)
         await invalidateAll();
         await update();
       }
@@ -98,11 +110,11 @@
             {/if}
           </div>
         </form>
-
-        {#each sortedCombinedArray.slice(0, 30) as book}
-          <form action="?/like" method="post" use:enhance={like}>
-            <input type="hidden" name="id" bind:value={book.id} />
-            {#if book.bookID}
+        
+        {#each sortedCombinedArray.slice(0, 30) as book}      
+            {#if book.book?.id}
+            <form action="?/activityLike" method="post" use:enhance={activityLike}>
+              <input type="hidden" name="id" bind:value={book.id} />
               <div class="bookCard">
                 <div class="titleCover">
                   <div class="imageContainer">
@@ -114,7 +126,6 @@
                         />
                       {:else}
                         <span>No cover available</span>
-                        <!-- Show this if no cover was found from the API -->
                       {/if}
                     </a>
                   </div>
@@ -156,9 +167,11 @@
                   </div>
 
                   <div class="likes">
-                    {#if book.like[0]?.User?.some((user) => user?.id === $page.data?.userData?.id)}
-                      <button formaction="?/like" class="like">
-                        <div class="likeCount">{book.like[0]?.User.length}</div>
+                    {#if book.Like?.User?.some((user) => user?.id === $page.data?.userData?.id)}
+                      <button formaction="?/activityLike" class="like">
+                        <div class="likeCount">
+                          {book?.Like?.User?.length}
+                        </div>
                         <span
                           class="material-icons-round"
                           style="font-weight: 800; color: #b93850;"
@@ -167,10 +180,10 @@
                         </span></button
                       >
                     {:else}
-                      <button formaction="?/like" class="like">
-                        {#if book.like.length > 0}
+                      <button formaction="?/activityLike" class="like">
+                        {#if book?.Like?.User?.length > 0}
                           <div class="likeCount">
-                            {book.like[0]?.User?.length}
+                            {book?.Like?.User?.length}
                           </div>
                         {/if}<span class="material-icons-round">
                           favorite_border
@@ -180,7 +193,10 @@
                   </div>
                 </div>
               </div>
+            </form>
             {:else}
+            <form action="?/statusLike" method="post" use:enhance={statusLike}>
+              <input type="hidden" name="id" bind:value={book.id} />
               <div class="statusCard">
                 <div class="statusContent">
                   <div class="statusHeader">
@@ -207,10 +223,10 @@
                     {formatDate(book.timestamp)}
                   </div>
                   <div class="likes">
-                    {#if book.like[0]?.User.some((user) => user?.id === $page.data?.userData?.id)}
-                      <button formaction="?/like" class="like">
+                    {#if book.Like?.User?.some((user) => user?.id === $page.data?.userData?.id)}
+                      <button formaction="?/statusLike" class="like">
                         <div class="likeCount">
-                          {book.Like[0]?.User?.length}
+                          {book?.Like?.User?.length}
                         </div>
                         <span
                           class="material-icons-round"
@@ -220,10 +236,10 @@
                         </span></button
                       >
                     {:else}
-                      <button formaction="?/like" class="like">
-                        {#if book.like?.length > 0}
+                      <button formaction="?/statusLike" class="like">
+                        {#if book?.Like?.User?.length > 0}
                           <div class="likeCount">
-                            {book.like[0]?.User?.length}
+                            {book?.Like?.User?.length}
                           </div>
                         {/if}<span class="material-icons-round">
                           favorite_border
@@ -233,8 +249,8 @@
                   </div>
                 </div>
               </div>
+            </form>
             {/if}
-          </form>
         {/each}
       </div>
     </div>

@@ -95,7 +95,9 @@ export async function load({ locals, params }) {
     },
     orderBy: {
       Like: {
-        _count: "desc",
+        User: {
+          _count: "desc"
+        }
       },
     },
   });
