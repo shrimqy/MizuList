@@ -28,66 +28,7 @@
 		<div class="listContainer">
 			<div class="list">
 				<div class="header">
-					<h1>TRENDING WEEKLY NOW</h1>
-					<a href="/browse/trending" class="viewAllLink">View All</a>
-				</div>
-				
-				<div class="book-container">
-					{#each data.weeklyPopularBooks as book}
-						<a
-							data-sveltekit-preload-data
-							href="/books/{book.id}"
-						>
-							<div class="bookCard">
-								<div class="bookCover" in:scale={{ duration: 500 }}>
-									{#if book.coverUrl}
-										<img
-											src={book?.coverUrl}
-											alt={book?.englishTitle}
-										/>
-									{:else}
-										<span>No cover available</span>
-									{/if}
-								</div>
-								<div class="title">{book.englishTitle}</div>
-							</div>
-						</a>
-					{/each}
-				</div>
-			</div>
-			<div class="list">
-				<div class="header">
-					<h1>TOP RATED</h1>
-					<a href="/browse/top" class="viewAllLink">View All</a>
-				</div>
-				<div class="book-container">
-					{#each data.topRatedBooks as book}
-						<a
-							data-sveltekit-preload-data
-							href="/books/{book.id}"
-						>
-							<div class="bookCard">
-								<div class="bookCover" in:scale={{ duration: 500 }}>
-									{#if book.coverUrl}
-										<img
-											src={book?.coverUrl}
-											alt={book?.englishTitle}
-										/>
-									{:else}
-										<span>No cover available</span>
-									{/if}
-								</div>
-								<div class="title">{book.englishTitle}</div>
-							</div>
-						</a>
-					{/each}
-				</div>
-			</div>
-			
-			<div class="list">
-				<div class="header">
 					<h1>ALL TIME POPULAR</h1>
-					<a href="/browse/popular" class="viewAllLink">View All</a>
 				</div>
 				
 				<div class="book-container">
@@ -113,37 +54,7 @@
 					{/each}
 				</div>
 			</div>
-			
-			<div class="list">
-				<div class="header">
-					<h1>NEW ENTRIES</h1>
-				</div>
-				
-				<div class="book-container">
-					{#each data.newEntries as book}
-						<a
-							data-sveltekit-preload-data
-							href="/books/{book.id}"
-						>
-							<div class="bookCard">
-								<div class="bookCover" in:scale={{ duration: 500 }}>
-									{#if book.coverUrl}
-										<img
-											src={book?.coverUrl}
-											alt={book?.englishTitle}
-										/>
-									{:else}
-										<span>No cover available</span>
-									{/if}
-								</div>
-								<div class="title">{book.englishTitle}</div>
-							</div>
-						</a>
-					{/each}
-				</div>
-			</div>
 		</div>
-		
 	{:else}
 		{#if book && book.length > 0}
 			<div class="book-container">
@@ -266,15 +177,8 @@
 	}
 
 	.viewAllLink {
-		color: #909eac;
-		font-size: 13px;
-		font-weight: 700;
+		color: #647380;
 		text-decoration: none;
-		transition: all 0.3s ease-in-out ;
-	}
-
-	.viewAllLink:hover {
-		color: #5a6772;
 	}
 
 	img {
