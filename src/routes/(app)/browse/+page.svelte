@@ -143,7 +143,7 @@
 				{/each}
 			</div>
 		{:else}
-			<span>No Results</span> 
+			<span class="result">No Results Found, <a href="edit/new">Click here to Add Book Data</a></span> 
 		{/if}
 		
 	{/if}
@@ -163,6 +163,10 @@
 
 	a {
 		text-decoration: none;
+	}
+
+	.result a {
+		color: #1faafa;
 	}
 
 	.container {
