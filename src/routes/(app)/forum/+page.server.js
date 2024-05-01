@@ -17,7 +17,10 @@ export async function load() {
 };
 
 export const actions = {
-    feedSelection: async ({request}) => {
+    feedSelection: async ({request, locals}) => {
+        if (!(locals && locals.user && locals.user.name)) {
+			throw redirect(302, '/login');
+		}
 		const data = await request.formData()
         const feedSelection = data.get('feedSelection')
         if (feedSelection == 0) {
@@ -51,9 +54,14 @@ export const actions = {
             })
         } else {
             threads = await db.thread.findMany({
-                take: 1,
+                take: 6,
                 orderBy: {
                     createdAt: 'desc'
+                },
+                where: {
+                    subscribedUsers: {
+                        some: { id: locals.user.id}
+                    }
                 },
                 include: {
                     book: true,

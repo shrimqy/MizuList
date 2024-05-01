@@ -5,7 +5,6 @@
     /** @type {import('./$types').PageData} */
     export let data;
     let {thread, comments } = data
-    // console.log(comments);
     let commentText = '';
     let showComment = false;
 
@@ -34,14 +33,29 @@
         <div class="statusCard">
             <div class="statusContent">
                 <div class="userHeader">
-                    <img
-                        src={`/uploads/userAvatars/${thread.user?.id}.png`}
-                        alt="User Avatar"
-                        class="userstatusavatar"
-                    />
-                    <a data-sveltekit-preload-code href="/profile/{thread.user?.username}/"
-                        ><span class="username" style="margin: 0 0.5rem;">{thread.user?.username}</span></a
-                    >
+                    <div class="user">
+                        <img
+                            src={`/uploads/userAvatars/${thread.user?.id}.png`}
+                            alt="User Avatar"
+                            class="userstatusavatar"
+                        />
+                        <a data-sveltekit-preload-code href="/profile/{thread.user?.username}/"
+                            ><span class="username" style="margin: 0 0.5rem;">{thread.user?.username}</span></a
+                        >
+                    </div>
+                    <form action="?/subscribe" method="post">
+                        <div class="statusRight">
+                            <div class="subcriptionButton">
+                                <input type="hidden" value="{thread.id}" name="id">
+                                <button formaction="?/subscribe">{thread.subscribedUsers.length > 0 ? "Subscribed" : "Subscribe"}</button>
+                            </div>
+                            <div class="view-container">
+                                <span class="material-icons">visibility</span> 
+                                <div>{thread.views}</div>
+                            </div>  
+                            <!-- {formatDate(thread.createdAt)} -->
+                        </div>
+                    </form>
                 </div>
                 <div class="statusHeader">
                     <div class="title">{thread?.title}</div>
@@ -66,13 +80,7 @@
                     </button>
                 </div>
             </div>
-            <div class="statusRight">
-                <div class="view-container">
-                    <span class="material-icons">visibility</span> 
-                    <div>{thread.views}</div>
-                </div>  
-                <!-- {formatDate(thread.createdAt)} -->
-            </div>
+            
         </div>
         <form method="post" action="?/createComment">
             <div class="activityStatus">
@@ -166,6 +174,14 @@
     .userHeader {
         display: flex;
         align-items: center;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .user {
+        display: flex;
+        align-items: center;
         margin-bottom: 0.5rem;
     }
 
@@ -211,6 +227,7 @@
 
 	.statusContent {
 		display: flex;
+        width: 100%;
 		flex-direction: column;
         gap: 5px;
 	}
@@ -266,6 +283,12 @@
     .statusHeader span {
         font-size: 15px;
         color: #1ffa56;
+    }
+
+    .statusRight {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .statusRight span {
@@ -344,5 +367,11 @@
         gap: 10px;
     }
 
-
+    .subcriptionButton button {
+        outline: none;
+        border: none;
+        padding: 6px;
+        border-radius: 7px;
+        cursor: pointer;
+    }
 </style>

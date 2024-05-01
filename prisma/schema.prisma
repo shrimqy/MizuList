@@ -63,11 +63,12 @@ model Favorite {
 }
 
 model Book {
-  id             String  @id
+  id             String   @id
   bookID         String?
   romanizedTitle String?
   englishTitle   String?
   nativeTitle    String?
+  Synonyms       String[]
   authors        String?
   Description    String?
   format         String?

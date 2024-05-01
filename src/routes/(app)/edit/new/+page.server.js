@@ -29,9 +29,10 @@ export const actions = {
 		const firstPublished = new Date(data.get('releaseDate')).toISOString();
         const selectedSeries = JSON.parse(data.get("series"))
         const bookPosition = data.get("bookPosition")
-        console.log(selectedSeries);
+        const synonyms =  data.getAll("synonyms")
+        console.log(synonyms);
+        const filteredSynonyms = synonyms.filter(synonym => synonym.trim() !== '');
         let bookID = nanoid()
-
         await db.book.create({
             data: {
                 id: bookID,
@@ -50,6 +51,7 @@ export const actions = {
                 genres: {
                     connect: genres.map(genres => ({ id: genres.id, label: genres.label}))
                 },
+                Synonyms: filteredSynonyms,
                 SeriesBook: {
                     create: 
                         selectedSeries?.map(selectedSeries => (
@@ -70,7 +72,7 @@ export const actions = {
         const data = await request.formData()
         const searchTerm = data.get("search")
 
-        const searchRes = await db.Series.findMany({
+        const searchRes = await db.series.findMany({
             where: {
                 name: {
                     contains: searchTerm,
@@ -89,7 +91,7 @@ export const actions = {
         const description = data.get("description")
 
         const seriesID = nanoid()
-        await db.Series.create({
+        await db.series.create({
             data: {
                 id: seriesID,
                 name: name,

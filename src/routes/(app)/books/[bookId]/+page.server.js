@@ -1,6 +1,7 @@
 import { db } from "$lib/server/database";
 import { redirect } from "@sveltejs/kit";
 import { log } from "console";
+import { env } from "process";
 let username, bookId, isbn, work, matchingBooks;
 let userBook = null,
   userFavorite = null,
@@ -71,6 +72,7 @@ export async function load({ locals, params }) {
       },
     },
   });
+  
 
   let recommendations = await db.recommendation.findMany({
     where: {
@@ -312,4 +314,33 @@ export const actions = {
 
     return { success: true };
   },
+
+  TLDRreview: async ({ request }) => {
+    const combinedReviewText = book.review.map(review => review.review).join(' ');
+    const cleanedReviewText = combinedReviewText.replace(/['"\n]/g, '');
+    // console.log(cleanedReviewText);
+    let result
+    const url = 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-text/';
+    const options = {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'X-RapidAPI-Key': process.env.KEY,
+            'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
+        },
+        body: JSON.stringify({
+            text: cleanedReviewText.slice(0, 1000),
+            min_length: 100,
+            max_length: 300
+        })
+    };
+
+    try {
+        const response = await fetch(url, options);
+        result = await response.text();
+        console.log(result);
+    } catch (error) {
+        console.error(error);
+    }
+  }
 };

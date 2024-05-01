@@ -1,8 +1,9 @@
+import { subscribe } from 'diagnostics_channel';
 import { db } from '../../../../../lib/server/database';
 import { fail, redirect } from '@sveltejs/kit';
 
 let threadId = null
-
+let user = null
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, locals }) {
   threadId = params.thread;
@@ -10,7 +11,7 @@ export async function load({ params, locals }) {
   const userId = locals?.user?.id;
 
   if (userId) {
-    const user = await db.user.findUnique({
+    user = await db.user.findUnique({
       where: {
         id: userId,
       },
@@ -20,6 +21,11 @@ export async function load({ params, locals }) {
             id: threadId,
           },
         },
+        subscribedThreads: {
+          where: {
+            id: threadId
+          }
+        }
       },
     });
     if (user?.viewedThreads?.length === 0) {
@@ -62,6 +68,11 @@ export async function load({ params, locals }) {
       },
       category: true,
       user: true,
+      subscribedUsers: {
+        where: {
+          id: user.id
+        }
+      }
     },
   });
 
@@ -102,6 +113,40 @@ export const actions = {
 			}
 		});
 		return { success: true };
+  },
+
+  subscribe: async ({ request, locals}) => {
+    if (!(locals && locals.user && locals.user.name)) {
+			throw redirect(302, '/login');
+		}
+    const data = await request.formData();
+		const id = data.get('id');
+
+    if (user.subscribedThreads.length === 0) {
+      await db.thread.update({
+        where: {
+          id: threadId,
+        },
+        data: {
+          subscribedUsers: {
+            connect: { id: user.id },
+          },
+        },
+      });
+    }
+    else {
+      await db.thread.update({
+        where: {
+          id: threadId,
+        },
+        data: {
+          subscribedUsers: {
+            disconnect: { id: user.id },
+          },
+        },
+      });
+    }
+
   },
 
   replyComment: async ({ request, locals}) => {

@@ -57,15 +57,23 @@
 
     $: selectedSeries = []
     function saveSeries(seriesID, seriesName) {
-    showForm = !showForm;
-    popupSearchForm = false;
-    popupCreateForm = false;
-    // Create a new object with seriesID and seriesName properties
-    const series = { seriesID, seriesName };
-    // Add the new object to the selectedSeries array
-    selectedSeries = [...selectedSeries, series];
-    console.log(selectedSeries);
-}
+        showForm = !showForm;
+        popupSearchForm = false;
+        popupCreateForm = false;
+
+        
+        // Create a new object with seriesID and seriesName properties
+        const series = { seriesID, seriesName };
+        // Add the new object to the selectedSeries array
+        selectedSeries = [...selectedSeries, series];
+        console.log(selectedSeries);
+    }
+    $: Synonyms = [""];
+    
+    function SynonymsInput(Synonym, index) {
+        Synonyms[index] = Synonym;
+        Synonyms[index + 1] = "";
+    }
 
 	import MultiSelect from 'svelte-multiselect'
 	import { onMount } from 'svelte';
@@ -189,6 +197,23 @@
 			</div>
 		</div>    
 	</div>
+
+    <div class="content">
+        <h3>Synonyms</h3>
+        <div class="sub-content" in:fade={{ duration: 300 }}>
+            {#each Synonyms as item, index}
+            <div class="listInput" on:input={() => SynonymsInput(item, index)}>
+                <input
+                    type="text"
+                    class="input"
+                    name="synonyms"
+                    bind:value={item}
+                />
+            </div>
+            {/each}
+        </div>
+    </div>
+
 	<div class="content">
         <h3>Description</h3>
         <div class="listInput">
