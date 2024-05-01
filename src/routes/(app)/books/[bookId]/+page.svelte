@@ -8,9 +8,9 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { page } from '$app/stores';
 	export let data;
-	let { book, userBook, userFavorite, favorite, recommendations } = data;
+	let { book, userBook, userFavorite, favorite, recommendations, autoRecommendation } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
-
+	console.log(autoRecommendation);
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
 	let selectedRating = userBook?.rating ? userBook?.rating : '0';
@@ -45,7 +45,7 @@
 
 	// Review
 	let isExpanded = [];
-	const characterLimit = 1000;
+	const characterLimit = 500;
 
 	function toggleExpansion(reviewIndex) {
 		isExpanded[reviewIndex] = !isExpanded[reviewIndex];
@@ -513,6 +513,26 @@
 						</a>
 						{/if}
 					{/each}
+					{#each autoRecommendation as book}
+						<a
+							data-sveltekit-preload-data
+							href="/books/{book.bookId}"
+						>
+							<div class="bookCard">
+								<div class="bookCover" in:fade={{ duration: 500 }}>
+									{#if book.coverUrl}
+										<img
+											src={book.coverUrl}
+											alt={book.englishTitle}
+										/>
+									{:else}
+										<span>No cover available</span>
+									{/if}
+								</div>
+								<div class="recommendationtitle">{book.englishTitle}</div>
+							</div>
+						</a>
+					{/each}
 				</div>
 			</div>
 		</div> 
@@ -763,7 +783,7 @@
 	.review-text {
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 		color: #1e1915;
-		margin-bottom: 10px;
+		margin-bottom: 7px;
 		line-height: 20px;
 		font-size: 12px;
 		word-spacing: 1px;

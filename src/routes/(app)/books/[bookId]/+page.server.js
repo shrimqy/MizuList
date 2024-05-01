@@ -103,6 +103,41 @@ export async function load({ locals, params }) {
       },
     },
   });
+  let finalAutoRecommendations = [];
+
+  // for (const communityRec of recommendations) {
+  //   finalRecommendations.push({
+  //     communityRec
+  //   })
+  // }
+
+  
+
+  const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
+  const autoRecommendation = await res.json();
+  if (!autoRecommendation.error) {
+    for (const recommendation of autoRecommendation) {
+      // Find the book in the database by its title
+      const book = await db.book.findFirst({
+        where: {
+          englishTitle: {
+            contains: recommendation.book,
+            mode: 'insensitive'
+          }
+        }
+      });
+      
+  
+      // If the book is found, gather necessary data
+      if (book) {
+        finalAutoRecommendations.push({
+          bookId: book.id,
+          englishTitle: book.englishTitle,
+          coverUrl: book.coverUrl,
+        });
+      }
+    }
+  }
 
   await db.book.update({
     where: {
@@ -123,6 +158,7 @@ export async function load({ locals, params }) {
     favorite: favorite,
     userFavoriteKEY: userFavoriteKEY,
     recommendations: recommendations,
+    autoRecommendation: finalAutoRecommendations
   };
 }
 /** @type {import('./$types').Actions} */
