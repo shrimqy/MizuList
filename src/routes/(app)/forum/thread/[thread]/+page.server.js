@@ -79,6 +79,7 @@ export async function load({ params, locals }) {
   let comments = await db.comment.findMany({
     where: {
       parent_id: null,
+      threadId: threadId
     },
     include: {
       Children: {
