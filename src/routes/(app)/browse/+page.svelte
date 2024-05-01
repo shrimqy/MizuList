@@ -96,7 +96,7 @@
 		</div>
 		<h1>New Entries</h1>
 		<div class="book-container">
-			{#each data.allTimePopularBooks as book}
+			{#each data.newEntries as book}
 				<a
 					data-sveltekit-preload-data
 					href="/books/{book.id}"

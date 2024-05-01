@@ -46,10 +46,18 @@ export const load = async ({ fetch }) => {
 		}
 	});
 
+	const newEntries = await db.book.findMany({
+		take: 6,
+		orderBy: {
+			createdAt: 'desc'
+		}
+	})
+
 	return {
 		allTimePopularBooks: allTimePopularBooks,
 		topRatedBooks: topRatedBooks,
-		weeklyPopularBooks: weeklyPopularBooks
+		weeklyPopularBooks: weeklyPopularBooks,
+		newEntries: newEntries
 	};
 };
 
