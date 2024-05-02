@@ -61,20 +61,22 @@ export async function load({ params, locals }) {
     },
     include: {
       book: true,
-      Comment: {
-        include: {
-          user: true
-        }
-      },
       category: true,
       user: true,
       subscribedUsers: {
         where: {
           id: user.id
         }
+      },
+      _count: {
+        include: {
+          Comment: true
+        }
       }
     },
   });
+
+  console.log(thread);
 
   let comments = await db.comment.findMany({
     where: {
@@ -84,7 +86,11 @@ export async function load({ params, locals }) {
     include: {
       Children: {
         include: {
-          Children: true,
+          Children: {
+            include: {
+              user: true
+            }
+          },
           user: true
         },
       },

@@ -8,6 +8,8 @@
     let commentText = '';
     let showComment = false;
 
+    console.log(thread.Comment);
+
     function toggleComment(value) {
         showComment = value;
         if (!value) {
@@ -75,7 +77,7 @@
                     <button>
                         <div class="commentContainer">
                             <span class="material-symbols-outlined" style="font-size: 17px;">forum</span>  
-                            <div>{thread.Comment?.length}</div>
+                            <div>{thread._count?.Comment}</div>
                         </div>
                     </button>
                 </div>

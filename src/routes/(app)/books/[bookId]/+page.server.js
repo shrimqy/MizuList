@@ -113,31 +113,31 @@ export async function load({ locals, params }) {
 
   
 
-  const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
-  const autoRecommendation = await res.json();
-  if (!autoRecommendation.error) {
-    for (const recommendation of autoRecommendation) {
-      // Find the book in the database by its title
-      const book = await db.book.findFirst({
-        where: {
-          englishTitle: {
-            contains: recommendation.book,
-            mode: 'insensitive'
-          }
-        }
-      });
+  // const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
+  // const autoRecommendation = await res.json();
+  // if (!autoRecommendation.error) {
+  //   for (const recommendation of autoRecommendation) {
+  //     // Find the book in the database by its title
+  //     const book = await db.book.findFirst({
+  //       where: {
+  //         englishTitle: {
+  //           contains: recommendation.book,
+  //           mode: 'insensitive'
+  //         }
+  //       }
+  //     });
       
   
-      // If the book is found, gather necessary data
-      if (book) {
-        finalAutoRecommendations.push({
-          bookId: book.id,
-          englishTitle: book.englishTitle,
-          coverUrl: book.coverUrl,
-        });
-      }
-    }
-  }
+  //     // If the book is found, gather necessary data
+  //     if (book) {
+  //       finalAutoRecommendations.push({
+  //         bookId: book.id,
+  //         englishTitle: book.englishTitle,
+  //         coverUrl: book.coverUrl,
+  //       });
+  //     }
+  //   }
+  // }
 
   await db.book.update({
     where: {
@@ -351,7 +351,7 @@ export const actions = {
     return { success: true };
   },
 
-  TLDRreview: async ({ request }) => {
+  TLDRreview: async () => {
     const combinedReviewText = book.review.map(review => review.review).join(' ');
     const cleanedReviewText = combinedReviewText.replace(/['"\n]/g, '');
     // console.log(cleanedReviewText);
@@ -371,12 +371,13 @@ export const actions = {
         })
     };
 
-    try {
-        const response = await fetch(url, options);
-        result = await response.text();
-        console.log(result);
-    } catch (error) {
-        console.error(error);
-    }
+    // try {
+    //     const response = await fetch(url, options);
+    //     result = await response.text();
+    //     console.log(result);
+    // } catch (error) {
+    //     console.error(error);
+    // }
+    return { success: true,  generatedReview: cleanedReviewText.slice(0, 300)};
   }
 };

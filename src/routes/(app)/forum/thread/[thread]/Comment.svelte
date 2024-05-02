@@ -3,7 +3,6 @@
     export let item;
     let index;
     export let expanded = false;
-    console.log(item);
     // console.log(comments);
     let commentText = '';
     let showComment = false;

@@ -7,6 +7,8 @@
 	import { enhance } from '$app/forms';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { page } from '$app/stores';
+	export let form;
+	console.log(form);
 	export let data;
 	let { book, userBook, userFavorite, favorite, recommendations, autoRecommendation } = data;
 	$: favTag = $page?.data?.userFavoriteKEY
@@ -395,26 +397,38 @@
 				</div>
 			</div> -->
 
-			<form action="?/TLDRreview" method="post">
-				<button type="submit">click me</button>
-			</form>
+			
 			<div class="review">
 				<div class="review-head">
 					<h3 style="color: #61778f">Reviews</h3>
-					{#if userBook}
+
+					
+						
+						{#if userBook}
 						<a data-sveltekit-preload-data href="/books/{userBook.bookID}/review"
 							>Write a review</a
 						>
-					{:else if $page.data.user}
-						<a href={null}>Write a review</a>
-					{:else}
-						<a href="/login">Write a review</a>
-					{/if}
+						{:else if $page.data.user}
+							<a href={null}>Write a review</a>
+						{:else}
+							<a href="/login">Write a review</a>
+						{/if}
+					
 				</div>
-
+				
+				{#if form?.generatedReview}
+					<div class="generated">
+						<h4>What User's Say:</h4>
+						<div class="review-text">{form.generatedReview}</div>
+					</div>
+				{:else}
+					<form action="?/TLDRreview" method="post">
+						<button type="submit" class="summerizeBut">Summerize</button>
+					</form>
+				{/if}
 				{#each book.review as review, reviewIndex}
 					<div class="review-container">
-						<img src={`/uploads/userAvatars/${review?.user?.id}.png`} alt="User Avatar" class="user-avatar" />
+						<img src={`/uploads/userAvatars/${review?.user?.id}.png`} alt="User Avatar" class="useravatar" />
 						<div class="review-body">
 							<div class="review-header">
 								<h3 class="user-name">{review?.user?.username}</h3>
@@ -693,7 +707,6 @@
 
 	.bookCard img:hover {
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-		
 	}
 
 	.overview {
@@ -743,16 +756,33 @@
 		transition: all ease-in-out 0.3s;
 	}
 
+	.generated {
+		background-color: #fafafa;
+		border-radius: 7px;
+		padding: 1rem;
+	}
+
+	.summerizeBut {
+		background-color: #fafafa;
+		outline: none;
+        border: none;
+        padding: 6px;
+        border-radius: 7px;
+        cursor: pointer;
+	}
+
+
 	.review-head a:hover {
 		color: #005bff;
 	}
 
-	.review .review-container {
+	.review-container {
 		display: flex;
 		background-color: #fafafa;
 		border-radius: 7px;
 		padding: 1rem;
 		margin: 1rem 0;
+		gap: 1rem;
 	}
 
 	.review-header {
@@ -762,13 +792,17 @@
 		margin-bottom: 1rem;
 	}
 
-	.user-avatar {
+	.useravatar {
 		height: 54px;
 		width: 54px;
 		border-radius: 50%;
-		margin-right: 2rem;
 		object-fit: cover;
 	}
+
+	.review-body {
+		width: 100%;
+	}
+
 
 	.user-name {
 		font-size: 15px;
@@ -1199,6 +1233,7 @@
 		padding: 7px 0;
 		font-size: 15px;
 	}
+
 
 	#overlay {
 		position: fixed;

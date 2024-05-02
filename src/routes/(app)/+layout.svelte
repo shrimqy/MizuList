@@ -199,6 +199,7 @@
         `/profile/` + userData.username + `/reviews`
       )}>Reviews</a
     >
+    
 
     {#if $page.url.pathname.startsWith(`/profile/` + username)}
       <!-- abstraction for settings page when visiting other's profile -->
@@ -207,6 +208,12 @@
         class:selected={$page.url.pathname.startsWith(
           `/profile/` + userData.username + `/history`
         )}>History</a
+      >
+      <a
+        href="/profile/{userData.username}/social"
+        class:selected={$page.url.pathname.startsWith(
+          `/profile/` + userData.username + `/social`
+        )}>Social</a
       >
       <a href="/settings">Settings</a>
     {/if}
