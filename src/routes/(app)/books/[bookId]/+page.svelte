@@ -8,7 +8,6 @@
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { page } from '$app/stores';
 	export let form;
-	console.log(form);
 	export let data;
 	let { book, userBook, userFavorite, favorite, recommendations, autoRecommendation } = data;
 	$: favTag = $page?.data?.userFavoriteKEY

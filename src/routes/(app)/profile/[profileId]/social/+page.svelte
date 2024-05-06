@@ -22,23 +22,27 @@
         {#if selectedTab === 'followers'}
             {#each userSocial.followedBy as user}
                 <div class="userCard">
+                    <a href="/profile/{user.username}">
                     <img
                         src={`/uploads/userAvatars/${user.id}.png`}
                         alt="User Avatar"
                         class="userAvatar"
                     />
                     <div class="username">{user.username}</div>
+                </a>
                 </div>
             {/each}
         {:else if selectedTab === 'following'}
             {#each userSocial.following as user}
                 <div class="userCard">
+                    <a href="/profile/{user.username}">
                     <img
                         src={`/uploads/userAvatars/${user.id}.png`}
                         alt="User Avatar"
                         class="userAvatar"
                     />
                     <div class="username">{user.username}</div>
+                    </a>
                 </div>
             {/each}
         {/if}
@@ -47,6 +51,10 @@
 </div>
 
 <style>
+
+    * {
+        text-decoration: none;
+    }
     .container {
         padding: 2rem;
         max-width: 65%;

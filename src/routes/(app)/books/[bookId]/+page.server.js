@@ -103,41 +103,35 @@ export async function load({ locals, params }) {
       },
     },
   });
+
   let finalAutoRecommendations = [];
-
-  // for (const communityRec of recommendations) {
-  //   finalRecommendations.push({
-  //     communityRec
-  //   })
-  // }
-
   
+  const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
+  const autoRecommendation = await res.json();
 
-  // const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
-  // const autoRecommendation = await res.json();
-  // if (!autoRecommendation.error) {
-  //   for (const recommendation of autoRecommendation) {
-  //     // Find the book in the database by its title
-  //     const book = await db.book.findFirst({
-  //       where: {
-  //         englishTitle: {
-  //           contains: recommendation.book,
-  //           mode: 'insensitive'
-  //         }
-  //       }
-  //     });
+  if (!autoRecommendation.error) {
+    console.log(autoRecommendation);
+    for (const recommendation of autoRecommendation) {
+      // Find the book in the database by its title
+      const book = await db.book.findFirst({
+        where: {
+          englishTitle: {
+            contains: recommendation.book,
+            mode: 'insensitive'
+          }
+        }
+      });
       
-  
-  //     // If the book is found, gather necessary data
-  //     if (book) {
-  //       finalAutoRecommendations.push({
-  //         bookId: book.id,
-  //         englishTitle: book.englishTitle,
-  //         coverUrl: book.coverUrl,
-  //       });
-  //     }
-  //   }
-  // }
+      // If the book is found, gather necessary data
+      if (book) {
+        finalAutoRecommendations.push({
+          bookId: book.id,
+          englishTitle: book.englishTitle,
+          coverUrl: book.coverUrl,
+        });
+      }
+    }
+  }
 
   await db.book.update({
     where: {
@@ -176,7 +170,6 @@ export const actions = {
 
     // if it does, update the record with the user else create the record with bookId and connec the user.
     if (userFavorite) {
-      console.log("if");
       await db.Favorite.update({
         where: { id: favorite.id }, // Provide the unique identifier of the existing record
         data: {
@@ -184,7 +177,6 @@ export const actions = {
         },
       });
     } else if (favorite) {
-      console.log("else if");
       await db.Favorite.update({
         where: { id: favorite.id }, // Provide the unique identifier of the existing record
         data: {
@@ -371,13 +363,13 @@ export const actions = {
         })
     };
 
-    // try {
-    //     const response = await fetch(url, options);
-    //     result = await response.text();
-    //     console.log(result);
-    // } catch (error) {
-    //     console.error(error);
-    // }
-    return { success: true,  generatedReview: cleanedReviewText.slice(0, 300)};
+    try {
+        const response = await fetch(url, options);
+        result = await response.text();
+        console.log(JSON.parse(result).summary);
+    } catch (error) {
+        console.error(error);
+    }
+    return { success: true,  generatedReview: JSON.parse(result).summary };
   }
 };
