@@ -1,9 +1,9 @@
-import { subscribe } from 'diagnostics_channel';
-import { db } from '../../../../../lib/server/database';
-import { fail, redirect } from '@sveltejs/kit';
+import { subscribe } from "diagnostics_channel";
+import { db } from "../../../../../lib/server/database";
+import { fail, redirect } from "@sveltejs/kit";
 
-let threadId = null
-let user = null
+let threadId = null;
+let user = null;
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, locals }) {
   threadId = params.thread;
@@ -23,9 +23,9 @@ export async function load({ params, locals }) {
         },
         subscribedThreads: {
           where: {
-            id: threadId
-          }
-        }
+            id: threadId,
+          },
+        },
       },
     });
     if (user?.viewedThreads?.length === 0) {
@@ -39,7 +39,7 @@ export async function load({ params, locals }) {
           },
         },
       });
-  
+
       await db.user.update({
         where: {
           id: userId,
@@ -63,16 +63,11 @@ export async function load({ params, locals }) {
       book: true,
       category: true,
       user: true,
-      subscribedUsers: {
-        where: {
-          id: user.id
-        }
-      },
       _count: {
         include: {
-          Comment: true
-        }
-      }
+          Comment: true,
+        },
+      },
     },
   });
 
@@ -81,53 +76,51 @@ export async function load({ params, locals }) {
   let comments = await db.comment.findMany({
     where: {
       parent_id: null,
-      threadId: threadId
+      threadId: threadId,
     },
     include: {
       Children: {
         include: {
           Children: {
             include: {
-              user: true
-            }
+              user: true,
+            },
           },
-          user: true
+          user: true,
         },
       },
-      user: true
+      user: true,
     },
   });
-
-
-
-  return { thread: thread, comments: comments };
+  console.log(user);
+  return { thread: thread, comments: comments, user: user };
 }
 
 export const actions = {
-  createComment: async ({ request, locals}) => {
+  createComment: async ({ request, locals }) => {
     if (!(locals && locals.user && locals.user.name)) {
-			throw redirect(302, '/login');
-		}
+      throw redirect(302, "/login");
+    }
     const data = await request.formData();
-		const commentText = data.get('text');
+    const commentText = data.get("text");
 
     //creates a new comment
-		await db.comment.create({
-			data: {
-				userID: locals.user.id,
-				comment: commentText,
+    await db.comment.create({
+      data: {
+        userID: locals.user.id,
+        comment: commentText,
         threadId: threadId,
-			}
-		});
-		return { success: true };
+      },
+    });
+    return { success: true };
   },
 
-  subscribe: async ({ request, locals}) => {
+  subscribe: async ({ request, locals }) => {
     if (!(locals && locals.user && locals.user.name)) {
-			throw redirect(302, '/login');
-		}
+      throw redirect(302, "/login");
+    }
     const data = await request.formData();
-		const id = data.get('id');
+    const id = data.get("id");
 
     if (user.subscribedThreads.length === 0) {
       await db.thread.update({
@@ -140,8 +133,7 @@ export const actions = {
           },
         },
       });
-    }
-    else {
+    } else {
       await db.thread.update({
         where: {
           id: threadId,
@@ -153,24 +145,23 @@ export const actions = {
         },
       });
     }
-
   },
 
-  replyComment: async ({ request, locals}) => {
+  replyComment: async ({ request, locals }) => {
     if (!(locals && locals.user && locals.user.name)) {
-			throw redirect(302, '/login');
-		}
+      throw redirect(302, "/login");
+    }
     const data = await request.formData();
-		const commentText = data.get('text');
-    const parentId = parseInt(data.get('commentId'))
-		await db.comment.create({
-			data: {
-				userID: locals.user.id,
-				comment: commentText,
+    const commentText = data.get("text");
+    const parentId = parseInt(data.get("commentId"));
+    await db.comment.create({
+      data: {
+        userID: locals.user.id,
+        comment: commentText,
         threadId: threadId,
-        parent_id: parentId
-			}
-		});
-		return { success: true };
-  }
-}
+        parent_id: parentId,
+      },
+    });
+    return { success: true };
+  },
+};
