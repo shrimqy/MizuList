@@ -84,35 +84,38 @@
             </div>
             
         </div>
-        <form method="post" action="?/createComment">
-            <div class="activityStatus">
-                <input
-                    type="text"
-                    placeholder="Add a comment"
-                    name="text"
-                    bind:value={commentText}
-                    autocomplete="off"
-                    on:input={() => toggleComment(true)}
-                />
-                {#if showComment}
-                    <p>Please mind user behavior before posting</p>
-                    <div class="actions">
-                        <button
-                            class="publish"
-                            type="button"
-                            style="background-color:#fafafa; color:#9299b5"
-                            on:click={() => toggleComment(false)}>Cancel</button
-                        >
-                        <button class="publish" formaction="?/createComment">Comment</button>
-                    </div>
-                {/if}
+        {#if !thread.isLocked}
+            <form method="post" action="?/createComment">
+                <div class="activityStatus">
+                    <input
+                        type="text"
+                        placeholder="Add a comment"
+                        name="text"
+                        bind:value={commentText}
+                        autocomplete="off"
+                        on:input={() => toggleComment(true)}
+                    />
+                    {#if showComment}
+                        <p>Please mind user behavior before posting</p>
+                        <div class="actions">
+                            <button
+                                class="publish"
+                                type="button"
+                                style="background-color:#fafafa; color:#9299b5"
+                                on:click={() => toggleComment(false)}>Cancel</button
+                            >
+                            <button class="publish" formaction="?/createComment">Comment</button>
+                        </div>
+                    {/if}
+                </div>
+            </form>
+            <div class="comments-container">
+            {#each comments as item, index}
+                <Comment item={item} expanded />
+            {/each}
             </div>
-        </form>
-        <div class="comments-container">
-        {#each comments as item, index}
-            <Comment item={item} expanded />
-        {/each}
-        </div>
+        {/if}
+        
         
     </div>
      

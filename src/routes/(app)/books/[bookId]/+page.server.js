@@ -110,7 +110,6 @@ export async function load({ locals, params }) {
   const autoRecommendation = await res.json();
 
   if (!autoRecommendation.error) {
-    console.log(autoRecommendation);
     for (const recommendation of autoRecommendation) {
       // Find the book in the database by its title
       const book = await db.book.findFirst({
@@ -133,6 +132,7 @@ export async function load({ locals, params }) {
     }
   }
 
+
   await db.book.update({
     where: {
       id: bookId,
@@ -140,6 +140,22 @@ export async function load({ locals, params }) {
     data: {
       views: book.views + 1,
     },
+  });
+
+  const threads = await db.thread.findMany({
+    take: 2,
+    where: {
+        book: {
+            some: {
+                id: bookId
+            }
+        }
+    },
+    include: {
+        book: true,
+        Comment: true,
+        category: true
+    }
   });
 
   const userFavoriteKEY = userFavorite !== null;
@@ -152,7 +168,8 @@ export async function load({ locals, params }) {
     favorite: favorite,
     userFavoriteKEY: userFavoriteKEY,
     recommendations: recommendations,
-    autoRecommendation: finalAutoRecommendations
+    autoRecommendation: finalAutoRecommendations,
+    threads: threads
   };
 }
 /** @type {import('./$types').Actions} */
@@ -257,90 +274,135 @@ export const actions = {
         },
       });
     }
-
-    const ratings = await db.userBook.findMany({
-      where: {
-        bookID: bookId,
-        rating: {
-          not: null,
-        },
-      },
-      select: {
-        rating: true,
-      },
-    });
-    const ratingCount = ratings.length;
-    const sumOfRatings = ratings.reduce(
-      (total, userBook) => total + parseInt(userBook.rating),
-      0
-    );
-    console.log(existingBook);
-    const avgRating = ratingCount > 0 ? sumOfRatings / ratingCount : 0;
     // Creating/updating the userStatus
     if (existingBook) {
+      await db.userBook.update({
+        where: {
+          userID_bookID: {
+            userID: locals.user.id,
+            bookID: bookId,
+          },
+        },
+        data: {
+          pagesRead: pages,
+          chaptersRead: chapters,
+          rating: rating,
+          rereads: rereads,
+          startedDate: startedDateTime,
+          notes: notes,
+          completedAt: completedDateTime,
+          bookCategory: {
+            // Disconnecting the category at index 1 from the existing book's categories
+            disconnect: [{ id: userBook?.bookCategory[1]?.id }],
+
+            // Connecting the new category and the "All" category to the book
+            connect: [{ id: categoryId }, { id: 1 }],
+          },
+        },
+      })
+
+      const ratings = await db.userBook.findMany({
+        where: {
+          bookID: bookId,
+          rating: {
+            not: null,
+          },
+        },
+        select: {
+          rating: true,
+        },
+      });
+      const ratingCount = ratings.length ? ratings.length : 1;
+      const sumOfRatings = ratings.reduce(
+        (total, userBook) => total + parseInt(userBook.rating),
+        0
+      );
+      const avgRating = ratingCount > 0 ? sumOfRatings / ratingCount : 0;
       await db.Book.update({
         where: { id: bookId },
         data: {
           publicRating: avgRating,
           ratingCount: ratingCount,
-          userBooks: {
-            update: {
-              where: {
-                userID_bookID: {
-                  userID: locals.user.id,
-                  bookID: bookId,
-                },
-              },
-              data: {
-                pagesRead: pages,
-                chaptersRead: chapters,
-                rating: rating,
-                rereads: rereads,
-                startedDate: startedDateTime,
-                notes: notes,
-                completedAt: completedDateTime,
-                bookCategory: {
-                  // Disconnecting the category at index 1 from the existing book's categories
-                  disconnect: [{ id: userBook?.bookCategory[1]?.id }],
-
-                  // Connecting the new category and the "All" category to the book
-                  connect: [{ id: categoryId }, { id: 1 }],
-                },
-              },
-            },
-          },
         },
       });
     } else {
+      await db.userBook.create({
+        data: {
+          user: {
+            connect: { id: user.id },
+          },
+          book: {
+            connect: { id: bookId }
+          },
+          pagesRead: pages,
+          chaptersRead: chapters,
+          rating: rating,
+          rereads: rereads,
+          startedDate: startedDateTime,
+          notes: notes,
+          completedAt: completedDateTime,
+          bookCategory: {
+            // Connecting the new category and the "All" category to the book
+            connect: [{ id: categoryId }, { id: 1 }],
+          },
+        },
+      })
+
+      const ratings = await db.userBook.findMany({
+        where: {
+          bookID: bookId,
+          rating: {
+            not: null,
+          },
+        },
+        select: {
+          rating: true,
+        },
+      });
+      const ratingCount = ratings.length ? ratings.length : 1;
+      const sumOfRatings = ratings.reduce(
+        (total, userBook) => total + parseInt(userBook.rating),
+        0
+      );
+      const avgRating = ratingCount > 0 ? sumOfRatings / ratingCount : 0;
       await db.Book.update({
         where: { id: bookId },
         data: {
           publicRating: avgRating,
           ratingCount: ratingCount,
-          userBooks: {
-            create: [
-              {
-                user: {
-                  connect: { id: user.id },
-                },
-                pagesRead: pages,
-                chaptersRead: chapters,
-                rating: rating,
-                rereads: rereads,
-                startedDate: startedDateTime,
-                completedAt: completedDateTime,
-                bookCategory: {
-                  // Connecting the new category and the "All" category to the book
-                  connect: [{ id: categoryId }, { id: 1 }],
-                },
-              },
-            ],
+        },
+      });
+    }
+    return { success: true };
+  },
+
+  delete: async ({ request, params, locals }) => {
+    const data = await request.formData();
+    const bookId = await params.bookId;
+    const existingBook = await db.userBook.findFirst({
+      where: {
+        userID: locals.user.id,
+        bookID: bookId,
+      },
+    });
+    if (existingBook) {
+      await db.book.update({
+        where: { id: bookId },
+        data: {
+          publicRating: book.rating,
+          ratingCount: book.ratingCount - 1
+        }
+      })
+      // Delete the existing book based on its unique identifier
+      await db.userBook.delete({ 
+        where: {
+          userID_bookID: {
+            userID: locals.user.id,
+            bookID: bookId,
           },
         },
       });
     }
-
-    return { success: true };
   },
 
   TLDRreview: async () => {
@@ -370,6 +432,8 @@ export const actions = {
     } catch (error) {
         console.error(error);
     }
+    console.log(result);
     return { success: true,  generatedReview: JSON.parse(result).summary };
-  }
+  },
+  
 };

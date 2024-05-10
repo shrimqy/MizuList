@@ -3,15 +3,17 @@
 
 	import { formatDate, filterTags } from '$lib/utils';
 	import { fade } from 'svelte/transition';
-	import { invalidateAll } from '$app/navigation';
+	import { invalidateAll, afterNavigate } from "$app/navigation";
 	import { enhance } from '$app/forms';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 	import { page } from '$app/stores';
+	import { onMount } from "svelte";
 	export let form;
 	export let data;
-	let { book, userBook, userFavorite, favorite, recommendations, autoRecommendation } = data;
+	let { userBook, recommendations, autoRecommendation, threads } = data;
+	$: book = $page?.data?.book
+	console.log($page?.data?.book);
 	$: favTag = $page?.data?.userFavoriteKEY
-	console.log(autoRecommendation);
 	let status = 'planToRead';
 	let selectedCategoryId = userBook ? userBook.bookCategory[1].id : 0;
 	let selectedRating = userBook?.rating ? userBook?.rating : '0';
@@ -85,6 +87,10 @@
 			await invalidateAll();
 		};
 	};
+
+	afterNavigate(() => {
+    	invalidateAll(); //rerun load functions
+  	});
 </script>
 
 <title>{book?.englishTitle}</title>
@@ -137,7 +143,7 @@
 				<div class="rating-header">
 					<div class="score">
 						<h2>Score</h2>
-						<h3>{book?.publicRating !=null ? book?.publicRating : "0" }</h3>
+						<h3>{book?.publicRating !=null ? book?.publicRating.toFixed(2) : "0" }</h3>
 						<span class="r-count">{book?.ratingCount !=null ? book?.ratingCount : "0" } users</span>
 					</div>
 					<div class="detail-header">
@@ -242,8 +248,17 @@
 											</div>
 
 											<div class="ebutton">
-												<button formaction="?/userStatus" type="submit">Save</button>
-											</div>
+												<button
+												  class="esave"
+												  formaction="?/userStatus"
+												  type="submit">Save</button
+												>
+												<button
+												  class="edelete"
+												  formaction="?/delete"
+												  type="submit">Delete</button
+												>
+											  </div>
 										</div>
 									</div>
 									<div class="editor-container">
@@ -395,14 +410,55 @@
 					{/if}
 				</div>
 			</div> -->
+			{#if threads && threads?.length > 0}
+			<div class="thread-container"> 
+				<h3 style="color: #61778f">Threads</h3>		
+				
+				{#each threads as thread}
+					<div class="statusCard">
+						<div class="statusContent">
+							<div class="statusHeader">
+								<a href="/forum/thread/{thread.id}">
+									<div class="title">{thread?.title}</div>
+								</a>
+							</div>
+							<div class="statusBookContainer">
+								{#each thread?.book as book}
+									<div class="statusBook">{book?.englishTitle}</div>
+								{/each}
+								{#each thread.category as category}
+									<div class="statusBook" style="background-color: {category.color}">{category.name}</div>
+								{/each}
+							</div>
+							<div class="threadcontent">
+								<p>{thread.threadBody?.slice(0, 130)}...</p>
+							</div>
+							<div class="statusFooter">
+								<button>
+									<div class="commentContainer">
+										<span class="material-symbols-outlined" style="font-size: 17px;">forum</span>  
+										<div>{thread.Comment?.length}</div>
+									</div>
+								</button>
+							</div>
+						</div>
+						<div class="statusRight">
+							<div class="view-container">
+								<span class="material-icons">visibility</span> 
+								<div>{thread.views}</div>
+							</div>  
+							<!-- {formatDate(thread.createdAt)} -->
+						</div>
+					</div>
+				{/each}
+				
+			</div>
+			{/if}
 
 			
 			<div class="review">
 				<div class="review-head">
-					<h3 style="color: #61778f">Reviews</h3>
-
-					
-						
+					<h3 style="color: #61778f">Reviews</h3>		
 						{#if userBook}
 						<a data-sveltekit-preload-data href="/books/{userBook.bookID}/review"
 							>Write a review</a
@@ -571,6 +627,16 @@
 		font-family: 'Material Icons';
 	}
 
+	.material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+
+        font-variation-settings:
+        'FILL' 1,
+        'wght' 500,
+        'GRAD' 200,
+        'opsz' 20
+    }
+
 	.container {
 		width: 100%;
 		background-color: #edf1f5;
@@ -715,6 +781,7 @@
 		width: 50rem;
 		margin-left: 3rem;
 		margin-top: 1rem;
+		gap: 1rem;
 	}
 
 	.edition-details {
@@ -1146,13 +1213,23 @@
 		padding: 0.5rem;
 		margin-bottom: 1rem;
 		cursor: pointer;
-		background-color: #007bff;
 		color: #fff;
 		transition: background-color 0.3s ease;
 	}
 
-	.ebutton button:hover {
+	.esave {
+    	background-color: #0277f5;
+  	}
+	.edelete {
+		background-color: #c0495d;
+	}
+
+	.esave:hover {
 		background-color: #0089fa;
+	}
+
+	.edelete:hover {
+		background-color: #e6556d;
 	}
 
 	.cancelButton {
@@ -1232,6 +1309,116 @@
 		padding: 7px 0;
 		font-size: 15px;
 	}
+
+
+	.thread-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .statusCard {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		padding: 0.8rem 1rem;
+		box-sizing: border-box;
+		border-radius: 4px;
+		background-color: #fafafa;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.004);
+		transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+	}
+
+    .title {
+        font-size: 19px;
+		font-weight: 500;
+		color: #5e5e5e;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .title:hover {
+        color: #1faafa;
+    }
+
+	.statusContent {
+		display: flex;
+		flex-direction: column;
+        gap: 2px;
+	}
+
+    .statusBookContainer {
+        padding: 4px 0;
+        display: flex;
+        gap: 5px;
+    }
+
+    .statusBook {
+        font-style: oblique;
+        padding: 3px 11px;
+        color: #fff;
+        background-color: #1faafa;
+        border-radius: 14px;
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .statusFooter button {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+    }
+
+	.threadcontent {
+		display: flex;
+		word-break: break-all;
+		line-height: 25px;
+        font-size: 14px;
+        color: #9299a1;
+	}
+
+	.statusHeader {
+		display: inline-flex;
+		align-items: center;
+        gap: 4px;
+	}
+
+    .statusHeader span {
+        font-size: 15px;
+        color: #1ffa56;
+    }
+
+    .statusRight span {
+        font-size: 14px;
+        font-weight: 400;
+        margin-right: 4px;
+    }
+
+	.view-container {   
+        display: inline-flex;
+		color: #9299a1;
+		font-size: 12px;
+		font-weight: 400;
+	}
+
+    .subHeader {
+        display: flex;
+        justify-content: right;
+        margin: 1rem;
+    }
+
+	.commentContainer {
+        display: flex;
+        align-items: center;
+        color: #9299a1;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+    .commentContainer:hover {
+        color: #8092a0;
+    }
+	
 
 
 	#overlay {

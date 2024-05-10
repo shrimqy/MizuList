@@ -10,22 +10,24 @@ export async function load({ locals, params }) {
 	userData = await db.User.findUnique({
 		where: { username }
 	});
-
-	userFollow = await db.User.findUnique ({
-		where: {
-			username: locals.user.name
-		},
-		select: {
-			following: {
-				where: {
-					username: username
-				},
-				select: {
-					username: true
+	if (locals.user) {
+		userFollow = await db.User.findUnique ({
+			where: {
+				username: locals.user.name
+			},
+			select: {
+				following: {
+					where: {
+						username: username
+					},
+					select: {
+						username: true
+					}
 				}
 			}
-		}
-	})
+		})
+	}
+	
 
 	fav = await db.Favorite.findMany({
 		where: {
@@ -68,8 +70,6 @@ export async function load({ locals, params }) {
 		...book, // '...' allows to expand elements from an array or properties from an object
 		bookCategory: book.bookCategory.map((category) => category.id)
 	}));
-
-
 	return {
 		existingBook,
 		fav,

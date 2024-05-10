@@ -9,7 +9,12 @@
 <div class="container">
 	<div class="head">
 		<h1>Recommendations</h1>
-		<a href="/myrecommendation">Submit a recommendation?</a>
+		{#if $page.data?.user}
+			<a href="/myrecommendation">Submit a recommendation?</a>
+		{:else}
+			<a href="/login">Submit a recommendation?</a>
+		{/if}
+		
 	</div>
 
 	<div class="content">

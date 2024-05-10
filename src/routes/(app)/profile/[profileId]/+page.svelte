@@ -15,12 +15,10 @@
   $: rereads = existingBook.filter(
     (item) => item.rereads !== null && item.rereads !== ""
   ).length;
-  console.log(rereads);
   $: uniqueLastActivity = lastActivity?.filter(
     (activity, index, self) =>
       index === self.findIndex((a) => a.bookID === activity.bookID)
   );
-  console.log(uniqueLastActivity);
   $: filteredRating = existingBook.filter(
     (item) => item.rating !== null && item.rating !== "" && item.rating !== "0"
   );
@@ -30,7 +28,6 @@
   );
   $: averageRating = (sum / filteredRating.length).toFixed(2);
 
-  console.log(averageRating);
 </script>
 
 <title>{userData.username}'s Profile</title>

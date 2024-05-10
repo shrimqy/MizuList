@@ -9,7 +9,7 @@
         <h3>Categories</h3>
 		<a href="/forum" class:selected={$page.url.pathname === '/forum'}>All</a>
 		{#each foo as item}
-			<a data-sveltekit-preload-data="hover" href="/forum/{item.name}" class:selected={$page.url.pathname === '/forum/' + item.name}>{item.name}</a>
+			<a data-sveltekit-preload-data="hover" href="/forum/{item.name}" class:selected={$page.url.pathname === '/forum/' + encodeURIComponent(item.name)}>{item.name}</a>
 		{/each}
 	</div>
 </div>

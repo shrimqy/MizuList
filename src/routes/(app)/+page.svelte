@@ -41,8 +41,6 @@
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
 
-  $: console.log(sortedCombinedArray);
-
   //use function definition for 'like' action
   const activityLike = () => {
     return async ({ result, update }) => {

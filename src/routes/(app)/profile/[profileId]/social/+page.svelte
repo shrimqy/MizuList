@@ -8,6 +8,8 @@
     function selectTab(tab) {
         selectedTab = tab;
     }
+
+    console.log(userSocial);
 </script>
 
 <div class="container">
@@ -21,29 +23,29 @@
     <div class="userList">
         {#if selectedTab === 'followers'}
             {#each userSocial.followedBy as user}
+            <a href="/profile/{user.username}">
                 <div class="userCard">
-                    <a href="/profile/{user.username}">
                     <img
                         src={`/uploads/userAvatars/${user.id}.png`}
                         alt="User Avatar"
                         class="userAvatar"
                     />
                     <div class="username">{user.username}</div>
-                </a>
                 </div>
+            </a>
             {/each}
         {:else if selectedTab === 'following'}
             {#each userSocial.following as user}
+            <a href="/profile/{user.username}">
                 <div class="userCard">
-                    <a href="/profile/{user.username}">
                     <img
                         src={`/uploads/userAvatars/${user.id}.png`}
                         alt="User Avatar"
                         class="userAvatar"
                     />
                     <div class="username">{user.username}</div>
-                    </a>
                 </div>
+            </a>
             {/each}
         {/if}
     </div>
@@ -51,10 +53,17 @@
 </div>
 
 <style>
-
     * {
+        font-family: "Overpass", sans-serif;
+        outline: none;
         text-decoration: none;
     }
+    :root {
+        background-color: #edf1f5;
+        color: #5c728a;
+        overflow-y: scroll; 
+    }
+
     .container {
         padding: 2rem;
         max-width: 65%;
@@ -71,10 +80,12 @@
         background-color: transparent;
         border: none;
         cursor: pointer;
+        font-weight: 600;
+        color: #5C728A;
     }
 
     .tabs button.selected {
-        font-weight: bold;
+        color: #1faafa;
     }
 
     .userList {
@@ -88,6 +99,7 @@
     .userCard {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 1rem;
         padding: 1rem;
         border-radius: 7px;
@@ -106,4 +118,5 @@
 		border-radius: 50%;
 		object-fit: cover;
     }
+
 </style>

@@ -25,7 +25,7 @@
 	</form>
 
 	{#if inputValue == '' || inputValue == null}
-		<div class="listContainer">
+		<div class="listContainer" >
 			<div class="list">
 				<div class="header">
 					<h1>ALL TIME POPULAR</h1>
@@ -82,7 +82,6 @@
 		{:else}
 			<span class="result">No Results Found, <a href="edit/new">Click here to Add Book Data</a></span> 
 		{/if}
-		
 	{/if}
 	
 </div>

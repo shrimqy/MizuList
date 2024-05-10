@@ -72,7 +72,7 @@
                   />
                   <a
                     data-sveltekit-preload-data
-                    href="/books/{listItem.bookId}"
+                    href="/books/{listItem.id}"
                   >
                     <!-- <button class="material-symbols-rounded">open_in_new</button> -->
                   </a>
@@ -88,7 +88,7 @@
                     >open_in_new</button
                   >
                 </div>
-                <a href="/books/{listItem.id}">
+                <a href="/books/{listItem.bookID}">
                   <div class="title">{listItem.book.englishTitle}</div>
                 </a>
               {:else}

@@ -9,6 +9,7 @@
 
   let userFollow = $page.data?.userFollow?.following;
   $: profilePage = $page.url.pathname.startsWith(`/profile/`);
+  
 
   afterNavigate(() => {
     invalidateAll(); //rerun load functions
@@ -164,7 +165,7 @@
         {/if}
         <span class="username">{userData?.username}</span>
       </div>
-      {#if homeusername !== username}
+      {#if homeusername !== username && userFollow != null}
         {#if !userFollow[0]?.username}
           <form method="post" action="?/SocialAction">
             <button class="socialAction" formaction="?/SocialAction"
@@ -201,7 +202,7 @@
     >
     
 
-    {#if $page.url.pathname.startsWith(`/profile/` + username)}
+    {#if $page.url.pathname.startsWith(`/profile/` + homeusername)}
       <!-- abstraction for settings page when visiting other's profile -->
       <a
         href="/profile/{userData.username}/history"
