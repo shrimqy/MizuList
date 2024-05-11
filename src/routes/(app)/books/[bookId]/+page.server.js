@@ -72,7 +72,6 @@ export async function load({ locals, params }) {
       },
     },
   });
-  
 
   let recommendations = await db.recommendation.findMany({
     where: {
@@ -98,15 +97,17 @@ export async function load({ locals, params }) {
     orderBy: {
       Like: {
         User: {
-          _count: "desc"
-        }
+          _count: "desc",
+        },
       },
     },
   });
 
   let finalAutoRecommendations = [];
-  
-  const res = await fetch(`https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`);
+
+  const res = await fetch(
+    `https://book-recommendation-system-q163.onrender.com/recommend?book=${book.englishTitle}`
+  );
   const autoRecommendation = await res.json();
 
   if (!autoRecommendation.error) {
@@ -116,11 +117,11 @@ export async function load({ locals, params }) {
         where: {
           englishTitle: {
             contains: recommendation.book,
-            mode: 'insensitive'
-          }
-        }
+            mode: "insensitive",
+          },
+        },
       });
-      
+
       // If the book is found, gather necessary data
       if (book) {
         finalAutoRecommendations.push({
@@ -131,7 +132,6 @@ export async function load({ locals, params }) {
       }
     }
   }
-
 
   await db.book.update({
     where: {
@@ -145,17 +145,17 @@ export async function load({ locals, params }) {
   const threads = await db.thread.findMany({
     take: 2,
     where: {
-        book: {
-            some: {
-                id: bookId
-            }
-        }
+      book: {
+        some: {
+          id: bookId,
+        },
+      },
     },
     include: {
-        book: true,
-        Comment: true,
-        category: true
-    }
+      book: true,
+      Comment: true,
+      category: true,
+    },
   });
 
   const userFavoriteKEY = userFavorite !== null;
@@ -169,7 +169,7 @@ export async function load({ locals, params }) {
     userFavoriteKEY: userFavoriteKEY,
     recommendations: recommendations,
     autoRecommendation: finalAutoRecommendations,
-    threads: threads
+    threads: threads,
   };
 }
 /** @type {import('./$types').Actions} */
@@ -299,7 +299,7 @@ export const actions = {
             connect: [{ id: categoryId }, { id: 1 }],
           },
         },
-      })
+      });
 
       const ratings = await db.userBook.findMany({
         where: {
@@ -332,7 +332,7 @@ export const actions = {
             connect: { id: user.id },
           },
           book: {
-            connect: { id: bookId }
+            connect: { id: bookId },
           },
           pagesRead: pages,
           chaptersRead: chapters,
@@ -346,7 +346,7 @@ export const actions = {
             connect: [{ id: categoryId }, { id: 1 }],
           },
         },
-      })
+      });
 
       const ratings = await db.userBook.findMany({
         where: {
@@ -390,11 +390,11 @@ export const actions = {
         where: { id: bookId },
         data: {
           publicRating: book.rating,
-          ratingCount: book.ratingCount - 1
-        }
-      })
+          ratingCount: book.ratingCount - 1,
+        },
+      });
       // Delete the existing book based on its unique identifier
-      await db.userBook.delete({ 
+      await db.userBook.delete({
         where: {
           userID_bookID: {
             userID: locals.user.id,
@@ -406,34 +406,47 @@ export const actions = {
   },
 
   TLDRreview: async () => {
-    const combinedReviewText = book.review.map(review => review.review).join(' ');
-    const cleanedReviewText = combinedReviewText.replace(/['"\n]/g, '');
+    const combinedReviewText = book.review
+      .map((review) => review.review)
+      .join(" ");
+    const cleanedReviewText = combinedReviewText.replace(/['"\n]/g, "");
     // console.log(cleanedReviewText);
-    let result
-    const url = 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-text/';
+    let result;
+    const url =
+      "https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-text/";
     const options = {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json',
-            'X-RapidAPI-Key': process.env.KEY,
-            'X-RapidAPI-Host': 'tldrthis.p.rapidapi.com'
-        },
-        body: JSON.stringify({
-            text: cleanedReviewText.slice(0, 1000),
-            min_length: 100,
-            max_length: 300
-        })
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "X-RapidAPI-Key": process.env.KEY,
+        "X-RapidAPI-Host": "tldrthis.p.rapidapi.com",
+      },
+      body: JSON.stringify({
+        text: cleanedReviewText.slice(0, 1000),
+        min_length: 100,
+        max_length: 300,
+      }),
     };
 
     try {
-        const response = await fetch(url, options);
-        result = await response.text();
-        console.log(JSON.parse(result).summary);
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/Falconsai/text_summarization",
+        {
+          headers: {
+            Authorization: "Bearer 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",
+          },
+          method: "POST",
+          body: JSON.stringify({ inputs: cleanedReviewText.slice(0, 1000) }),
+        }
+      );
+      // const response = await fetch(url, options);
+      result = await response.text();
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
-    console.log(result);
-    return { success: true,  generatedReview: JSON.parse(result).summary };
+    return {
+      success: true,
+      generatedReview: JSON.parse(result)[0].summary_text,
+    };
   },
-  
 };
