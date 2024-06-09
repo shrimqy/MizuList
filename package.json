@@ -7,7 +7,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.2.1",
@@ -28,6 +29,7 @@
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^5.15.0",
+		"@vercel/postgres": "^0.8.0",
 		"bcrypt": "^5.1.1",
 		"chart.js": "^4.4.3",
 		"g": "^2.0.1",

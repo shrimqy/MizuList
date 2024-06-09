@@ -11,6 +11,9 @@ importers:
       '@prisma/client':
         specifier: ^5.15.0
         version: 5.15.0(prisma@5.15.0)
+      '@vercel/postgres':
+        specifier: ^0.8.0
+        version: 0.8.0
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -38,13 +41,13 @@ importers:
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^3.2.1
-        version: 3.2.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13))
+        version: 3.2.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))
       '@sveltejs/kit':
         specifier: ^2.5.10
-        version: 2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13)
+        version: 2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^3.1.1
-        version: 3.1.1(svelte@4.2.18)(vite@5.2.13)
+        version: 3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.10
@@ -77,7 +80,7 @@ importers:
         version: 10.3.0
       vite:
         specifier: ^5.2.13
-        version: 5.2.13
+        version: 5.2.13(@types/node@20.14.2)
 
 packages:
 
@@ -277,6 +280,9 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
+  '@neondatabase/serverless@0.7.2':
+    resolution: {integrity: sha512-wU3WA2uTyNO7wjPs3Mg0G01jztAxUxzd9/mskMmtPwPTjf7JKWi9AW5/puOGXLxmZ9PVgRFeBVRVYq5nBPhsCg==}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -437,8 +443,18 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
+  '@types/node@20.14.2':
+    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
+
+  '@types/pg@8.6.6':
+    resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
+
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+
+  '@vercel/postgres@0.8.0':
+    resolution: {integrity: sha512-/QUV9ExwaNdKooRjOQqvrKNVnRvsaXeukPNI5DB1ovUTesglfR/fparw7ngo1KUWWKIVpEj2TRrA+ObRHRdaLg==}
+    engines: {node: '>=14.6'}
 
   '@zerodevx/svelte-toast@0.9.5':
     resolution: {integrity: sha512-JLeB/oRdJfT+dz9A5bgd3Z7TuQnBQbeUtXrGIrNWMGqWbabpepBF2KxtWVhL2qtxpRqhae2f6NAOzH7xs4jUSw==}
@@ -840,6 +856,10 @@ packages:
   bufferstreams@1.1.3:
     resolution: {integrity: sha512-HaJnVuslRF4g2kSDeyl++AaVizoitCpL9PglzCYwy0uHHyvWerfvEb8jWmYbF1z4kiVFolGomnxSGl+GUQp2jg==}
     engines: {node: '>= 0.10.0'}
+
+  bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
+    engines: {node: '>=6.14.2'}
 
   cache-base@0.8.5:
     resolution: {integrity: sha512-19t0n7xdoVr5Q08+6sF85YZ9VuvbpVFq5JLm0gcsRmCvTO1Y3duTJGMaOQYf14Ras4o6dEnvoqvjdrUK1tNtgg==}
@@ -2357,6 +2377,10 @@ packages:
       encoding:
         optional: true
 
+  node-gyp-build@4.8.1:
+    resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
+    hasBin: true
+
   noncharacters@1.1.0:
     resolution: {integrity: sha512-U69XzMNq7UQXR27xT17tkQsHPsLc+5W9yfXvYzVCwFxghVf+7VttxFnCKFMxM/cHD+/QIyU009263hxIIurj4g==}
     engines: {node: '>=0.10.0'}
@@ -2526,6 +2550,17 @@ packages:
   periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
 
+  pg-int8@1.0.1:
+    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
+    engines: {node: '>=4.0.0'}
+
+  pg-protocol@1.6.1:
+    resolution: {integrity: sha512-jPIlvgoD63hrEuihvIg+tJhoGjUsLPn6poJY9N5CnlPd91c2T18T/9zBtLxZSb1EhYxBRoZJtzScCaWlYLtktg==}
+
+  pg-types@2.2.0:
+    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
+    engines: {node: '>=4'}
+
   picocolors@1.0.1:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
 
@@ -2572,6 +2607,22 @@ packages:
   postcss@8.4.38:
     resolution: {integrity: sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==}
     engines: {node: ^10 || ^12 || >=14}
+
+  postgres-array@2.0.0:
+    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
+    engines: {node: '>=4'}
+
+  postgres-bytea@1.0.0:
+    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-date@1.0.7:
+    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
+    engines: {node: '>=0.10.0'}
+
+  postgres-interval@1.2.0:
+    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
+    engines: {node: '>=0.10.0'}
 
   prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
@@ -3145,6 +3196,9 @@ packages:
     resolution: {integrity: sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==}
     engines: {node: '>=0.10.0'}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   union-value@0.2.4:
     resolution: {integrity: sha512-Tv3cqdyY8yjW9ZcJ9WP7JdHS34natzylD0oNRLlYbWOfUdC4EQ0sf3fubnqrK2IErtlmobFmuS1pWvv88VghpA==}
     engines: {node: '>=0.10.0'}
@@ -3187,6 +3241,10 @@ packages:
   user-home@2.0.0:
     resolution: {integrity: sha512-KMWqdlOcjCYdtIJpicDSFBQ8nFwS2i9sslAd6f4+CBGcU4gist2REnr2fxj2YocvJFxSF3ZOHLYLVZnUxv4BZQ==}
     engines: {node: '>=0.10.0'}
+
+  utf-8-validate@6.0.3:
+    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
+    engines: {node: '>=6.14.2'}
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -3286,6 +3344,18 @@ packages:
   write@0.2.1:
     resolution: {integrity: sha512-CJ17OoULEKXpA5pef3qLj5AxTJ6mSt7g84he2WIskKwqFO4T97d5V7Tadl0DYDk7qyUOQD5WlUlOMChaYrhxeA==}
     engines: {node: '>=0.10.0'}
+
+  ws@8.14.2:
+    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   xml-escape@1.0.0:
     resolution: {integrity: sha512-gCT82WbwOT9SBI/94j5i0tqHpjHIP/0kP11BS8s2wcBtdcFsDNLS9sLvA+C55fD3hpGhgnE/r7hfeBFkiMATjw==}
@@ -3450,6 +3520,10 @@ snapshots:
       - encoding
       - supports-color
 
+  '@neondatabase/serverless@0.7.2':
+    dependencies:
+      '@types/pg': 8.6.6
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -3537,14 +3611,14 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.18.0':
     optional: true
 
-  '@sveltejs/adapter-auto@3.2.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13))':
+  '@sveltejs/adapter-auto@3.2.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))':
     dependencies:
-      '@sveltejs/kit': 2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13)
+      '@sveltejs/kit': 2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       import-meta-resolve: 4.1.0
 
-  '@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13)':
+  '@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 3.1.1(svelte@4.2.18)(vite@5.2.13)
+      '@sveltejs/vite-plugin-svelte': 3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       '@types/cookie': 0.6.0
       cookie: 0.6.0
       devalue: 5.0.0
@@ -3558,28 +3632,28 @@ snapshots:
       sirv: 2.0.4
       svelte: 4.2.18
       tiny-glob: 0.2.9
-      vite: 5.2.13
+      vite: 5.2.13(@types/node@20.14.2)
 
-  '@sveltejs/vite-plugin-svelte-inspector@2.1.0(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13)':
+  '@sveltejs/vite-plugin-svelte-inspector@2.1.0(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 3.1.1(svelte@4.2.18)(vite@5.2.13)
+      '@sveltejs/vite-plugin-svelte': 3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       debug: 4.3.5
       svelte: 4.2.18
-      vite: 5.2.13
+      vite: 5.2.13(@types/node@20.14.2)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13)':
+  '@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 2.1.0(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13))(svelte@4.2.18)(vite@5.2.13)
+      '@sveltejs/vite-plugin-svelte-inspector': 2.1.0(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.14.2))
       debug: 4.3.5
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.10
       svelte: 4.2.18
       svelte-hmr: 0.16.0(svelte@4.2.18)
-      vite: 5.2.13
-      vitefu: 0.2.5(vite@5.2.13)
+      vite: 5.2.13(@types/node@20.14.2)
+      vitefu: 0.2.5(vite@5.2.13(@types/node@20.14.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -3594,7 +3668,24 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/node@20.14.2':
+    dependencies:
+      undici-types: 5.26.5
+
+  '@types/pg@8.6.6':
+    dependencies:
+      '@types/node': 20.14.2
+      pg-protocol: 1.6.1
+      pg-types: 2.2.0
+
   '@ungap/structured-clone@1.2.0': {}
+
+  '@vercel/postgres@0.8.0':
+    dependencies:
+      '@neondatabase/serverless': 0.7.2
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
+      ws: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
 
   '@zerodevx/svelte-toast@0.9.5(svelte@4.2.18)':
     dependencies:
@@ -4129,6 +4220,10 @@ snapshots:
   bufferstreams@1.1.3:
     dependencies:
       readable-stream: 2.3.8
+
+  bufferutil@4.0.8:
+    dependencies:
+      node-gyp-build: 4.8.1
 
   cache-base@0.8.5:
     dependencies:
@@ -6068,6 +6163,8 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
+  node-gyp-build@4.8.1: {}
+
   noncharacters@1.1.0: {}
 
   nopt@5.0.0:
@@ -6255,6 +6352,18 @@ snapshots:
       estree-walker: 3.0.3
       is-reference: 3.0.2
 
+  pg-int8@1.0.1: {}
+
+  pg-protocol@1.6.1: {}
+
+  pg-types@2.2.0:
+    dependencies:
+      pg-int8: 1.0.1
+      postgres-array: 2.0.0
+      postgres-bytea: 1.0.0
+      postgres-date: 1.0.7
+      postgres-interval: 1.2.0
+
   picocolors@1.0.1: {}
 
   pinkie-promise@2.0.1:
@@ -6290,6 +6399,16 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.0.1
       source-map-js: 1.2.0
+
+  postgres-array@2.0.0: {}
+
+  postgres-bytea@1.0.0: {}
+
+  postgres-date@1.0.7: {}
+
+  postgres-interval@1.2.0:
+    dependencies:
+      xtend: 4.0.2
 
   prelude-ls@1.1.2: {}
 
@@ -6974,6 +7093,8 @@ snapshots:
 
   unc-path-regex@0.1.2: {}
 
+  undici-types@5.26.5: {}
+
   union-value@0.2.4:
     dependencies:
       arr-union: 3.1.0
@@ -7069,6 +7190,10 @@ snapshots:
     dependencies:
       os-homedir: 1.0.2
 
+  utf-8-validate@6.0.3:
+    dependencies:
+      node-gyp-build: 4.8.1
+
   util-deprecate@1.0.2: {}
 
   uuid@9.0.1: {}
@@ -7107,17 +7232,18 @@ snapshots:
       clone-stats: 0.0.1
       replace-ext: 0.0.1
 
-  vite@5.2.13:
+  vite@5.2.13(@types/node@20.14.2):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.18.0
     optionalDependencies:
+      '@types/node': 20.14.2
       fsevents: 2.3.3
 
-  vitefu@0.2.5(vite@5.2.13):
+  vitefu@0.2.5(vite@5.2.13(@types/node@20.14.2)):
     optionalDependencies:
-      vite: 5.2.13
+      vite: 5.2.13(@types/node@20.14.2)
 
   webidl-conversions@3.0.1: {}
 
@@ -7153,6 +7279,11 @@ snapshots:
   write@0.2.1:
     dependencies:
       mkdirp: 0.5.6
+
+  ws@8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3):
+    optionalDependencies:
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
 
   xml-escape@1.0.0: {}
 
