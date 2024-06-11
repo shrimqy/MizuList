@@ -8,7 +8,8 @@
 		"preview": "vite preview",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"vercel-build": "prisma generate && prisma migrate deploy && pnpm run build"
+		"vercel-build": "prisma generate && prisma migrate deploy && pnpm run build",
+		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.2.1",
