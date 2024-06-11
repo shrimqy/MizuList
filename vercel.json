@@ -1,4 +1,3 @@
 {
-    "buildCommand": "pnpm run build",
-    "framework": "sveltejs"
+    "buildCommand": "pnpm run build"
 }

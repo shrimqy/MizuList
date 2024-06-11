@@ -77,7 +77,7 @@
 			</form>
 		</div>
 
-		<div class="avatar">
+		<!-- <div class="avatar">
 			<h3>Avatar</h3>
 			<p>Allowed Formats: PNG. Optimal dimensions: 230x230</p>
 			<form
@@ -86,9 +86,7 @@
 				action="?/updateAvatar"
 				enctype="multipart/form-data"
 			>
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div class="upload">
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div id="drop-zone" class="drop-zone" on:click={openFileInput}>
 						{#if uploadedImage}
 							<div>
@@ -123,7 +121,7 @@
 					</div>
 				{/if}
 			</form>
-		</div>
+		</div> -->
 	</div>
 </div>
 
