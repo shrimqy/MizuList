@@ -7,111 +7,113 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") //database connector 
+  // Uses connection pooling
+  url      = env("DATABASE_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-//schema
+// Enums
+enum Role {
+  USER
+  ADMIN
+}
+
+// Models
 
 model User {
-  id            String   @id @default(cuid())
+  id            String   @id @default(uuid())
   username      String   @unique
   passwordHash  String
-  userAuthToken String   @unique
+  userAuthToken String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   avatar        String?
   bio           String?
 
-  role         Roles          @relation(fields: [roleID], references: [id])
-  roleID       Int
+  role         Role
   followedBy   User[]         @relation("UserFollows")
   following    User[]         @relation("UserFollows")
   bookCategory BookCategory[] @relation("UserBookCategory")
 
-  reviews           review[]
+  reviews           Review[]
   userBooks         UserBook[]
-  activity          activity[]
-  likes             Like[]     @relation("userLikes")
-  dislike           DisLike[]  @relation("userdisLikes")
-  Comment           Comment[]
-  Favorite          Favorite[]
-  status            status[]
-  Thread            Thread[]
+  activity          Activity[]
+  likes             Like[]     @relation("UserLikes")
+  dislike           Dislike[]  @relation("UserDislikes")
+  comment           Comment[]
+  favorite          Favorite[]
+  status            Status[]
+  thread            Thread[]
   viewedThreads     Thread[]   @relation("ViewedThreads")
-  subscribedThreads Thread[]   @relation("subscribedThreads")
+  subscribedThreads Thread[]   @relation("SubscribedThreads")
 }
 
 model BookCategory {
   id       Int        @id @default(autoincrement())
   name     String     @unique
-  UserBook UserBook[] @relation("BookCategory")
-  User     User[]     @relation("UserBookCategory")
-  activity activity[]
-}
-
-model Roles {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-  users User[]
+  userBook UserBook[] @relation("BookCategory")
+  user     User[]     @relation("UserBookCategory")
+  activity Activity[]
 }
 
 model Favorite {
   id     String @id @default(uuid())
-  book   Book   @relation(fields: [bookID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  bookID String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookId String
   user   User[]
 }
 
 model Book {
-  id             String   @id
-  bookID         String?
-  romanizedTitle String?
-  englishTitle   String?
-  nativeTitle    String?
-  Synonyms       String[]
-  authors        String?
-  Description    String?
-  format         String?
-  isbn           String?
-  pages          String?
-  chapters       String?
-  views          Int?
+  id          String   @id
+  bookId      String?
+  title       String?
+  synonyms    String[]
+  authors     String?
+  description String?
+  format      String?
+  isbn        String[]
+  pages       String?
+  chapters    String?
+  views       Int?
 
-  amazonUrl      String?
-  coverUrl       String?
+  links          String[]
+  coverUrl       String[]
   publicRating   Float?
   ratingCount    Int?
   firstPublished DateTime?
-  publisher      String?
+  publishers     String[]
   createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   tag               Tag[]
   genres            Genres[]
   userBooks         UserBook[]
-  SeriesBook        SeriesBook[]
-  Favorite          Favorite[]
-  review            review[]
-  activity          activity[]
+  seriesBook        SeriesBook[]
+  favorite          Favorite[]
+  review            Review[]
+  activity          Activity[]
   recommendedBooks1 Recommendation[] @relation("Book1Recommendations")
   recommendedBooks2 Recommendation[] @relation("Book2Recommendations")
-  thread            Thread[]         @relation("bookThread")
+  thread            Thread[]         @relation("BookThread")
 }
 
 model Series {
   id          String       @id
   name        String       @unique
   description String?
-  SeriesBook  SeriesBook[]
+  seriesBook  SeriesBook[]
 }
 
 model SeriesBook {
-  series   Series  @relation(fields: [seriesID], references: [id], onUpdate: Cascade)
-  seriesID String
-  book     Book    @relation(fields: [bookID], references: [id], onDelete: Cascade)
-  bookID   String
-  order    String?
+  series   Series @relation(fields: [seriesId], references: [id], onUpdate: Cascade)
+  seriesId String
+  book     Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId   String
+  order    Int?
 
-  @@id([bookID, seriesID])
+  @@id([bookId, seriesId])
 }
 
 model Genres {
@@ -128,10 +130,10 @@ model Tag {
 
 model UserBook {
   id           String         @id @default(uuid())
-  user         User           @relation(fields: [userID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userID       String
-  book         Book           @relation(fields: [bookID], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  bookID       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId       String
+  book         Book           @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookId       String
   bookCategory BookCategory[] @relation("BookCategory")
 
   pagesRead    String?
@@ -143,10 +145,10 @@ model UserBook {
   lastUpdated  DateTime? @updatedAt
   completedAt  DateTime?
 
-  @@unique([userID, bookID]) // Ensures a user has only one entry per book
+  @@unique([userId, bookId]) // Ensures a user has only one entry per book
 }
 
-model review {
+model Review {
   id             String   @id @default(uuid())
   date           DateTime @updatedAt
   review         String
@@ -161,7 +163,7 @@ model review {
   userID String?
 }
 
-model activity {
+model Activity {
   id        String   @id @default(cuid())
   timestamp DateTime @default(now())
   chapter   String?
@@ -176,40 +178,40 @@ model activity {
   category   BookCategory? @relation(fields: [categoryId], references: [id])
   categoryId Int?
 
-  comment Comment[]
-  Like    Like?     @relation(fields: [likeId], references: [id])
-  likeId  String?
+  comments Comment[]
+  like     Like?     @relation(fields: [likeId], references: [id])
+  likeId   String?
 }
 
-model status {
+model Status {
   id        String   @id @default(uuid())
   text      String?
   timestamp DateTime @default(now())
 
-  user    User      @relation(fields: [userID], references: [id])
-  userID  String
-  Like    Like?     @relation(fields: [likeId], references: [id])
-  likeId  String?
-  comment Comment[]
+  user     User      @relation(fields: [userID], references: [id])
+  userID   String
+  like     Like?     @relation(fields: [likeId], references: [id])
+  likeId   String?
+  comments Comment[]
 }
 
 model Comment {
   id        Int       @id @default(autoincrement())
-  comment   String
+  content   String
   createdAt DateTime? @default(now())
 
-  Children  Comment[] @relation("Comment_Children")
+  children  Comment[] @relation("Comment_Children")
   parent    Comment?  @relation("Comment_Children", fields: [parent_id], references: [id])
   parent_id Int?
 
-  user       User      @relation(fields: [userID], references: [id])
-  userID     String
-  status     status?   @relation(fields: [statusId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
+  userId     String
+  status     Status?   @relation(fields: [statusId], references: [id])
   statusId   String?
-  activity   activity? @relation(fields: [activityId], references: [id])
+  activity   Activity? @relation(fields: [activityId], references: [id])
   activityId String?
-  Like       Like[]
-  Thread     Thread?   @relation(fields: [threadId], references: [id])
+  like       Like[]
+  thread     Thread?   @relation(fields: [threadId], references: [id])
   threadId   String?
 }
 
@@ -219,26 +221,26 @@ model Recommendation {
   book1Id   String
   book2     Book     @relation("Book2Recommendations", fields: [book2Id], references: [id])
   book2Id   String
-  Like      Like?    @relation(fields: [likeId], references: [id])
+  like      Like?    @relation(fields: [likeId], references: [id])
   likeId    String?
-  DisLike   DisLike? @relation(fields: [dislikeId], references: [id])
+  dislike   Dislike? @relation(fields: [dislikeId], references: [id])
   dislikeId String?
 }
 
 model Like {
   id             String           @id @default(cuid())
-  comment        Comment?         @relation(fields: [commentID], references: [id])
-  commentID      Int?
-  User           User[]           @relation("userLikes")
-  activity       activity[]
-  status         status[]
+  comment        Comment?         @relation(fields: [commentId], references: [id])
+  commentId      Int?
+  user           User[]           @relation("UserLikes")
+  activity       Activity[]
+  status         Status[]
   recommendation Recommendation[]
 }
 
-model DisLike {
+model Dislike {
   id             String           @id @default(cuid())
   recommendation Recommendation[]
-  User           User[]           @relation("userdisLikes")
+  user           User[]           @relation("UserDislikes")
 }
 
 model Thread {
@@ -252,12 +254,12 @@ model Thread {
   lastUpdated DateTime? @updatedAt
 
   category        ThreadCategory[]
-  book            Book[]           @relation("bookThread")
-  Comment         Comment[]
-  user            User?            @relation(fields: [userID], references: [id])
-  userID          String?
+  book            Book[]           @relation("BookThread")
+  comment         Comment[]
+  user            User?            @relation(fields: [userId], references: [id])
+  userId          String?
   viewedBy        User[]           @relation("ViewedThreads")
-  subscribedUsers User[]           @relation("subscribedThreads")
+  subscribedUsers User[]           @relation("SubscribedThreads")
 }
 
 model ThreadCategory {
@@ -266,7 +268,3 @@ model ThreadCategory {
   color  String?
   thread Thread[]
 }
-
-// Use enums when yosu change database
-// because SQLite doesn't support it
-// https://www.prisma.io/docs/reference/database-reference/database-features#misc
